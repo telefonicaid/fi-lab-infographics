@@ -1,0 +1,161 @@
+body {
+	/*background-color: #FCFCFC;*/
+}
+
+.clear {
+	clear: both;
+}
+
+#content {
+	width: 588px;/*716px;
+	margin: 0 auto;*/
+}
+
+.title {
+	font-family: "Share Tech", sans-serif;
+	color: #006699;
+	font-size: 20px;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.section {
+  font-family: "Share Tech", sans-serif;
+  font-size: 16px;
+}
+
+.headerSection {
+	height: 98px;
+	background: url("/assets/infographic/headerSection.png") no-repeat;
+}
+
+.bodySection {
+	background: url("/assets/infographic/backgroundSection.png") repeat-y;
+}
+
+.smallPanel {
+	height: 200px;
+}
+
+.bigPanel {
+	height: 400px;
+}
+
+.leftIcon {
+	float: left;
+	margin: 17px 17px 17px 17px;
+	width: 76px;
+}
+
+.leftIcon img {
+  height: 55px;
+}
+
+.centerDetail {
+	float: left;
+	color: #006699;
+	font-size: 20px;
+	font-weight: bold;
+	margin-top: 34px;
+	margin-right: 17px;
+}
+
+.rightDetail {
+	float: right;
+	color: #006699;
+	font-size: 20px;
+	font-weight: bold;
+	margin-top: 34px;
+	margin-right: 17px;
+}
+
+.barPercentage {
+	float: right;
+	color: #006699;
+	font-size: 20px;
+	font-weight: bold;
+	margin-top: 22px;
+	margin-right: 17px;
+	height: 45px;
+	width: 250px;
+}
+
+.orange {
+	float: left;
+	background-color: #ff9900;
+	text-align: right;
+	height: 32px;
+	padding-top: 13px;
+}
+
+.blue {
+	float: left;
+	background-color: #006699;
+	height: 45px;
+}
+
+#bigMen {
+	text-align: center;
+	padding-top: 20px;
+}
+
+#bigMen img {
+	height: 55px;
+	margin-right: 5px;
+}
+
+#mediumMen {
+	text-align: center;
+	margin-top: 5px;
+}
+
+#mediumMen img {
+	height: 45px;
+	margin-right: 5px;
+}
+
+#smallMen {
+	text-align: center;
+	margin-top: 5px;
+}
+
+#smallMen img {
+	height: 35px;
+	margin-right: 5px;
+}
+
+#world-map {
+	padding: 17px 17px 0px 26px;
+	width:545px;
+	height:366px;
+}
+
+#world-map-cpu {
+	padding: 17px 17px 0px 26px;
+	width:545px;
+	height:366px;
+}
+
+#world-map-ram {
+	padding: 17px 17px 0px 26px;
+	width:545px;
+	height:366px;
+}
+
+#world-map-disk {
+	padding: 17px 17px 0px 26px;
+	width:545px;
+	height:366px;
+}
+
+#world-map-vm {
+	padding: 17px 17px 0px 26px;
+	width:545px;
+	height:366px;
+}
+
+#world-map-ge {
+	padding: 17px 17px 0px 26px;
+	width:545px;
+	height:366px;
+}

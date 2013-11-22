@@ -1,0 +1,75 @@
+<header class="navbar">
+  <nav class="navbar-inner">
+    <div class="logo-header">
+      <%= link_to fiware_env_url, class: "logo-header" do %>
+        <%= image_tag 'header-logo.png', class: 'logo', alt: FiLabApp.name %>
+      <% end %>
+
+      <%= link_to fiware_env_url, class: 'brand' do %>
+        <%= image_tag FiLabApp.logo, class: 'fiware-logo', alt: FiLabApp.name %>
+      <% end %>
+    </div>
+  
+    <div class="dropdown mobile">
+      <a href="#" class='dropdown-toggle' data-toggle="dropdown">
+        <span class="caret">
+        </span> 
+      </a>
+
+      <ul class="dropdown-menu dropdown-menu-header">
+        <li class="infographic <%= no_active_official_app %>">
+          <%= link_to 'Infographic', root_url %>
+        </li>
+        <% for idx in (0..FiLabApp.services_name.length-1) %>
+           <li class="<%= FiLabApp.services_class[idx] %> <%= active_official_app(':'+FiLabApp.services_name[idx]) %>">
+           <%= link_to FiLabApp.services_title[idx], fiware_env_url(subdomain: FiLabApp.services_name[idx]) %>
+           </li>
+        <% end %>
+        <li class="account <%= active_official_app(':'+FiLabApp.account_name) %>">
+          <%= link_to 'Account', fiware_env_url(subdomain: FiLabApp.account_name) %>
+        </li>
+        <% if FiLabApp.help_enable==1 %>
+        <li class="<%= FiLabApp.help_class %>">
+          <%= link_to FiLabApp.help_title, fiware_env_url(subdomain: FiLabApp.help_name) %>
+        </li>
+        <% end %>
+      </ul>
+    </div>
+
+    <ul class="oil-portal hidden-phone hidden-tablet" style="width:543px;">
+      <li class="infographic <%= no_active_official_app %>">
+          <%= link_to 'Infographic', root_url %>
+      </li>
+      <% for idx in (0..FiLabApp.services_name.length-1) %>
+           <li class="<%= FiLabApp.services_class[idx] %> <%= active_official_app(':'+FiLabApp.services_name[idx]) %>">
+           <%= link_to FiLabApp.services_title[idx], fiware_env_url(subdomain: FiLabApp.services_name[idx]) %>
+           </li>
+      <% end %>
+       <li class="account <%= active_official_app(':'+FiLabApp.account_name) %>">
+          <%= link_to 'Account', fiware_env_url(subdomain: FiLabApp.account_name) %>
+        </li>
+      <% if FiLabApp.help_enable==1 %>
+       <li class="<%= FiLabApp.help_class %>">
+         <%= link_to FiLabApp.help_title, fiware_env_url(subdomain: FiLabApp.help_name) %>
+       </li>
+      <% end %>
+    </ul>
+
+    <% if false %>
+      <ul class="nav pull-right">
+        <li>
+          <%= link_to current_subject, 'data-toggle' => 'tooltip', 'data-placement' => 'left', :title => current_subject.name, 'data-original-title' => current_subject.name do %>
+          <%= image_tag current_subject.logo.url(:small) %>
+          <span class="name">
+            <%= truncate_name(current_subject.name, length: 15) %>
+          </span>
+          <% end %>
+        </li>
+              
+        <li> 
+          <%= render partial: 'layouts/header_dropdown_menu' %>
+        </li>
+      </ul>
+    <% end %>
+  </nav>
+</header>

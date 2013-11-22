@@ -1,0 +1,252 @@
+<!-- replace_contents 'footer' -->
+
+<footer>
+<div>
+  <%= Date.today.year %> 
+  © 
+  <%= link_to 'FI-WARE', 'http://fi-ware.eu/' %> & <%= link_to 'FI-OPS', 'http://fi-xifi.eu/fi-ops' %>. 
+  The use of FI-LAB services is subject to the acceptance of the
+  <a href="http://forge.fi-ware.eu/plugins/mediawiki/wiki/fiware/index.php/FI-LAB_Terms_and_Conditions"> 
+    Terms and Conditions
+  </a>
+  and 
+  <a href="http://forge.fi-ware.eu/plugins/mediawiki/wiki/fiware/index.php/FI-LAB_Personal_Data_Protection_Policy">
+    Personal Data Protection Policy
+  </a>
+</div>
+</footer>
+
+<!-- #################################################################################### -->
+
+<!-- ===== init ===== -->
+<script type="text/javascript">
+	$(document).ready(function() 
+	{
+		/** =================================================================
+		*  Map
+		**/
+		
+		$('#world-map').vectorMap({
+		map: 'world_mill_en',
+			backgroundColor: 'white',
+			selectedRegions: ['IT','PL','US','ES','GB'],
+			regionStyle: {
+							  initial: {
+							    fill: '#999999',
+							    "fill-opacity": 1,
+							    stroke: 'none',
+							    "stroke-width": 0,
+							    "stroke-opacity": 1
+							  },
+							  hover: {
+							    "fill-opacity": 0.8
+							  },
+							  selected: {
+								fill: 'orange'
+							  },
+							  selectedHover: {
+							  }
+						}
+
+		});
+		
+		$('#world-map-cpu').vectorMap({
+		map: 'world_mill_en',
+			regionStyle: {
+				  initial: {
+				    fill: '#ffffff',
+				    "fill-opacity": 1,
+				    stroke: 'none',
+				    "stroke-width": 0,
+				    "stroke-opacity": 1
+				  },
+				  hover: {
+				    "fill-opacity": 0.8
+				  },
+				  selected: {
+					fill: 'orange'
+				  },
+				  selectedHover: {
+				  }
+			},
+			markerStyle: {
+		      initial: {
+			fill: '#ff9900',
+			stroke: '#383f47'
+		      }
+		    },
+			series: {
+						regions: [{
+									values: {
+									  "IT": 20,
+									  "FR": 78,
+									  "US": 5,
+									},
+								scale: ['#C8EEFF', '#0071A4'],
+								normalizeFunction: 'polynomial'
+						}]
+			},
+			markers: [
+		      {latLng: [41.90, 12.45], name: 'Vatican City (3 Gb)'},
+		      {latLng: [43.73, 7.41], name: 'Monaco (1 Gb)'},
+		      {latLng: [47.14, 9.52], name: 'Liechtenstein (6 Gb)'},
+		      {latLng: [35.88, 14.5], name: 'Malta (3 Gb)'},
+		      {latLng: [42.5, 1.51], name: 'Andorra (1 Gb)'}
+			]
+
+		});
+		
+		$('#world-map-ram').vectorMap({
+		map: 'world_mill_en',
+			regionStyle: {
+				  initial: {
+				    fill: '#ffffff',
+				    "fill-opacity": 1,
+				    stroke: 'none',
+				    "stroke-width": 0,
+				    "stroke-opacity": 1
+				  },
+				  hover: {
+				    "fill-opacity": 0.8
+				  },
+				  selected: {
+					fill: 'orange'
+				  },
+				  selectedHover: {
+				  }
+			},
+			markerStyle: {
+		      initial: {
+			fill: '#ff9900',
+			stroke: '#383f47'
+		      }
+		    },
+			series: {
+						regions: [{
+									values: {
+									  "IT": 20,
+									  "FR": 78,
+									  "US": 5,
+									},
+								scale: ['#C8EEFF', '#0071A4'],
+								normalizeFunction: 'polynomial'
+						}]
+			}
+
+		});
+		
+		$('#world-map-disk').vectorMap({
+		map: 'world_mill_en',
+			regionStyle: {
+				  initial: {
+				    fill: '#ffffff',
+				    "fill-opacity": 1,
+				    stroke: 'none',
+				    "stroke-width": 0,
+				    "stroke-opacity": 1
+				  },
+				  hover: {
+				    "fill-opacity": 0.8
+				  },
+				  selected: {
+					fill: 'orange'
+				  },
+				  selectedHover: {
+				  }
+			},
+			markerStyle: {
+		      initial: {
+			fill: '#ff9900',
+			stroke: '#383f47'
+		      }
+		    },
+			markers: [
+		      {latLng: [41.90, 12.45], name: 'Vatican City (3 Gb)'},
+		      {latLng: [43.73, 7.41], name: 'Monaco (1 Gb)'},
+		      {latLng: [47.14, 9.52], name: 'Liechtenstein (6 Gb)'},
+		      {latLng: [35.88, 14.5], name: 'Malta (3 Gb)'},
+		      {latLng: [42.5, 1.51], name: 'Andorra (1 Gb)'}
+			]
+
+		});
+		
+		$('#world-map-vm').vectorMap({
+		map: 'world_mill_en',
+			regionStyle: {
+							  initial: {
+							    fill: '#ffffff',
+							    "fill-opacity": 1,
+							    stroke: 'none',
+							    "stroke-width": 0,
+							    "stroke-opacity": 1
+							  },
+							  hover: {
+							    "fill-opacity": 0.8
+							  },
+							  selected: {
+								fill: 'orange'
+							  },
+							  selectedHover: {
+							  }
+						}
+
+		});
+		
+		$('#world-map-ge').vectorMap({
+		map: 'world_mill_en',
+			regionStyle: {
+							  initial: {
+							    fill: '#ffffff',
+							    "fill-opacity": 1,
+							    stroke: 'none',
+							    "stroke-width": 0,
+							    "stroke-opacity": 1
+							  },
+							  hover: {
+							    "fill-opacity": 0.8
+							  },
+							  selected: {
+								fill: 'orange'
+							  },
+							  selectedHover: {
+							  }
+						}
+
+		});
+		
+		/** ================================================================= 
+		*	Accordion Effect
+		*/
+		$('.accordionPanel').not('.leaveOpen').hide();
+		$('.accordionTitle').click( function()
+		{
+			var $this = $(this);
+			$this.next('.accordionPanel').slideToggle(function()
+			{
+				if( $this.hasClass('closeme' ) )
+				{
+					$this.removeClass('closeme' );
+					$this.addClass('openme' );
+				}
+				else
+				{
+					$this.removeClass('openme' );
+					$this.addClass('closeme' );
+				}
+			});
+		});
+		$('.accordionTitle').hover( 
+			function()
+			{
+				$(this).addClass('hovered');
+			},
+			function()
+			{
+				$(this).removeClass('hovered');
+			}
+		);
+
+		/** ================================================================= **/
+		
+	});
+</script>

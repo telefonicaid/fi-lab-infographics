@@ -1,4 +1,4 @@
-<% users = 325 %>
+<% users = @users %>
 <section id="frontpage">
   <article id="presentation">
 
@@ -32,7 +32,7 @@
 					i = 0
 					
 					while i < maxCent do
-					  print %><img src="/assets/infographic/omino.png" /><%
+					  %><img src="/assets/infographic/omino.png" /><%
 					  i+= 1
 					# chiusura del ciclo while
 					end
@@ -45,7 +45,7 @@
 					i = 0
 					
 					while i < maxDec do
-					  print %><img src="/assets/infographic/omino.png" /><%
+					  %><img src="/assets/infographic/omino.png" /><%
 					  i+= 1
 					# chiusura del ciclo while
 					end
@@ -58,7 +58,7 @@
 					i = 0
 					
 					while i < maxUni do
-					  print %><img src="/assets/infographic/omino.png" /><%
+					  %><img src="/assets/infographic/omino.png" /><%
 					  i+= 1
 					# chiusura del ciclo while
 					end
@@ -89,11 +89,11 @@
 					<img src="/assets/infographic/iconCpu.png" height="55"/>
 				</div>
 				<div class="centerDetail">
-					46/101 core in use
+					<%= @coreUsed %>/<%= @coreTot %> core in use
 				</div>
 				<div class="barPercentage">
-					<div class="orange" style="width:45%">45%</div>
-					<div class="blue" style="width:55%">&nbsp;</div>
+					<div class="orange" style="width:<%= @corePerc %>%"><%= @corePerc %>%</div>
+					<div class="blue" style="width:<%= 100-@corePerc %>%">&nbsp;</div>
 					<div class="clear"></div>
 				</div>
 				<div class="clear"></div>
@@ -109,11 +109,11 @@
 					<img src="/assets/infographic/iconRam.png" height="55"/>
 				</div>
 				<div class="centerDetail">
-					90/200 Gb in use
+					<%= @ramUsed %>/<%= @ramTot %> Mb in use
 				</div>
 				<div class="barPercentage">
-					<div class="orange" style="width:45%">45%</div>
-					<div class="blue" style="width:55%">&nbsp;</div>
+					<div class="orange" style="width:<%= @ramPerc %>%"><%= @ramPerc %>%</div>
+					<div class="blue" style="width:<%= 100-@ramPerc %>%">&nbsp;</div>
 					<div class="clear"></div>
 				</div>
 				<div class="clear"></div>
@@ -129,11 +129,11 @@
 					<img src="/assets/infographic/iconDisk.png" height="55"/>
 				</div>
 				<div class="centerDetail">
-					46/101 Gb in use
+					<%= @hdUsed %>/<%= @hdTot %> Gb in use
 				</div>
 				<div class="barPercentage">
-					<div class="orange" style="width:45%">45%</div>
-					<div class="blue" style="width:55%">&nbsp;</div>
+					<div class="orange" style="width:<%= @hdPerc %>%"><%= @hdPerc %>%</div>
+					<div class="blue" style="width:<%= 100-@hdPerc %>%">&nbsp;</div>
 					<div class="clear"></div>
 				</div>
 				<div class="clear"></div>
@@ -149,11 +149,11 @@
 					<img src="/assets/infographic/iconVM.png" height="55"/>
 				</div>
 				<div class="centerDetail">
-					46/101 VM in use
+					<%= @vmUsed %>/<%= @vmTot %> VM in use
 				</div>
 				<div class="barPercentage">
-					<div class="orange" style="width:45%">45%</div>
-					<div class="blue" style="width:55%">&nbsp;</div>
+					<div class="orange" style="width:<%= @vmPerc %>%"><%= @vmPerc %>%</div>
+					<div class="blue" style="width:<%= 100-@vmPerc %>%">&nbsp;</div>
 					<div class="clear"></div>
 				</div>
 				<div class="clear"></div>
@@ -182,6 +182,10 @@
 				<div id="world-map-ge"></div>
 			</div>
 		</div>
+		<hr>
+		<%= 
+		     @print
+		%>
 	</div>
 	
   </section>

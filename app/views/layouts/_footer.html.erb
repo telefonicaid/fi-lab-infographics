@@ -87,11 +87,20 @@
 						}]
 			},
 			markers: [
-		      {latLng: [41.90, 12.45], name: 'Vatican City (3 Gb)'},
+		      <%
+			@attributes.each do |key,value|
+			  if value["latitude"] != "" && value["longitude"] != "" then
+			  %>
+			    {latLng: [ <%=value["latitude"].to_f%>,<%=value["longitude"].to_f%> ], name: '<%=value["location"]%> (<%=value["coreTot"].to_i%> core)'}, 
+			  <%
+			  end
+			end
+		      %>
+		      /*{latLng: [41.90, 12.45], name: 'Vatican City (3 Gb)'},
 		      {latLng: [43.73, 7.41], name: 'Monaco (1 Gb)'},
 		      {latLng: [47.14, 9.52], name: 'Liechtenstein (6 Gb)'},
 		      {latLng: [35.88, 14.5], name: 'Malta (3 Gb)'},
-		      {latLng: [42.5, 1.51], name: 'Andorra (1 Gb)'}
+		      {latLng: [42.5, 1.51], name: 'Andorra (1 Gb)'}*/
 			]
 
 		});
@@ -131,7 +140,23 @@
 								scale: ['#C8EEFF', '#0071A4'],
 								normalizeFunction: 'polynomial'
 						}]
-			}
+			},
+			markers: [
+		      <%
+			@attributes.each do |key,value|
+			 if value["latitude"] != "" && value["longitude"] != "" then
+			  %>
+			    {latLng: [ <%=value["latitude"].to_f%>,<%=value["longitude"].to_f%> ], name: '<%=value["location"]%> (<%=value["ramTot"].to_i%> Mb)'}, 
+			  <%
+			 end
+			end
+		      %>
+		      /*{latLng: [41.90, 12.45], name: 'Vatican City (3 Gb)'},
+		      {latLng: [43.73, 7.41], name: 'Monaco (1 Gb)'},
+		      {latLng: [47.14, 9.52], name: 'Liechtenstein (6 Gb)'},
+		      {latLng: [35.88, 14.5], name: 'Malta (3 Gb)'},
+		      {latLng: [42.5, 1.51], name: 'Andorra (1 Gb)'}*/
+			]
 
 		});
 		
@@ -161,11 +186,20 @@
 		      }
 		    },
 			markers: [
-		      {latLng: [41.90, 12.45], name: 'Vatican City (3 Gb)'},
+		      <%
+			@attributes.each do |key,value|
+			  if value["latitude"] != "" && value["longitude"] != "" then
+			  %>
+			    {latLng: [ <%=value["latitude"].to_f%>,<%=value["longitude"].to_f%> ], name: '<%=value["location"]%> (<%=value["hdTot"].to_i%> Gb)'}, 
+			  <%
+			  end
+			end
+		      %>
+		      /*{latLng: [41.90, 12.45], name: 'Vatican City (3 Gb)'},
 		      {latLng: [43.73, 7.41], name: 'Monaco (1 Gb)'},
 		      {latLng: [47.14, 9.52], name: 'Liechtenstein (6 Gb)'},
 		      {latLng: [35.88, 14.5], name: 'Malta (3 Gb)'},
-		      {latLng: [42.5, 1.51], name: 'Andorra (1 Gb)'}
+		      {latLng: [42.5, 1.51], name: 'Andorra (1 Gb)'}*/
 			]
 
 		});
@@ -188,7 +222,29 @@
 							  },
 							  selectedHover: {
 							  }
-						}
+						},
+			markerStyle: {
+		      initial: {
+			fill: '#ff9900',
+			stroke: '#383f47'
+		      }
+		    },
+			markers: [
+		      <%
+			@attributes.each do |key,value|
+			  if value["latitude"] != "" && value["longitude"] != "" then
+			  %>
+			    {latLng: [ <%=value["latitude"].to_f%>,<%=value["longitude"].to_f%> ], name: '<%=value["location"]%> (<%=value["vmTot"].to_i%> vm)'}, 
+			  <%
+			  end
+			end
+		      %>
+		      /*{latLng: [41.90, 12.45], name: 'Vatican City (3 Gb)'},
+		      {latLng: [43.73, 7.41], name: 'Monaco (1 Gb)'},
+		      {latLng: [47.14, 9.52], name: 'Liechtenstein (6 Gb)'},
+		      {latLng: [35.88, 14.5], name: 'Malta (3 Gb)'},
+		      {latLng: [42.5, 1.51], name: 'Andorra (1 Gb)'}*/
+			]
 
 		});
 		

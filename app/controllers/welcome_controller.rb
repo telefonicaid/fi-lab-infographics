@@ -37,6 +37,7 @@ class WelcomeController < ApplicationController
     @hdUsed = 0
     @ramTot = 0
     @ramUsed = 0
+    @users = 0
     
     idRegions.each do |idRegion|
       regionData = self.performRequest('region/' + idRegion)
@@ -63,6 +64,8 @@ class WelcomeController < ApplicationController
 		   @ramTot += attribute["contextValue"].first.to_i
 		elsif attribute["name"].first == "ramUsed" then
 		   @ramUsed += attribute["contextValue"].first.to_i
+		elsif attribute["name"].first == "nUsers" then
+		   @users += attribute["contextValue"].first.to_i
 		end
 	      end
 	    end
@@ -85,45 +88,43 @@ class WelcomeController < ApplicationController
     else @ramPerc = @ramUsed * 100 / @ramTot
     end
     
-    @users = 0
-    
-    idRegions.each do |idRegion|
-      vmsRegionData = self.performRequest('region/' + idRegion + '/VM')
-      idVMs = [] 
-    
-      vmsRegionData.each do |contextElementResponse|
-	contextElementResponse["contextElementResponse"].each do |contextElement|   
-	  contextElement["contextElement"].each do |entityId|
-	    entityId["entityId"].each do |id|
-	      id["id"].each do |idVm|
-		idVMs.push(idVm)
-	      end
-	    end
-	  end
-	end
-      end
-      
-      idVMs.each do |idVM|
-	vmRegionData = self.performRequest('region/' + idRegion + '/VM/' + idVM)
-      
-	vmRegionData.each do |contextElementResponse|
-	  contextElementResponse["contextElementResponse"].each do |contextElement|
-	    contextElement["contextElement"].each do |contextAttributeList|
-	      contextAttributeList["contextAttributeList"].each do |contextAttribute|
-		contextAttribute["contextAttribute"].each do |attribute|
-		  if attribute["name"].first == "Current Users" then
-		    @users += attribute["contextValue"].first.to_i
-		  end
-		end
-	      end
-	    end
-	  end
-	end
-	
-      end
-      
-      
-    end
+#     idRegions.each do |idRegion|
+#       vmsRegionData = self.performRequest('region/' + idRegion + '/VM')
+#       idVMs = [] 
+#     
+#       vmsRegionData.each do |contextElementResponse|
+# 	contextElementResponse["contextElementResponse"].each do |contextElement|   
+# 	  contextElement["contextElement"].each do |entityId|
+# 	    entityId["entityId"].each do |id|
+# 	      id["id"].each do |idVm|
+# 		idVMs.push(idVm)
+# 	      end
+# 	    end
+# 	  end
+# 	end
+#       end
+#       
+#       idVMs.each do |idVM|
+# 	vmRegionData = self.performRequest('region/' + idRegion + '/VM/' + idVM)
+#       
+# 	vmRegionData.each do |contextElementResponse|
+# 	  contextElementResponse["contextElementResponse"].each do |contextElement|
+# 	    contextElement["contextElement"].each do |contextAttributeList|
+# 	      contextAttributeList["contextAttributeList"].each do |contextAttribute|
+# 		contextAttribute["contextAttribute"].each do |attribute|
+# # 		  if attribute["name"].first == "Current Users" then
+# # 		    @users += attribute["contextValue"].first.to_i
+# # 		  end
+# 		end
+# 	      end
+# 	    end
+# 	  end
+# 	end
+# 	
+#       end
+#       
+#       
+#     end
     
 
 #     @print =  regionsJson.to_a

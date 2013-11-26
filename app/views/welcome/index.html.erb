@@ -13,7 +13,7 @@
         	An Empty FI-LAB App made in <a href="http://www.rubyonrails.com" target="new"><strong>Ruby on Rails</strong></a>.
      	</div>-->
      	<div id="content">
-		<div class="title">A title</div>
+		<div class="title">Monitoring</div>
 				
 		<div class="section">
 			<div class="headerSection accordionTitle">
@@ -88,14 +88,17 @@
 				<div class="leftIcon">
 					<img src="/assets/infographic/iconCpu.png" height="55"/>
 				</div>
-				<div class="centerDetail">
+				<div class="rightDetail">
+					<%= @coreTot %> core
+				</div>
+				<!--<div class="centerDetail">
 					<%= @coreUsed %>/<%= @coreTot %> core in use
 				</div>
 				<div class="barPercentage">
 					<div class="orange" style="width:<%= @corePerc %>%"><%= @corePerc %>%</div>
 					<div class="blue" style="width:<%= 100-@corePerc %>%">&nbsp;</div>
 					<div class="clear"></div>
-				</div>
+				</div>-->
 				<div class="clear"></div>
 			</div>
 			<div class="bodySection accordionPanel bigPanel">
@@ -108,14 +111,17 @@
 				<div class="leftIcon">
 					<img src="/assets/infographic/iconRam.png" height="55"/>
 				</div>
-				<div class="centerDetail">
+				<div class="rightDetail">
+					<%= @ramTot %> Mb
+				</div>
+				<!--<div class="centerDetail">
 					<%= @ramUsed %>/<%= @ramTot %> Mb in use
 				</div>
 				<div class="barPercentage">
 					<div class="orange" style="width:<%= @ramPerc %>%"><%= @ramPerc %>%</div>
 					<div class="blue" style="width:<%= 100-@ramPerc %>%">&nbsp;</div>
 					<div class="clear"></div>
-				</div>
+				</div>-->
 				<div class="clear"></div>
 			</div>
 			<div class="bodySection accordionPanel bigPanel">
@@ -128,14 +134,17 @@
 				<div class="leftIcon">
 					<img src="/assets/infographic/iconDisk.png" height="55"/>
 				</div>
-				<div class="centerDetail">
+				<div class="rightDetail">
+					<%= @hdTot %> Gb
+				</div>
+				<!--<div class="centerDetail">
 					<%= @hdUsed %>/<%= @hdTot %> Gb in use
 				</div>
 				<div class="barPercentage">
 					<div class="orange" style="width:<%= @hdPerc %>%"><%= @hdPerc %>%</div>
 					<div class="blue" style="width:<%= 100-@hdPerc %>%">&nbsp;</div>
 					<div class="clear"></div>
-				</div>
+				</div>-->
 				<div class="clear"></div>
 			</div>
 			<div class="bodySection accordionPanel bigPanel">
@@ -148,14 +157,17 @@
 				<div class="leftIcon">
 					<img src="/assets/infographic/iconVM.png" height="55"/>
 				</div>
-				<div class="centerDetail">
+				<div class="rightDetail">
+					<%= @vmTot %> VM
+				</div>
+				<!--<div class="centerDetail">
 					<%= @vmUsed %>/<%= @vmTot %> VM in use
 				</div>
 				<div class="barPercentage">
 					<div class="orange" style="width:<%= @vmPerc %>%"><%= @vmPerc %>%</div>
 					<div class="blue" style="width:<%= 100-@vmPerc %>%">&nbsp;</div>
 					<div class="clear"></div>
-				</div>
+				</div>-->
 				<div class="clear"></div>
 			</div>
 			<div class="bodySection accordionPanel bigPanel">
@@ -163,7 +175,7 @@
 			</div>
 		</div>
 				
-		<div class="section">
+		<!--<div class="section">
 			<div class="headerSection accordionTitle">
 				<div class="leftIcon">
 					<img src="/assets/infographic/iconWeb.png" height="55"/>
@@ -181,7 +193,7 @@
 			<div class="bodySection accordionPanel bigPanel">
 				<div id="world-map-ge"></div>
 			</div>
-		</div>
+		</div>-->
 	</div>
 	
   </section>

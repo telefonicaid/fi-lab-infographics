@@ -1,4 +1,19 @@
 class WelcomeController < ApplicationController
+  
+   def performRequest (uri)
+    require 'net/http'
+
+    url = URI.parse("http://192.168.59.2:1337/" + uri)
+    req = Net::HTTP::Get.new(url.path)
+    res = Net::HTTP.start(url.host, url.port) {|http|
+      http.request(req)
+    }
+    data = res.body
+    
+    result = JSON.parse(data)
+    return result ["queryContextResponse"] ["contextResponseList"]
+  end
+  
   def index
     
 #     require 'net/http'
@@ -64,7 +79,7 @@ class WelcomeController < ApplicationController
 		   @ramTot += attribute["contextValue"].first.to_i
 		elsif attribute["name"].first == "ramUsed" then
 		   @ramUsed += attribute["contextValue"].first.to_i
-		elsif attribute["name"].first == "nUsers" then
+		elsif attribute["name"].first == "nUser" then
 		   @users += attribute["contextValue"].first.to_i
 		end
 	      end
@@ -137,18 +152,89 @@ class WelcomeController < ApplicationController
 		    
   end
   
-  def performRequest (uri)
-    require 'net/http'
-
-    url = URI.parse("http://192.168.59.2:1337/" + uri)
-    req = Net::HTTP::Get.new(url.path)
-    res = Net::HTTP.start(url.host, url.port) {|http|
-      http.request(req)
-    }
-    data = res.body
+  def vm
     
-    result = JSON.parse(data)
-    return result ["queryContextResponse"] ["contextResponseList"]
+    regionsData = self.performRequest('region')
+    
+    idRegions = [] 
+    
+    regionsData.each do |contextElementResponse|
+      contextElementResponse["contextElementResponse"].each do |contextElement|   
+	contextElement["contextElement"].each do |entityId|
+	  entityId["entityId"].each do |id|
+	    id["id"].each do |idRegion|
+	      idRegions.push(idRegion)
+	    end
+	  end
+	end
+      end
+    end
+    
+    @attributesRegionsVMs = Hash.new
+    
+    idRegions.each do |idRegion|
+      regionData = self.performRequest('region/' + idRegion)
+      
+      locationVM = ""
+      
+      regionData.each do |contextElementResponse|
+	contextElementResponse["contextElementResponse"].each do |contextElement|
+	  contextElement["contextElement"].each do |contextAttributeList|
+	    contextAttributeList["contextAttributeList"].each do |contextAttribute|
+	      contextAttribute["contextAttribute"].each do |attribute|
+		if attribute["name"].first == "location" then
+# 		  here we retrieve location of regionId
+		  locationVM = attribute["contextValue"].first
+		end
+	      end
+	    end
+	  end
+	end
+      end
+
+      vmsRegionData = self.performRequest('region/' + idRegion + '/VM')
+      idVMs = [] 
+    
+      vmsRegionData.each do |contextElementResponse|
+	contextElementResponse["contextElementResponse"].each do |contextElement|   
+	  contextElement["contextElement"].each do |entityId|
+	    entityId["entityId"].each do |id|
+	      id["id"].each do |idVm|
+		idVMs.push(idVm)
+	      end
+	    end
+	  end
+	end
+      end
+      
+      attributesVMs = Hash.new
+      
+      idVMs.each do |idVM|
+	vmRegionData = self.performRequest('region/' + idRegion + '/VM/' + idVM)
+      
+	attributesVM = Hash.new
+	
+	vmRegionData.each do |contextElementResponse|
+	  contextElementResponse["contextElementResponse"].each do |contextElement|
+	    contextElement["contextElement"].each do |contextAttributeList|
+	      contextAttributeList["contextAttributeList"].each do |contextAttribute|
+		contextAttribute["contextAttribute"].each do |attribute|
+		  attributesVM[attribute["name"].first] = attribute["contextValue"].first
+		end
+	      end
+	    end
+	  end
+	end
+	
+	attributesVMs[idVM] = attributesVM
+	
+      end
+      
+      @attributesRegionsVMs [locationVM] = attributesVMs
+      
+    end
+    
   end
+  
 end
  

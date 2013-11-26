@@ -16,6 +16,7 @@
 </div>
 </footer>
 
+<% if @attributes != nil then %>
 <!-- #################################################################################### -->
 
 <!-- ===== init ===== -->
@@ -108,7 +109,7 @@
 			@attributes.each do |key,value|
 			  if value["latitude"] != "" && value["longitude"] != "" then
 			  %>
-			    {latLng: [ <%=value["latitude"].to_f%>,<%=value["longitude"].to_f%> ], name: '<%=value["location"]%> (<%=value["coreTot"].to_i%> core)'}, 
+			    {latLng: [ <%=value["latitude"].to_f%>,<%=value["longitude"].to_f%> ], name: '<%=key%> (<%=value["coreTot"].to_i%> core)'}, 
 			  <%
 			  end
 			end
@@ -171,7 +172,7 @@
 			@attributes.each do |key,value|
 			 if value["latitude"] != "" && value["longitude"] != "" then
 			  %>
-			    {latLng: [ <%=value["latitude"].to_f%>,<%=value["longitude"].to_f%> ], name: '<%=value["location"]%> (<%=value["ramTot"].to_i%> Mb)'}, 
+			    {latLng: [ <%=value["latitude"].to_f%>,<%=value["longitude"].to_f%> ], name: '<%=key%> (<%=value["ramTot"].to_i%> Mb)'}, 
 			  <%
 			 end
 			end
@@ -233,7 +234,7 @@
 			@attributes.each do |key,value|
 			  if value["latitude"] != "" && value["longitude"] != "" then
 			  %>
-			    {latLng: [ <%=value["latitude"].to_f%>,<%=value["longitude"].to_f%> ], name: '<%=value["location"]%> (<%=value["hdTot"].to_i%> Gb)'}, 
+			    {latLng: [ <%=value["latitude"].to_f%>,<%=value["longitude"].to_f%> ], name: '<%=key%> (<%=value["hdTot"].to_i%> Gb)'}, 
 			  <%
 			  end
 			end
@@ -295,7 +296,7 @@
 			@attributes.each do |key,value|
 			  if value["latitude"] != "" && value["longitude"] != "" then
 			  %>
-			    {latLng: [ <%=value["latitude"].to_f%>,<%=value["longitude"].to_f%> ], name: '<%=value["location"]%> (<%=value["vmTot"].to_i%> vm)'}, 
+			    {latLng: [ <%=value["latitude"].to_f%>,<%=value["longitude"].to_f%> ], name: '<%=key%> (<%=value["vmTot"].to_i%> vm)'}, 
 			  <%
 			  end
 			end
@@ -366,6 +367,52 @@
 		);
 
 		/** ================================================================= **/
+// 		$. ajax (
+// 			  {
+// 			    type: "GET",
+// 			    dataType: 'json',
+// 			    url: "http://192.168.59.2:1337/region",
+// 			    data: data,
+// 			    success: function (data)
+// 			    {
+// 				  console.log(data)
+// 			    }
+// 			}
+// 		);
 		
+// 		$.ajax({
+// 			url: "http://192.168.59.2:1337/region",
+// 			cache: false
+// 			})
+// 			.done(function( html ) {
+// 			  console.log(html);
+// 			});
+			
+// 		var request = $.ajax({
+// 				      url: "http://192.168.59.2:1337/region",
+// 				      type: "GET",
+// 				      data: {},
+// 				      dataType: "json"
+// 		});
+// 		
+// 		request.done(function( msg ) {
+// 		  console.log("AAAAAAAAAAA");
+// 		  console.log(msg);
+// 		});
+// 		
+// 		request.fail(function( jqXHR, textStatus ) {
+// 							    alert( "Request failed: " + textStatus+jqXHR );
+// 							    });
+		
+// 		$.ajax({
+// 			dataType: "json",
+// 			url: url,
+// 			data: data,
+// 			success: success
+// 		});
+
+// 		setInterval('window.location.reload()', 60000);
+    
 	});
 </script>
+<% end %>

@@ -20,6 +20,9 @@
         <li class="infographic <%= no_active_official_app %>">
           <%= link_to 'Infographic', root_url %>
         </li>
+        <li class="vm <%= no_active_official_app %>">
+          <%= link_to 'VM', '/vm' %>
+      </li>
         <% for idx in (0..FiLabApp.services_name.length-1) %>
            <li class="<%= FiLabApp.services_class[idx] %> <%= active_official_app(':'+FiLabApp.services_name[idx]) %>">
            <%= link_to FiLabApp.services_title[idx], fiware_env_url(subdomain: FiLabApp.services_name[idx]) %>
@@ -36,9 +39,12 @@
       </ul>
     </div>
 
-    <ul class="oil-portal hidden-phone hidden-tablet" style="width:543px;">
+    <ul class="oil-portal hidden-phone hidden-tablet" style="width:605px;">
       <li class="infographic <%= no_active_official_app %>">
           <%= link_to 'Infographic', root_url %>
+      </li>
+      <li class="vm <%= no_active_official_app %>">
+          <%= link_to 'VM', '/vm' %>
       </li>
       <% for idx in (0..FiLabApp.services_name.length-1) %>
            <li class="<%= FiLabApp.services_class[idx] %> <%= active_official_app(':'+FiLabApp.services_name[idx]) %>">

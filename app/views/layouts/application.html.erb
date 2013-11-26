@@ -4,14 +4,18 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
 
     <link href='http://fonts.googleapis.com/css?family=Share+Tech' rel='stylesheet' type='text/css'>
+    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+
     
     <%= stylesheet_link_tag    "application" %>
     <%= stylesheet_link_tag    "xifi" %>
     <%= stylesheet_link_tag    "jquery-jvectormap-1.2.2" %>
+    <%= stylesheet_link_tag    "current" %>
     
     <%= javascript_include_tag "application" %>
     <%= javascript_include_tag "jquery-jvectormap-1.2.2.min" %>
     <%= javascript_include_tag "jquery-jvectormap-world-mill-en" %>
+    <%= javascript_include_tag "current" %>
 
     <%= yield :headers %>
 

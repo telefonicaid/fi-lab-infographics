@@ -29,7 +29,16 @@
 		$('#world-map').vectorMap({
 		map: 'world_mill_en',
 			backgroundColor: 'white',
-			selectedRegions: ['IT','PL','US','ES','GB'],
+			selectedRegions: /*['IT','PL','US','ES','GB']*/[
+					<%
+					  @attributes.each do |key,value|
+					    if value["location"] != "" then
+					    %>
+					      '<%=value["location"]%>', 
+					    <%
+					    end
+					  end
+					%>],
 			regionStyle: {
 							  initial: {
 							    fill: '#999999',
@@ -49,6 +58,8 @@
 						}
 
 		});
+		
+		$('#world-map').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
 		
 		$('#world-map-cpu').vectorMap({
 		map: 'world_mill_en',
@@ -78,9 +89,15 @@
 			series: {
 						regions: [{
 									values: {
-									  "IT": 20,
-									  "FR": 78,
-									  "US": 5,
+									<%
+									  @attributes.each do |key,value|
+									    if value["location"] != "" then
+									    %>
+									      "<%=value["location"]%>": <%=value["coreTot"].to_i%>, 
+									    <%
+									    end
+									  end
+									%>
 									},
 								scale: ['#C8EEFF', '#0071A4'],
 								normalizeFunction: 'polynomial'
@@ -104,6 +121,8 @@
 			]
 
 		});
+		
+		$('#world-map-cpu').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
 		
 		$('#world-map-ram').vectorMap({
 		map: 'world_mill_en',
@@ -133,9 +152,15 @@
 			series: {
 						regions: [{
 									values: {
-									  "IT": 20,
-									  "FR": 78,
-									  "US": 5,
+									<%
+									  @attributes.each do |key,value|
+									    if value["location"] != "" then
+									    %>
+									      "<%=value["location"]%>": <%=value["ramTot"].to_i%>, 
+									    <%
+									    end
+									  end
+									%>
 									},
 								scale: ['#C8EEFF', '#0071A4'],
 								normalizeFunction: 'polynomial'
@@ -159,6 +184,8 @@
 			]
 
 		});
+		
+		$('#world-map-ram').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
 		
 		$('#world-map-disk').vectorMap({
 		map: 'world_mill_en',
@@ -184,7 +211,23 @@
 			fill: '#ff9900',
 			stroke: '#383f47'
 		      }
-		    },
+		    },	series: {
+						regions: [{
+									values: {
+									<%
+									  @attributes.each do |key,value|
+									    if value["location"] != "" then
+									    %>
+									      "<%=value["location"]%>": <%=value["hdTot"].to_i%>, 
+									    <%
+									    end
+									  end
+									%>
+									},
+								scale: ['#C8EEFF', '#0071A4'],
+								normalizeFunction: 'polynomial'
+						}]
+			},
 			markers: [
 		      <%
 			@attributes.each do |key,value|
@@ -203,6 +246,8 @@
 			]
 
 		});
+		
+		$('#world-map-disk').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
 		
 		$('#world-map-vm').vectorMap({
 		map: 'world_mill_en',
@@ -228,7 +273,23 @@
 			fill: '#ff9900',
 			stroke: '#383f47'
 		      }
-		    },
+		    },	series: {
+						regions: [{
+									values: {
+									<%
+									  @attributes.each do |key,value|
+									    if value["location"] != "" then
+									    %>
+									      "<%=value["location"]%>": <%=value["vmTot"].to_i%>, 
+									    <%
+									    end
+									  end
+									%>
+									},
+								scale: ['#C8EEFF', '#0071A4'],
+								normalizeFunction: 'polynomial'
+						}]
+			},
 			markers: [
 		      <%
 			@attributes.each do |key,value|
@@ -247,6 +308,8 @@
 			]
 
 		});
+		
+		$('#world-map-vm').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
 		
 		$('#world-map-ge').vectorMap({
 		map: 'world_mill_en',

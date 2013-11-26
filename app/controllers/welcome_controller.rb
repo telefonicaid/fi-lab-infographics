@@ -125,7 +125,7 @@ class WelcomeController < ApplicationController
       
     end
     
-    @print = "ciao"
+
 #     @print =  regionsJson.to_a
 #     @regionsJson = contextResponseList ["contextElementResponse"]
     

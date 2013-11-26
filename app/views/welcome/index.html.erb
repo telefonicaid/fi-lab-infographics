@@ -74,7 +74,7 @@
 					<img src="/assets/infographic/iconMondo.png" height="55"/>
 				</div>
 				<div class="rightDetail">
-					5 states
+					<%= @attributes.keys.count%> regions
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -182,10 +182,6 @@
 				<div id="world-map-ge"></div>
 			</div>
 		</div>
-		<hr>
-		<%= 
-		     @print
-		%>
 	</div>
 	
   </section>

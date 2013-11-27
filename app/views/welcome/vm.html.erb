@@ -92,7 +92,7 @@
 					    chartRam.draw(dataRam, options);
 					    
 					    var chartColumn = new google.visualization.ColumnChart(document.getElementById('chart_div_pro_<%= keySub%>'));
-					    chartColumn.draw(dataProcesses,{width:100, height:95}); 
+					    chartColumn.draw(dataProcesses,{width:100, height:95, vAxis:{maxValue:200,minValue:0}}); 
 					  }
 					  
 				    </script>

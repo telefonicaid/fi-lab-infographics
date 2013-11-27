@@ -175,22 +175,22 @@ class WelcomeController < ApplicationController
     idRegions.each do |idRegion|
       regionData = self.performRequest('region/' + idRegion)
       
-      locationVM = ""
+      locationVM = idRegion
       
-      regionData.each do |contextElementResponse|
-	contextElementResponse["contextElementResponse"].each do |contextElement|
-	  contextElement["contextElement"].each do |contextAttributeList|
-	    contextAttributeList["contextAttributeList"].each do |contextAttribute|
-	      contextAttribute["contextAttribute"].each do |attribute|
-		if attribute["name"].first == "location" then
-# 		  here we retrieve location of regionId
-		  locationVM = attribute["contextValue"].first
-		end
-	      end
-	    end
-	  end
-	end
-      end
+#       regionData.each do |contextElementResponse|
+# 	contextElementResponse["contextElementResponse"].each do |contextElement|
+# 	  contextElement["contextElement"].each do |contextAttributeList|
+# 	    contextAttributeList["contextAttributeList"].each do |contextAttribute|
+# 	      contextAttribute["contextAttribute"].each do |attribute|
+# 		if attribute["name"].first == "location" then
+# # 		  here we retrieve location of regionId
+# 		  locationVM = attribute["contextValue"].first
+# 		end
+# 	      end
+# 	    end
+# 	  end
+# 	end
+#       end
 
       vmsRegionData = self.performRequest('region/' + idRegion + '/VM')
       idVMs = [] 

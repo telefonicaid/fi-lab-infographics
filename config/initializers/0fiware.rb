@@ -50,5 +50,9 @@ FiLabApp.setup do |config|
 
   # List of email domains that are allowed to register
   # config.allowed_email_domains = %w( example.com other-example.com )
+  
+  # Node.js proxy for monitoring
+  config_nodejs = 'http://localhost:1337'
+
 end
 

@@ -3,7 +3,7 @@ class WelcomeController < ApplicationController
    def performRequest (uri)
     require 'net/http'
 
-    url = URI.parse("http://192.168.59.2:1337/" + uri)
+    url = URI.parse( FiLabApp.nodejs + "/" + uri)
     req = Net::HTTP::Get.new(url.path)
     res = Net::HTTP.start(url.host, url.port) {|http|
       http.request(req)

@@ -47,8 +47,8 @@ module FiLabApp
   mattr_accessor :allowed_email_domains
   @@allowed_email_domains = []
 
-  mattr_accessor :config_nodejs
-  @@config_nodejs = 'http://localhost:1337'
+  mattr_accessor :nodejs
+  @@nodejs = 'http://localhost:1337'
 
 
   class << self

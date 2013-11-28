@@ -52,7 +52,7 @@ FiLabApp.setup do |config|
   # config.allowed_email_domains = %w( example.com other-example.com )
   
   # Node.js proxy for monitoring
-  config_nodejs = 'http://localhost:1337'
+  config.nodejs = 'http://localhost:1337'
 
 end
 

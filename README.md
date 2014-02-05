@@ -1,2 +1,0 @@
-fi-lab-infographics
-===================

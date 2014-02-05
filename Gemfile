@@ -1,64 +1,59 @@
-if RUBY_VERSION =~ /1.9/
-  Encoding.default_external = Encoding::UTF_8
-  Encoding.default_internal = Encoding::UTF_8
-end
-
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.14'
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'rails', '4.0.2'
 
-gem 'mysql2'
+# Use sqlite3 as the database for Active Record
+gem 'sqlite3'
 
-# Gems used only for assets and not required
-# in production environments by default.
-group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
+# Use SCSS for stylesheets
+gem 'sass-rails', '~> 4.0.0'
 
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  # gem 'therubyracer', :platforms => :ruby
+# Use Uglifier as compressor for JavaScript assets
+gem 'uglifier', '>= 1.3.0'
 
-  gem 'uglifier', '>= 1.0.3'
-end
+# Use CoffeeScript for .js.coffee assets and views
+gem 'coffee-rails', '~> 4.0.0'
+
+# See https://github.com/sstephenson/execjs#readme for more supported runtimes
+# gem 'therubyracer', platforms: :ruby
+
+# Use jquery as the JavaScript library
+# gem 'jquery-rails'
 
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
+gem 'modernizr-rails'
+gem 'bootstrap-sass'
+gem 'bootstrap-modal-rails'
+gem 'select2-rails'
+gem 'i18n'
+gem 'i18n-js'
+gem 'flashy'
+git 'https://github.com/SmartInfrastructures/filab-style-app.git', branch: 'master' do
+  gem 'fi_lab_app'
+end
 
-# To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.0.0'
 
-# To use Jbuilder templates for JSON
-# gem 'jbuilder'
+# Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
+gem 'turbolinks'
+
+# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem 'jbuilder', '~> 1.2'
+
+group :doc do
+  # bundle exec rake doc:rails generates the API under doc/api.
+  gem 'sdoc', require: false
+end
+
+# Use ActiveModel has_secure_password
+# gem 'bcrypt-ruby', '~> 3.1.2'
 
 # Use unicorn as the app server
 # gem 'unicorn'
 
-# Deploy with Capistrano
-# gem 'capistrano'
+# Use Capistrano for deployment
+# gem 'capistrano', group: :development
 
-group :development do
-  gem 'forgery'
-  gem 'diffy'
-end
-
-group :development, :test do
-  gem 'rspec-rails'
-  gem 'factory_girl', '1.3.3'
-end
-
-# gem 'omniauth-social_stream', path: '../omniauth-social_stream'
-
-#git 'git://github.com/ging/social_stream.git', branch: 'master' do
-#  gem 'social_stream-base'
-#  gem 'social_stream-oauth2_server'
-#end
-
-gem 'pry-rails'
-
-gem 'exception_notification', '~> 3.0'
-
-gem 'rest-client'
-
-#gem 'devise'
-
-# CORS
-gem 'rack-cors', require: 'rack/cors'
+# Use debugger
+# gem 'debugger', group: [:development, :test]

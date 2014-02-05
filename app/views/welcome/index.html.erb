@@ -1,80 +1,27 @@
-<% users = @users %>
-<section id="frontpage">
-  <article id="presentation">
-
-  <section class="media">
-	<!--<a class="pull-left" href="#">
-      		<img class="media-object" alt="identify" src="/assets/user-front.png">
-	</a>
-    	<div class="media-body">
-      		<h3 class="media-heading">
-        		Hello World FI-LAB App
-      		</h3>
-        	An Empty FI-LAB App made in <a href="http://www.rubyonrails.com" target="new"><strong>Ruby on Rails</strong></a>.
-     	</div>-->
-     	<div id="content">
-		<div class="title">Monitoring</div>
-				
-		<div class="section">
+<div class="section">
 			<div class="headerSection accordionTitle">
 				<div class="leftIcon">
 					<img src="/assets/infographic/iconOmino.png" height="55"/>
 				</div>
 				<div class="rightDetail">
-					<%=users%> users
+					<span id="usersNum"></span> users
 				</div>
 				<div class="clear"></div>
 			</div>
 			<div class="bodySection accordionPanel smallPanel">
-				<div id="bigMen">
-					<%
-					maxCent = users/100
-					i = 0
-					
-					while i < maxCent do
-					  %><img src="/assets/infographic/omino.png" /><%
-					  i+= 1
-					# chiusura del ciclo while
-					end
-					
-					%>
-				</div>
-				<div id="mediumMen">
-					<%
-					maxDec = (users - maxCent*100)/10
-					i = 0
-					
-					while i < maxDec do
-					  %><img src="/assets/infographic/omino.png" /><%
-					  i+= 1
-					# chiusura del ciclo while
-					end
-					
-					%>
-				</div>
-				<div id="smallMen">
-					<%
-					maxUni = users - maxCent*100 - maxDec*10
-					i = 0
-					
-					while i < maxUni do
-					  %><img src="/assets/infographic/omino.png" /><%
-					  i+= 1
-					# chiusura del ciclo while
-					end
-					
-					%>
-				</div>
+				<div id="bigMen"></div>
+				<div id="mediumMen"></div>
+				<div id="smallMen"></div>
 			</div>
 		</div>
-				
+
 		<div class="section">
 			<div class="headerSection accordionTitle">
 				<div class="leftIcon">
 					<img src="/assets/infographic/iconMondo.png" height="55"/>
 				</div>
 				<div class="rightDetail">
-					<%= @attributes.keys.count%> regions
+					<span id="regionsNum"></span> regions
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -82,99 +29,67 @@
 				<div id="world-map"></div>
 			</div>
 		</div>
-		
+
 		<div class="section">
 			<div class="headerSection accordionTitle">
 				<div class="leftIcon">
 					<img src="/assets/infographic/iconCpu.png" height="55"/>
 				</div>
 				<div class="rightDetail">
-					<%= @coreTot %> core
+					<span id="coresNum"></span> core
 				</div>
-				<!--<div class="centerDetail">
-					<%= @coreUsed %>/<%= @coreTot %> core in use
-				</div>
-				<div class="barPercentage">
-					<div class="orange" style="width:<%= @corePerc %>%"><%= @corePerc %>%</div>
-					<div class="blue" style="width:<%= 100-@corePerc %>%">&nbsp;</div>
-					<div class="clear"></div>
-				</div>-->
 				<div class="clear"></div>
 			</div>
 			<div class="bodySection accordionPanel bigPanel">
 				<div id="world-map-cpu"></div>
 			</div>
 		</div>
-		
+
 		<div class="section">
 			<div class="headerSection accordionTitle">
 				<div class="leftIcon">
 					<img src="/assets/infographic/iconRam.png" height="55"/>
 				</div>
 				<div class="rightDetail">
-					<%= @ramTot %> Mb
+					<span id="ramNum"></span> Mb
 				</div>
-				<!--<div class="centerDetail">
-					<%= @ramUsed %>/<%= @ramTot %> Mb in use
-				</div>
-				<div class="barPercentage">
-					<div class="orange" style="width:<%= @ramPerc %>%"><%= @ramPerc %>%</div>
-					<div class="blue" style="width:<%= 100-@ramPerc %>%">&nbsp;</div>
-					<div class="clear"></div>
-				</div>-->
 				<div class="clear"></div>
 			</div>
 			<div class="bodySection accordionPanel bigPanel">
 				<div id="world-map-ram"></div>
 			</div>
 		</div>
-				
+
 		<div class="section">
 			<div class="headerSection accordionTitle">
 				<div class="leftIcon">
 					<img src="/assets/infographic/iconDisk.png" height="55"/>
 				</div>
 				<div class="rightDetail">
-					<%= @hdTot %> Gb
+					<span id="hdNum"></span> Gb
 				</div>
-				<!--<div class="centerDetail">
-					<%= @hdUsed %>/<%= @hdTot %> Gb in use
-				</div>
-				<div class="barPercentage">
-					<div class="orange" style="width:<%= @hdPerc %>%"><%= @hdPerc %>%</div>
-					<div class="blue" style="width:<%= 100-@hdPerc %>%">&nbsp;</div>
-					<div class="clear"></div>
-				</div>-->
 				<div class="clear"></div>
 			</div>
 			<div class="bodySection accordionPanel bigPanel">
 				<div id="world-map-disk"></div>
 			</div>
 		</div>
-				
+
 		<div class="section">
 			<div class="headerSection accordionTitle">
 				<div class="leftIcon">
 					<img src="/assets/infographic/iconVM.png" height="55"/>
 				</div>
 				<div class="rightDetail">
-					<%= @vmTot %> VM
+					<span id="vmNum"></span> VM
 				</div>
-				<!--<div class="centerDetail">
-					<%= @vmUsed %>/<%= @vmTot %> VM in use
-				</div>
-				<div class="barPercentage">
-					<div class="orange" style="width:<%= @vmPerc %>%"><%= @vmPerc %>%</div>
-					<div class="blue" style="width:<%= 100-@vmPerc %>%">&nbsp;</div>
-					<div class="clear"></div>
-				</div>-->
 				<div class="clear"></div>
 			</div>
 			<div class="bodySection accordionPanel bigPanel">
 				<div id="world-map-vm"></div>
 			</div>
 		</div>
-				
+
 		<!--<div class="section">
 			<div class="headerSection accordionTitle">
 				<div class="leftIcon">
@@ -194,13 +109,3 @@
 				<div id="world-map-ge"></div>
 			</div>
 		</div>-->
-	</div>
-	
-  </section>
-
-</article>
-</section>
-<!--<script>
-  //un minuto
-  setInterval('window.location.reload()', 60000);
-</script>-->

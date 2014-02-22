@@ -7,6 +7,8 @@ FiLabInfographics::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'welcome#index'
+  
+  get '/status', to: 'welcome#status'
 
   scope "/api/v1" do
     scope "/region" do

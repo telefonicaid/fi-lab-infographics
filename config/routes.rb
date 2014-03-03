@@ -14,6 +14,7 @@ FiLabInfographics::Application.routes.draw do
     scope "/region" do
       get "/" => "region#getRegions"
       get "/vm" => "region#getVms"
+      get "/services" => "region#getServices"
 #       get ":region_id" => "region#getRegion"
 #       get ":region_id/vm" => "region#getVMs"
 #       get ":region_id/vm/:vm_id" => "region#getVM"

@@ -3,22 +3,22 @@ class RegionController < ApplicationController
   def performRequest (uri)
     require 'net/http'
 
-    url = URI.parse(FiLabInfographics.nodejs + "/" + uri)
+    
+    url = URI.parse(FiLabInfographics.nodejs + "/monitoring/" + uri)
     req = Net::HTTP::Get.new(url.path)
     res = Net::HTTP.start(url.host, url.port) {|http|
       http.request(req)
     }
     data = res.body
-    
+
     result = JSON.parse(data)
 #     return result ["queryContextResponse"] ["contextResponseList"]
     return result
   end
   
-  def getRegions
-    
-#     regionsData = self.performRequest('region')
-    regionsData = self.performRequest('monitoring/regions')
+  def getRegionsData
+    #     regionsData = self.performRequest('region')
+    regionsData = self.performRequest('regions')
     
     idRegions = [] 
     
@@ -49,7 +49,7 @@ class RegionController < ApplicationController
     attributes = Hash.new
     
     idRegions.each do |idRegion|
-      regionData = self.performRequest('monitoring/regions/' + idRegion)
+      regionData = self.performRequest('regions/' + idRegion)
       attributesRegion = Hash.new
       attributesRegion["id"] = regionData["id"]
       attributesRegion["name"] = regionData["name"]
@@ -70,12 +70,115 @@ class RegionController < ApplicationController
     returnData ["regions"] = attributes;
     returnData ["tot"] = totValues;
     
-    render :json => returnData.to_json
+    return returnData;
+  end
+  
+  def getRegions
+
+    regionsData = self.getRegionsData
+    render :json => regionsData.to_json
+  end
+  
+  def getServices
+    
+    regionsData = self.getRegionsData
+    
+   
+    
+    attributesRegionsServices = regionsData["regions"]
+    
+    
+    attributesRegionsServices.each do |key,regionData|
+      
+      
+      
+      servicesRegionData = self.performRequest('regions/' + regionData["id"] + '/services')
+      
+      serviceRegionData = servicesRegionData["_links"]["measures"][0]
+      
+      serviceNova = Hash.new
+      serviceNova["value"] = serviceRegionData["novaServiceStatus"]["value"];
+      serviceNova["description"] = serviceRegionData["novaServiceStatus"]["description"];
+      
+      serviceNeutron = Hash.new
+      serviceNeutron["value"] = serviceRegionData["neutronServiceStatus"]["value"];
+      serviceNeutron["description"] = serviceRegionData["neutronServiceStatus"]["description"];
+      
+      serviceCinder = Hash.new
+      serviceCinder["value"] = serviceRegionData["cinderServiceStatus"]["value"];
+      serviceCinder["description"] = serviceRegionData["cinderServiceStatus"]["description"];
+      
+      serviceGlance = Hash.new
+      serviceGlance["value"] = serviceRegionData["glanceServiceStatus"]["value"];
+      serviceGlance["description"] = serviceRegionData["glanceServiceStatus"]["description"];
+      
+      serviceIDM = Hash.new
+      serviceIDM["value"] = serviceRegionData["IDMServiceStatus"]["value"];
+      serviceIDM["description"] = serviceRegionData["IDMServiceStatus"]["description"];
+      
+      services = Hash.new
+      services["Nova"] = serviceNova;
+      services["Neutron"] = serviceNeutron;
+      services["Cinder"] = serviceCinder;
+      services["Glance"] = serviceGlance;
+      services["IdM"] = serviceIDM;
+      services["overallStatus"] = "";
+      
+      regionData["services"] = services;
+      
+#       attributesRegionsServices[regionData["id"]]["Nova"]["value"] = serviceRegionData["novaServiceStatus"]["value"];
+#       attributesRegionsServices[regionData["id"]]["Nova"]["description"] = serviceRegionData["novaServiceStatus"]["description"];
+      
+#       attributesRegionsServices[regionData["id"]]["Neutron"]["value"] = serviceRegionData["neutronServiceStatus"]["value"];
+#       attributesRegionsServices[regionData["id"]]["Neutron"]["description"] = serviceRegionData["neutronServiceStatus"]["description"];
+
+#       attributesRegionsServices[regionData["id"]]["Cinder"]["value"] = serviceRegionData["cinderServiceStatus"]["value"];
+#       attributesRegionsServices[regionData["id"]]["Cinder"]["description"] = serviceRegionData["cinderServiceStatus"]["description"];
+      
+#       attributesRegionsServices[regionData["id"]]["Glance"]["value"] = serviceRegionData["glanceServiceStatus"]["value"];
+#       attributesRegionsServices[regionData["id"]]["Glance"]["description"] = serviceRegionData["glanceServiceStatus"]["description"];
+      
+#       attributesRegionsServices[regionData["id"]]["IDM"]["value"] = serviceRegionData["IDMServiceStatus"]["value"];
+#       attributesRegionsServices[regionData["id"]]["IDM"]["description"] = serviceRegionData["IDMServiceStatus"]["description"];
+      
+      points = 0
+      if serviceRegionData["novaServiceStatus"]["value"] == "green"
+	points+=2;
+      end
+	
+      if serviceRegionData["neutronServiceStatus"]["value"] == "green"
+	points+=2;
+      end
+	
+      if serviceRegionData["cinderServiceStatus"]["value"] == "green"
+	points+=2;
+      end
+	
+      if serviceRegionData["glanceServiceStatus"]["value"] == "green" 
+	points+=2;
+      end
+	
+      if serviceRegionData["IDMServiceStatus"]["value"] == "green" 
+	points+=2;
+      end
+	
+      if points == 10 
+	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = "green";
+      elsif points <= 5 
+	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = "red";
+      elsif 
+	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = "yellow";
+      end
+
+    end
+#     puts attributesRegionsServices
+    render :json => attributesRegionsServices.to_json
+      
   end
   
   def getVms
     
-    regionsData = self.performRequest('region')
+    regionsData = self.performRequest('regions')
     
     idRegions = [] 
     
@@ -115,7 +218,7 @@ class RegionController < ApplicationController
       attributesVMs = Hash.new
       
       idVMs.each do |idVM|
-	vmRegionData = self.performRequest('region/' + idRegion + '/VM/' + idVM)
+	vmRegionData = self.performRequest('regions/' + idRegion + '/VM/' + idVM)
       
 	attributesVM = Hash.new
 

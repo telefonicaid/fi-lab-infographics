@@ -22,4 +22,8 @@ class WelcomeController < ApplicationController
     @attributesRegionsVms = "vms"
   end
   
+  def status    
+    @attributesRegionsServices = "status"
+  end
+  
 end

@@ -586,32 +586,14 @@
 	      setInterval(function(){ajaxFun()}, 10000);
 	});
 </script>
-<% else %>
+<% elsif @attributesRegionsServices != nil then %>
 <script type="text/javascript">
 
-	var selectedMarkers = [];
-	var markers = {};
-	markers["latLng"] = [46.06787, 11.12108];
-	markers["name"] = 'Trento';
-	markers["style"] = {fill: 'rgba(255,0,0,1.0)', r:5};
-	selectedMarkers.push(markers);
-	var markers = {};
-	markers["latLng"] = [52.30000, 13.25000];
-	markers["name"] = 'Berlin';
-	markers["style"] = {fill: 'rgba(0,255,0,1.0)', r:5};
-	selectedMarkers.push(markers);
-	var markers = {};
-	markers["latLng"] = [48.86667, 2.33333];
-	markers["name"] = 'Paris';
-	markers["style"] = {fill: 'rgba(255,255,0,1.0)', r:5};
-	selectedMarkers.push(markers);
-	var markers = {};
-	markers["latLng"] = [40.4, -3.68333];
-	markers["name"] = 'Madrid';
-	markers["style"] = {fill: 'rgba(0,0,0,0.5)', r:5};
-	selectedMarkers.push(markers);
+	$(document).ready(function() 
+	{
+		var selectedMarkers = [];
 		
-	var mapNodes = new jvm.WorldMap({
+		var mapNodes = new jvm.WorldMap({
 		container: $('#world-map-nodes'),
 		map: 'world_mill_en',
 		regionStyle: {
@@ -639,7 +621,7 @@
  		},
  		onMarkerClick: function(events, index) {
 // 		    alert(selectedMarkers[index].name);
-		    var aTag = $("a[name='tableNodes']");
+		    var aTag = $("a[name='"+selectedMarkers[index].name+"']");
 		    $('html,body').animate({scrollTop: aTag.offset().top},'slow');
 		    $('.field-service').css('text-weight','normal');
 		    $('.field-service').css('color','#8C8C8C');
@@ -659,97 +641,251 @@
 		}	*/		     
 
 		});
-
-		
-		mapNodes.addMarkers(selectedMarkers);
 		
 		$('#world-map-nodes').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
 		
-	
-		$(".row-message").hide();
-		$('.field-group-federation').click( function()
-		{
-			var $image = $(this).children();
-			if( $image.hasClass('collapse' ) )
-			{
-				$image.removeClass('collapse' );
-				$image.addClass('expand' );
-			}
-			else
-			{
-				$image.removeClass('expand' );
-				$image.addClass('collapse' );
-			}
-			var $parent = $(this).parent();
-			
-			var $message = $parent.next(".row-message");
-			$message.slideToggle(function()
-			{
-				if( $parent.hasClass('row-status-closed' ) )
-				{
-					$parent.removeClass('row-status-closed' );
-					$parent.addClass('row-status-opened' );
-				}
-				else
-				{
-					$parent.removeClass('row-status-opened' );
-					$parent.addClass('row-status-closed' );
-				}
-			});
-		});
-		$('.field-group-expand').click( function()
-		{
-			var $image = $(this).children();
-			if( $image.hasClass('collapse' ) )
-			{
-				$image.removeClass('collapse' );
-				$image.addClass('expand' );
-			}
-			else
-			{
-				$image.removeClass('expand' );
-				$image.addClass('collapse' );
-			}
-			var $parent = $(this).parent();
-			
-			var $message = $parent.next(".row-message");
-			$message.slideToggle(function()
-			{
-				if( $parent.hasClass('row-status-closed' ) )
-				{
-					$parent.removeClass('row-status-closed' );
-					$parent.addClass('row-status-opened' );
-				}
-				else
-				{
-					$parent.removeClass('row-status-opened' );
-					$parent.addClass('row-status-closed' );
-				}
-			});
-		});
 		
-		$('#popupDialog').dialog({
-		    closeOnEscape: true,
-		    resizable: false,
-		    modal: true,
-		    autoOpen: false,
-		    autoResize: true,
-		    buttons: {
-			  'Cancel': function() {
-				      $(this).dialog('close');
-				    },
-			  'Send': function() {
-// 				      $('#mainForm input#target').val( $(this).find('#widgetName').val() );
-				      $(this).dialog('close');
-				    }
-			},
-		    open: function () {
-			$(".ui-dialog-titlebar-close").hide();
-                        $(this).parents(".ui-dialog:first").css('background-color','#006699');
-                        $(this).parents(".ui-dialog:first").css('color','white');
-                        $(this).parents(".ui-dialog:first").css('padding','15px');
-                        $(this).parents(".ui-dialog:first").css('text-align','center');
-			}
-		});
+		function ajaxFun() { $.ajax (
+			  {
+				type: "GET",
+				url: "../api/v1/region/services",
+				contentType: "application/json; charset=utf-8",
+				data: {},
+				dataType: "json",
+				cache: false,
+				success: function(json){
+				
+					var allHeaders = "";
+					var allRows = "";
+					var servicesNames = Object.keys(json[Object.keys(json)[0]]["services"]);//I will get Nova,Cinder,...
+					$.each(json, function(idRegion, regionAttributes) {
+						if(idRegion != null && regionAttributes != null)
+						{
+							var markers = {};
+							markers["latLng"] =  [parseFloat(regionAttributes['latitude']),parseFloat(regionAttributes['longitude'])];
+							markers["name"] = idRegion;
+							var statusColor;
+							if(regionAttributes["services"]['overallStatus']=="red") statusColor = 'rgba(255,0,0,1.0)';
+							else if(regionAttributes["services"]['overallStatus']=="green") statusColor = 'rgba(0,255,0,1.0)';
+							else if(regionAttributes["services"]['overallStatus']=="yellow") statusColor = 'rgba(255,255,0,1.0)';
+							else if(regionAttributes["services"]['overallStatus']=="gray") statusColor = 'rgba(0,0,0,0.5)';
+							
+							markers["style"] = {fill: statusColor, r:5};
+							selectedMarkers.push(markers);
+							
+							
+							var allSubRows = "";
+							
+// 							$.each(regionAttributes["services"], function(serviceName, valSub) {
+// 								if(serviceName != null && valSub != null)
+// 								{
+// 									console.log(serviceName);
+// 									var colorValue = valSub["value"];
+// 									var colorPng = colorValue + "light.png";
+// 									
+// 									if(serviceName == "overallStatus")
+// 									{
+// 										var colorValue = valSub;
+// 										var colorPng = colorValue + "light.png";
+// 										allSubRows = "<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>" + allSubRows;
+// 									}
+// 									
+// 									
+// 									else allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+// 									
+// 								}
+// 							});
+							
+							
+							
+							var colorValueOverall = regionAttributes["services"]["overallStatus"];
+							var colorPng = colorValueOverall + "light.png";
+							allSubRows = "<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>" + allSubRows;
+							
+							
+// 							console.log(servicesNames);
+							$.each(servicesNames, function( index, value ) {
+								if(value != "overallStatus")
+								{
+									colorPng = regionAttributes["services"][value]["value"]+"light.png";
+									allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+								}
+							});
+							
+							
+							
+							
+							
+							allRows = allRows + "<DIV CLASS='status-row row-status-service row-status-closed'>"+
+								"<DIV CLASS='field field-group field-group-expand'>"+
+									"<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>"+
+								"</DIV>"+"<a name=\""+idRegion+"\"></a>"+
+								"<DIV CLASS='field field-service field-service-node "+idRegion+"'>"+idRegion+"</DIV>"+
+								
+								allSubRows+
+								
+								"<DIV CLASS='field field-service field-service-status-support'>"+
+									"<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"$('#popupDialog').dialog('open');\"/>"+
+									"<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"alert('go to jira');\"/>"+
+								"</DIV>"+			
+							"</DIV>"+
+							"<DIV CLASS='row-message'>"+
+								"No messages"+
+							"</DIV>";
+						}
+						
+						var allSubHeaders = "";
+						$.each(servicesNames, function( index, value ) {
+							if(value != "overallStatus")
+							{
+								allSubHeaders = allSubHeaders + "<DIV CLASS='field field-header field-header-service'>"+value+"</DIV>";
+							}
+						});
+							
+						allHeaders = "<DIV CLASS='field field-header field-header-node'>Node</DIV>"+
+						"<DIV CLASS='field field-header field-header-overall'>Overall</DIV>"+
+						
+						allSubHeaders+
+						
+						"<DIV CLASS='field field-header field-header-support'>Support</DIV>";
+						
+						$('#tableHeaderContent').html(allHeaders);
+						$('#tableContent').html(allRows);
+					});
+					
+					mapNodes.removeAllMarkers();
+					mapNodes.addMarkers(selectedMarkers);
+					
+					$(".row-message").hide();
+					$('.field-group-federation').click( function()
+					{
+						var $image = $(this).children();
+						if( $image.hasClass('collapse' ) )
+						{
+							$image.removeClass('collapse' );
+							$image.addClass('expand' );
+						}
+						else
+						{
+							$image.removeClass('expand' );
+							$image.addClass('collapse' );
+						}
+						var $parent = $(this).parent();
+						
+						var $message = $parent.next(".row-message");
+						$message.slideToggle(function()
+						{
+							if( $parent.hasClass('row-status-closed' ) )
+							{
+								$parent.removeClass('row-status-closed' );
+								$parent.addClass('row-status-opened' );
+							}
+							else
+							{
+								$parent.removeClass('row-status-opened' );
+								$parent.addClass('row-status-closed' );
+							}
+						});
+					});
+					$('.field-group-expand').click( function()
+					{
+						var $image = $(this).children();
+						if( $image.hasClass('collapse' ) )
+						{
+							$image.removeClass('collapse' );
+							$image.addClass('expand' );
+						}
+						else
+						{
+							$image.removeClass('expand' );
+							$image.addClass('collapse' );
+						}
+						var $parent = $(this).parent();
+						
+						var $message = $parent.next(".row-message");
+						$message.slideToggle(function()
+						{
+							if( $parent.hasClass('row-status-closed' ) )
+							{
+								$parent.removeClass('row-status-closed' );
+								$parent.addClass('row-status-opened' );
+							}
+							else
+							{
+								$parent.removeClass('row-status-opened' );
+								$parent.addClass('row-status-closed' );
+							}
+						});
+					});
+					
+					$('#popupDialog').dialog({
+					    closeOnEscape: true,
+					    resizable: false,
+					    modal: true,
+					    autoOpen: false,
+					    autoResize: true,
+					    buttons: {
+						  'Cancel': function() {
+							      $(this).dialog('close');
+							    },
+						  'Send': function() {
+			// 				      $('#mainForm input#target').val( $(this).find('#widgetName').val() );
+							      $(this).dialog('close');
+							    }
+						},
+					    open: function () {
+						$(".ui-dialog-titlebar-close").hide();
+						$(this).parents(".ui-dialog:first").css('background-color','#006699');
+						$(this).parents(".ui-dialog:first").css('color','white');
+						$(this).parents(".ui-dialog:first").css('padding','15px');
+						$(this).parents(".ui-dialog:first").css('text-align','center');
+						}
+					});
+				}
+			   }
+			    
+		)};
+
+	      //Chiamo il mio ajax la prima volta
+	      ajaxFun();
+	      //e poi lo richiamo dopo 30 secondi
+	      setInterval(function(){ajaxFun()}, 30000);
+	});
+			    
+			    
+			    
+			    
+			    
+/*	
+	var markers = {};
+	markers["latLng"] = [46.06787, 11.12108];
+	markers["name"] = 'Trento';
+	markers["style"] = {fill: 'rgba(255,0,0,1.0)', r:5};
+	selectedMarkers.push(markers);
+	var markers = {};
+	markers["latLng"] = [52.30000, 13.25000];
+	markers["name"] = 'Berlin';
+	markers["style"] = {fill: 'rgba(0,255,0,1.0)', r:5};
+	selectedMarkers.push(markers);
+	var markers = {};
+	markers["latLng"] = [48.86667, 2.33333];
+	markers["name"] = 'Paris';
+	markers["style"] = {fill: 'rgba(255,255,0,1.0)', r:5};
+	selectedMarkers.push(markers);
+	var markers = {};
+	markers["latLng"] = [40.4, -3.68333];
+	markers["name"] = 'Madrid';
+	markers["style"] = {fill: 'rgba(0,0,0,0.5)', r:5};
+	selectedMarkers.push(markers);
+		
+	
+
+		
+		mapNodes.addMarkers(selectedMarkers);
+		*/
+		
+		
+	
+		
 </script>
 <% end %>

@@ -44,11 +44,17 @@
 							    "fill-opacity": 0.8
 							  },
 							  selected: {
-								fill: 'orange'
+								fill: '#0071A4'
 							  },
 							  selectedHover: {
 							  }
-						}
+						},
+			markerStyle: {
+			      initial: {
+				fill: '#ff9900',
+				stroke: '#383f47'
+			      }
+			}
 
 		});
 
@@ -231,6 +237,7 @@
 			      var nRegions = parseInt(json['tot']['total_regions_count']);
 
 			      var selectedRegions = [];
+			      var selectedMarkers = [];
 			      var selectedRegionsCpu = [];
 			      var selectedMarkersCpu = [];
 			      var selectedRegionsRam = [];
@@ -257,6 +264,12 @@
 
 				if(this['latitude'] != "" && this['longitude'] != "")
 				{
+				    var marker = {};
+				    marker["latLng"] = [];
+				    marker["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
+				    marker["name"] = this['name'];
+				    selectedMarkers.push(marker);
+				    
 				    var markerCpu = {};
 				    markerCpu["latLng"] = [];
 				    markerCpu["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
@@ -344,6 +357,9 @@
 
 			      map.clearSelectedRegions();
 			      map.setSelectedRegions(selectedRegions);
+			      
+			      map.removeAllMarkers();
+			      map.addMarkers(selectedMarkers);
 
 			      mapCpu.series.regions[0].clear();
 // 			      mapCpux.series.regions[0].params['min'] = 64;
@@ -392,6 +408,9 @@
 
 			    },
 			    error: function(xhr, textStatus, errorThrown){
+				$('#bigMen').html("&nbsp;");
+				$('#mediumMen').html("&nbsp;");
+				$('#smallMen').html("<%= FiLabInfographics.nodata %>");
 // 				alert('request failed->'+textStatus);
 // 				console.log(xhr.status + ' ' + textStatus + ' ' + errorThrown);
 			    } 
@@ -841,7 +860,12 @@
 						$(this).parents(".ui-dialog:first").css('text-align','center');
 						}
 					});
-				}
+				},
+				error: function(xhr, textStatus, errorThrown){
+				    $('#tableHeaderContent').html("<DIV CLASS='field field-header field-header-node'><%= FiLabInfographics.nodata %></DIV>");
+    // 				alert('request failed->'+textStatus);
+    // 				console.log(xhr.status + ' ' + textStatus + ' ' + errorThrown);
+				} 
 			   }
 			    
 		)};

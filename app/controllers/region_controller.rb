@@ -130,16 +130,16 @@ class RegionController < ApplicationController
 	serviceRegionData = servicesRegionData["measures"][0]
 	
 	if serviceRegionData["novaServiceStatus"] != nil
-	  if serviceRegionData["novaServiceStatus"]["value"] != nil
+	  if serviceRegionData["novaServiceStatus"]["value"] != nil && serviceRegionData["novaServiceStatus"]["value"] != "undefined"
 	    serviceNova["value"] = serviceRegionData["novaServiceStatus"]["value"];
 	  end
-	  if serviceRegionData["novaServiceStatus"]["description"] != nil
+	  if serviceRegionData["novaServiceStatus"]["description"] != nil 
 	    serviceNova["description"] = serviceRegionData["novaServiceStatus"]["description"];
 	  end
 	end
 	
 	if serviceRegionData["neutronServiceStatus"] != nil
-	  if serviceRegionData["neutronServiceStatus"]["value"] != nil
+	  if serviceRegionData["neutronServiceStatus"]["value"] != nil && serviceRegionData["neutronServiceStatus"]["value"] != "undefined"
 	    serviceNeutron["value"] = serviceRegionData["neutronServiceStatus"]["value"];
 	  end
 	  if serviceRegionData["neutronServiceStatus"]["description"] != nil
@@ -148,7 +148,7 @@ class RegionController < ApplicationController
 	end
 	
 	if serviceRegionData["cinderServiceStatus"] != nil
-	  if serviceRegionData["cinderServiceStatus"]["value"] != nil
+	  if serviceRegionData["cinderServiceStatus"]["value"] != nil && serviceRegionData["cinderServiceStatus"]["value"] != "undefined"
 	    serviceCinder["value"] = serviceRegionData["cinderServiceStatus"]["value"];
 	  end
 	  if serviceRegionData["cinderServiceStatus"]["description"] != nil
@@ -158,7 +158,7 @@ class RegionController < ApplicationController
 	
 	
 	if serviceRegionData["glanceServiceStatus"] != nil
-	  if serviceRegionData["glanceServiceStatus"]["value"] != nil
+	  if serviceRegionData["glanceServiceStatus"]["value"] != nil && serviceRegionData["glanceServiceStatus"]["value"] != "undefined"
 	    serviceGlance["value"] = serviceRegionData["glanceServiceStatus"]["value"];
 	  end
 	  if serviceRegionData["glanceServiceStatus"]["description"] != nil
@@ -178,7 +178,7 @@ class RegionController < ApplicationController
 	
 	
 	if serviceRegionData["OverallStatus"] != nil
-	  if serviceRegionData["OverallStatus"]["value"] != nil
+	  if serviceRegionData["OverallStatus"]["value"] != nil && serviceRegionData["OverallStatus"]["value"] != "undefined"
 	    serviceOverall["value"] = serviceRegionData["OverallStatus"]["value"];
 	  end
 	  if serviceRegionData["OverallStatus"]["description"] != nil

@@ -123,12 +123,11 @@ class RegionController < ApplicationController
       serviceOverall["value"] = "gray";
       serviceOverall["description"] = "No Messages";
 	
-      if servicesRegionData != nil && 
-	  servicesRegionData["_links"] != nil && 
-	  servicesRegionData["_links"]["measures"] != nil && 
-	  servicesRegionData["_links"]["measures"][0] != nil
+      if servicesRegionData != nil &&  
+	  servicesRegionData["measures"] != nil && 
+	  servicesRegionData["measures"][0] != nil
 	
-	serviceRegionData = servicesRegionData["_links"]["measures"][0]
+	serviceRegionData = servicesRegionData["measures"][0]
 	
 	if serviceRegionData["novaServiceStatus"] != nil
 	  if serviceRegionData["novaServiceStatus"]["value"] != nil
@@ -169,7 +168,7 @@ class RegionController < ApplicationController
 	
 	
 	if serviceRegionData["IDMServiceStatus"] != nil
-	  if serviceRegionData["IDMServiceStatus"]["value"] != nil
+	  if serviceRegionData["IDMServiceStatus"]["value"] != nil && serviceRegionData["IDMServiceStatus"]["value"] != "undefined"
 	    serviceIDM["value"] = serviceRegionData["IDMServiceStatus"]["value"];
 	  end
 	  if serviceRegionData["IDMServiceStatus"]["description"] != nil

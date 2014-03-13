@@ -23,6 +23,8 @@
 <script type="text/javascript">
 	$(document).ready(function() 
 	{
+		$('.status').removeClass('active');
+		$('.infographic').addClass('active');
 		/** =================================================================
 		*  Map
 		**/
@@ -610,6 +612,10 @@
 
 	$(document).ready(function() 
 	{
+		$('.infographic').removeClass('active');
+		$('.status').addClass('active');
+		
+		
 		var selectedMarkers = [];
 		
 		var mapNodes = new jvm.WorldMap({

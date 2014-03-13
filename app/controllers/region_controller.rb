@@ -94,27 +94,100 @@ class RegionController < ApplicationController
       
       servicesRegionData = self.performRequest('regions/' + regionData["id"] + '/services')
       
-      serviceRegionData = servicesRegionData["_links"]["measures"][0]
-      
       serviceNova = Hash.new
-      serviceNova["value"] = serviceRegionData["novaServiceStatus"]["value"];
-      serviceNova["description"] = serviceRegionData["novaServiceStatus"]["description"];
-      
       serviceNeutron = Hash.new
-      serviceNeutron["value"] = serviceRegionData["neutronServiceStatus"]["value"];
-      serviceNeutron["description"] = serviceRegionData["neutronServiceStatus"]["description"];
-      
       serviceCinder = Hash.new
-      serviceCinder["value"] = serviceRegionData["cinderServiceStatus"]["value"];
-      serviceCinder["description"] = serviceRegionData["cinderServiceStatus"]["description"];
-      
       serviceGlance = Hash.new
-      serviceGlance["value"] = serviceRegionData["glanceServiceStatus"]["value"];
-      serviceGlance["description"] = serviceRegionData["glanceServiceStatus"]["description"];
-      
       serviceIDM = Hash.new
-      serviceIDM["value"] = serviceRegionData["IDMServiceStatus"]["value"];
-      serviceIDM["description"] = serviceRegionData["IDMServiceStatus"]["description"];
+      serviceOverall = Hash.new
+      
+      serviceNova["value"] = "gray";
+      serviceNova["description"] = "";
+      
+      
+      serviceNeutron["value"] = "gray";
+      serviceNeutron["description"] = "";
+      
+      
+      serviceCinder["value"] = "gray";
+      serviceCinder["description"] = "";
+      
+      
+      serviceGlance["value"] = "gray";
+      serviceGlance["description"] = "";
+      
+      
+      serviceIDM["value"] = "gray";
+      serviceIDM["description"] = "";
+      
+      serviceOverall["value"] = "gray";
+      serviceOverall["description"] = "No Messages";
+	
+      if servicesRegionData != nil && 
+	  servicesRegionData["_links"] != nil && 
+	  servicesRegionData["_links"]["measures"] != nil && 
+	  servicesRegionData["_links"]["measures"][0] != nil
+	
+	serviceRegionData = servicesRegionData["_links"]["measures"][0]
+	
+	if serviceRegionData["novaServiceStatus"] != nil
+	  if serviceRegionData["novaServiceStatus"]["value"] != nil
+	    serviceNova["value"] = serviceRegionData["novaServiceStatus"]["value"];
+	  end
+	  if serviceRegionData["novaServiceStatus"]["description"] != nil
+	    serviceNova["description"] = serviceRegionData["novaServiceStatus"]["description"];
+	  end
+	end
+	
+	if serviceRegionData["neutronServiceStatus"] != nil
+	  if serviceRegionData["neutronServiceStatus"]["value"] != nil
+	    serviceNeutron["value"] = serviceRegionData["neutronServiceStatus"]["value"];
+	  end
+	  if serviceRegionData["neutronServiceStatus"]["description"] != nil
+	    serviceNeutron["description"] = serviceRegionData["neutronServiceStatus"]["description"];
+	  end
+	end
+	
+	if serviceRegionData["cinderServiceStatus"] != nil
+	  if serviceRegionData["cinderServiceStatus"]["value"] != nil
+	    serviceCinder["value"] = serviceRegionData["cinderServiceStatus"]["value"];
+	  end
+	  if serviceRegionData["cinderServiceStatus"]["description"] != nil
+	    serviceCinder["description"] = serviceRegionData["cinderServiceStatus"]["description"];
+	  end
+	end
+	
+	
+	if serviceRegionData["glanceServiceStatus"] != nil
+	  if serviceRegionData["glanceServiceStatus"]["value"] != nil
+	    serviceGlance["value"] = serviceRegionData["glanceServiceStatus"]["value"];
+	  end
+	  if serviceRegionData["glanceServiceStatus"]["description"] != nil
+	    serviceGlance["description"] = serviceRegionData["glanceServiceStatus"]["description"];
+	  end
+	end
+	
+	
+	if serviceRegionData["IDMServiceStatus"] != nil
+	  if serviceRegionData["IDMServiceStatus"]["value"] != nil
+	    serviceIDM["value"] = serviceRegionData["IDMServiceStatus"]["value"];
+	  end
+	  if serviceRegionData["IDMServiceStatus"]["description"] != nil
+	    serviceIDM["description"] = serviceRegionData["IDMServiceStatus"]["description"];
+	  end
+	end
+	
+	
+	if serviceRegionData["OverallStatus"] != nil
+	  if serviceRegionData["OverallStatus"]["value"] != nil
+	    serviceOverall["value"] = serviceRegionData["OverallStatus"]["value"];
+	  end
+	  if serviceRegionData["OverallStatus"]["description"] != nil
+	    serviceOverall["description"] = serviceRegionData["OverallStatus"]["description"];
+	  end
+	end
+	
+      end
       
       services = Hash.new
       services["Nova"] = serviceNova;
@@ -122,7 +195,7 @@ class RegionController < ApplicationController
       services["Cinder"] = serviceCinder;
       services["Glance"] = serviceGlance;
       services["IdM"] = serviceIDM;
-      services["overallStatus"] = "";
+      services["overallStatus"] = serviceOverall;
       
       regionData["services"] = services;
       
@@ -141,34 +214,34 @@ class RegionController < ApplicationController
 #       attributesRegionsServices[regionData["id"]]["IDM"]["value"] = serviceRegionData["IDMServiceStatus"]["value"];
 #       attributesRegionsServices[regionData["id"]]["IDM"]["description"] = serviceRegionData["IDMServiceStatus"]["description"];
       
-      points = 0
-      if serviceRegionData["novaServiceStatus"]["value"] == "green"
-	points+=2;
-      end
-	
-      if serviceRegionData["neutronServiceStatus"]["value"] == "green"
-	points+=2;
-      end
-	
-      if serviceRegionData["cinderServiceStatus"]["value"] == "green"
-	points+=2;
-      end
-	
-      if serviceRegionData["glanceServiceStatus"]["value"] == "green" 
-	points+=2;
-      end
-	
-      if serviceRegionData["IDMServiceStatus"]["value"] == "green" 
-	points+=2;
-      end
-	
-      if points == 10 
-	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = "green";
-      elsif points <= 5 
-	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = "red";
-      elsif 
-	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = "yellow";
-      end
+#       points = 0
+#       if serviceRegionData["novaServiceStatus"]["value"] == "green"
+# 	points+=2;
+#       end
+# 	
+#       if serviceRegionData["neutronServiceStatus"]["value"] == "green"
+# 	points+=2;
+#       end
+# 	
+#       if serviceRegionData["cinderServiceStatus"]["value"] == "green"
+# 	points+=2;
+#       end
+# 	
+#       if serviceRegionData["glanceServiceStatus"]["value"] == "green" 
+# 	points+=2;
+#       end
+# 	
+#       if serviceRegionData["IDMServiceStatus"]["value"] == "green" 
+# 	points+=2;
+#       end
+# 	
+#       if points == 10 
+# 	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = "green";
+#       elsif points <= 5 
+# 	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = "red";
+#       elsif 
+# 	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = "yellow";
+#       end
 
     end
 #     puts attributesRegionsServices

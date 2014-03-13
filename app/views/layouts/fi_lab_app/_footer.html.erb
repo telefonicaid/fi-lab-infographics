@@ -677,6 +677,8 @@
 					var allHeaders = "";
 					var allRows = "";
 					var servicesNames = Object.keys(json[Object.keys(json)[0]]["services"]);//I will get Nova,Cinder,...
+					selectedMarkers = [];
+					
 					$.each(json, function(idRegion, regionAttributes) {
 						if(idRegion != null && regionAttributes != null)
 						{
@@ -684,10 +686,10 @@
 							markers["latLng"] =  [parseFloat(regionAttributes['latitude']),parseFloat(regionAttributes['longitude'])];
 							markers["name"] = idRegion;
 							var statusColor;
-							if(regionAttributes["services"]['overallStatus']=="red") statusColor = 'rgba(255,0,0,1.0)';
-							else if(regionAttributes["services"]['overallStatus']=="green") statusColor = 'rgba(0,255,0,1.0)';
-							else if(regionAttributes["services"]['overallStatus']=="yellow") statusColor = 'rgba(255,255,0,1.0)';
-							else if(regionAttributes["services"]['overallStatus']=="gray") statusColor = 'rgba(0,0,0,0.5)';
+							if(regionAttributes["services"]['overallStatus']['value']=="red") statusColor = 'rgba(255,0,0,1.0)';
+							else if(regionAttributes["services"]['overallStatus']['value']=="green") statusColor = 'rgba(0,255,0,1.0)';
+							else if(regionAttributes["services"]['overallStatus']['value']=="yellow") statusColor = 'rgba(255,255,0,1.0)';
+							else if(regionAttributes["services"]['overallStatus']['value']=="gray") statusColor = 'rgba(0,0,0,0.5)';
 							
 							markers["style"] = {fill: statusColor, r:5};
 							selectedMarkers.push(markers);
@@ -717,7 +719,7 @@
 							
 							
 							
-							var colorValueOverall = regionAttributes["services"]["overallStatus"];
+							var colorValueOverall = regionAttributes["services"]["overallStatus"]['value'];
 							var colorPng = colorValueOverall + "light.png";
 							allSubRows = "<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>" + allSubRows;
 							
@@ -749,7 +751,7 @@
 								"</DIV>"+			
 							"</DIV>"+
 							"<DIV CLASS='row-message'>"+
-								"No messages"+
+								regionAttributes["services"]["overallStatus"]['description']+
 							"</DIV>";
 						}
 						

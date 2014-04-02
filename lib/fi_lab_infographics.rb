@@ -1,7 +1,7 @@
 module FiLabInfographics
   mattr_accessor :nodejs
   mattr_accessor :nodata
-  @@nodejs = 'http://192.168.1.100:80' 
+  @@nodejs = 'http://127.0.01:1336' 
   @@nodata = 'No Data'
 
   class << self

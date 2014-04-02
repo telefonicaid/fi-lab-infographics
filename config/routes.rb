@@ -9,7 +9,7 @@ FiLabInfographics::Application.routes.draw do
   root 'welcome#index'
   
   get '/status', to: 'welcome#status'
-  get '/nam' => redirect('http://138.4.47.33:5000/')
+#  get '/nam' => redirect('http://138.4.47.33:5000/')
   
   scope "/api/v1" do
     scope "/region" do

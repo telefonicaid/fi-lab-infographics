@@ -98,7 +98,7 @@ class RegionController < ApplicationController
       serviceNeutron = Hash.new
       serviceCinder = Hash.new
       serviceGlance = Hash.new
-      serviceIDM = Hash.new
+      serviceKP = Hash.new
       serviceOverall = Hash.new
       
       serviceNova["value"] = "gray";
@@ -117,8 +117,8 @@ class RegionController < ApplicationController
       serviceGlance["description"] = "";
       
       
-      serviceIDM["value"] = "gray";
-      serviceIDM["description"] = "";
+      serviceKP["value"] = "gray";
+      serviceKP["description"] = "";
       
       serviceOverall["value"] = "gray";
       serviceOverall["description"] = "No Messages";
@@ -167,12 +167,12 @@ class RegionController < ApplicationController
 	end
 	
 	
-	if serviceRegionData["IDMServiceStatus"] != nil
-	  if serviceRegionData["IDMServiceStatus"]["value"] != nil && serviceRegionData["IDMServiceStatus"]["value"] != "undefined"
-	    serviceIDM["value"] = serviceRegionData["IDMServiceStatus"]["value"];
+	if serviceRegionData["KPServiceStatus"] != nil
+	  if serviceRegionData["KPServiceStatus"]["value"] != nil && serviceRegionData["KPServiceStatus"]["value"] != "undefined"
+	    serviceKP["value"] = serviceRegionData["KPServiceStatus"]["value"];
 	  end
-	  if serviceRegionData["IDMServiceStatus"]["description"] != nil
-	    serviceIDM["description"] = serviceRegionData["IDMServiceStatus"]["description"];
+	  if serviceRegionData["KPServiceStatus"]["description"] != nil
+	    serviceKP["description"] = serviceRegionData["KPServiceStatus"]["description"];
 	  end
 	end
 	
@@ -193,7 +193,7 @@ class RegionController < ApplicationController
       services["Neutron"] = serviceNeutron;
       services["Cinder"] = serviceCinder;
       services["Glance"] = serviceGlance;
-      services["IdM"] = serviceIDM;
+      services["Keystone P."] = serviceKP;
       services["overallStatus"] = serviceOverall;
       
       regionData["services"] = services;
@@ -210,8 +210,8 @@ class RegionController < ApplicationController
 #       attributesRegionsServices[regionData["id"]]["Glance"]["value"] = serviceRegionData["glanceServiceStatus"]["value"];
 #       attributesRegionsServices[regionData["id"]]["Glance"]["description"] = serviceRegionData["glanceServiceStatus"]["description"];
       
-#       attributesRegionsServices[regionData["id"]]["IDM"]["value"] = serviceRegionData["IDMServiceStatus"]["value"];
-#       attributesRegionsServices[regionData["id"]]["IDM"]["description"] = serviceRegionData["IDMServiceStatus"]["description"];
+#       attributesRegionsServices[regionData["id"]]["IDM"]["value"] = serviceRegionData["KPServiceStatus"]["value"];
+#       attributesRegionsServices[regionData["id"]]["IDM"]["description"] = serviceRegionData["KPServiceStatus"]["description"];
       
 #       points = 0
 #       if serviceRegionData["novaServiceStatus"]["value"] == "green"
@@ -230,7 +230,7 @@ class RegionController < ApplicationController
 # 	points+=2;
 #       end
 # 	
-#       if serviceRegionData["IDMServiceStatus"]["value"] == "green" 
+#       if serviceRegionData["KPServiceStatus"]["value"] == "green" 
 # 	points+=2;
 #       end
 # 	

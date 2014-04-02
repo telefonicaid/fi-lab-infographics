@@ -14,3 +14,10 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+# Ignore local configurations
+/config/initializers/0filab.rb
+/config/initializers/0infographics.rb 
+
+# Ignore cache
+/Gemfile.lock

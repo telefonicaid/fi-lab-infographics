@@ -2,15 +2,24 @@ class RegionController < ApplicationController
   
   def performRequest (uri)
     require 'net/http'
-
+    require 'timeout'
+    require 'logger'
     
     url = URI.parse(FiLabInfographics.nodejs + "/monitoring/" + uri)
     req = Net::HTTP::Get.new(url.path)
-    res = Net::HTTP.start(url.host, url.port) {|http|
-      http.request(req)
-    }
-    data = res.body
 
+Logger.info('request');
+
+   res = Net::HTTP.start(url.host, url.port) { |http| 
+     http.request(req) 
+   } 
+  
+  Logger.error(data);   
+
+  data = res.body
+
+ Logger.error(data);
+ 
     result = JSON.parse(data)
 #     return result ["queryContextResponse"] ["contextResponseList"]
     return result

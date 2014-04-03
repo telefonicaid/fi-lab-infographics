@@ -6,13 +6,18 @@ body {
 	clear: both;
 }
 
-#content {
-	width: 585px;/*716px;
-	margin: 0 auto;*/
+section.infographic {
+        margin-top: 10px;
+        width: 535px;
+        display: inline-block;
+}
+
+section.partners {
+        margin-top: 10px;
+        display: inline-block;
 }
 
 .title {
-	font-family: "Share Tech", sans-serif;
 	color: #006699;
 	font-size: 20px;
 	font-weight: bold;
@@ -21,7 +26,6 @@ body {
 
 /*welcome page*/
 .section {
-  font-family: "Share Tech", sans-serif;
   font-size: 16px;
 }
 
@@ -286,4 +290,24 @@ body {
 {
 	width:74px;
 	text-align:center;
+}
+
+section.media-1 h3 {
+    font-family: "NeoTech-Regular";
+    margin-bottom: 4px;
+    color: #60c1cf;
+    margin:0 0 5px
+}
+
+section.media-1 {
+    background-color: #E2E2E2;
+    margin-top: 18px;
+    font-size: 12px;
+    padding:10px 25px 5px 25px;
+-moz-border-top-right-radius: 6px;
+-webkit-border-top-right-radius: 6px;
+border-top-right-radius: 6px;
+-moz-border-top-left-radius: 6px;
+-webkit-border-top-left-radius: 6px;
+border-top-left-radius: 6px;
 }

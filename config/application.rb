@@ -23,5 +23,7 @@ module FiLabInfographics
     # config.i18n.default_locale = :de
     config.assets.initialize_on_precompile = true
     config.assets.enabled = true
+   
+    config.assets.paths << Rails.root.join("app", "assets", "stylesheets", "fi_lab_app", "fonts")
   end
 end

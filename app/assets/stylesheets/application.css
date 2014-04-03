@@ -10,4 +10,6 @@
  *
  *= require_self
  *= require_tree .
+ *= require xifi
+ *= require jquery-jvectormap-1.2.2
  */

@@ -1,3 +1,10 @@
+class CustomException < Exception
+  attr_accessor :data
+  def initialize(data)
+    @data = data
+  end
+end
+
 class RegionController < ApplicationController
   
   def performRequest (uri)
@@ -6,93 +13,135 @@ class RegionController < ApplicationController
     require 'logger'
     
     url = URI.parse(FiLabInfographics.nodejs + "/monitoring/" + uri)
-    req = Net::HTTP::Get.new(url.path)
+    req = Net::HTTP.new(url.host, url.port)
+    
+    req.open_timeout = FiLabInfographics.timeout
+    req.read_timeout = FiLabInfographics.timeout
+    
+    begin
+      res = req.get(url.path)
+    rescue Timeout::Error
+      raise CustomException.new("timeout")
+    end
+# Logger.info('request');
 
-Logger.info('request');
-
-   res = Net::HTTP.start(url.host, url.port) { |http| 
-     http.request(req) 
-   } 
+#    res = Net::HTTP.start(url.host, url.port) { |http| 
+#      http.request(req) 
+#    } 
   
-  Logger.error(data);   
-
-  data = res.body
-
- Logger.error(data);
- 
+#     begin
+#       res = Net::HTTP.start(url.host, url.port) {|http|
+#       http.request(req)
+#       }
+#     rescue Net::OpenTimeout => e
+# 	puts "-----------------"+e.message+"------------------------"
+# 	raise e.message
+#     end
+#   Logger.error(data);   
+    
+    data = res.body    
     result = JSON.parse(data)
-#     return result ["queryContextResponse"] ["contextResponseList"]
     return result
+
+#  Logger.error(data);
+ 
+    
+#     return result ["queryContextResponse"] ["contextResponseList"]
+    
   end
   
   def getRegionsData
     #     regionsData = self.performRequest('region')
     regionsData = self.performRequest('regions')
     
-    idRegions = [] 
+    if regionsData != nil
     
-#     regionsData.each do |contextElementResponse|
-#       contextElementResponse["contextElementResponse"].each do |contextElement|   
-# 	contextElement["contextElement"].each do |entityId|
-# 	  entityId["entityId"].each do |id|
-# 	    id["id"].each do |idRegion|
-# 	      idRegions.push(idRegion)
-# 	    end
-# 	  end
-# 	end
-#       end
-#     end
+      idRegions = [] 
+      
+  #     regionsData.each do |contextElementResponse|
+  #       contextElementResponse["contextElementResponse"].each do |contextElement|   
+  # 	contextElement["contextElement"].each do |entityId|
+  # 	  entityId["entityId"].each do |id|
+  # 	    id["id"].each do |idRegion|
+  # 	      idRegions.push(idRegion)
+  # 	    end
+  # 	  end
+  # 	end
+  #       end
+  #     end
 
-    regionsData["_embedded"]["regions"].each do |region|
-	      idRegions.push(region["id"])
+      regionsData["_embedded"]["regions"].each do |region|
+		idRegions.push(region["id"])
+      end
+      
+      totValues = Hash.new
+      
+      totValues["total_nb_users"] = regionsData["total_nb_users"];
+      totValues["total_nb_organizations"] = regionsData["total_nb_organizations"];
+      totValues["total_nb_cores"] = regionsData["total_nb_cores"];
+      totValues["total_nb_ram"] = regionsData["total_nb_ram"];
+      totValues["total_nb_disk"] = regionsData["total_nb_disk"];
+      totValues["total_nb_vm"] = regionsData["total_nb_vm"];
+      
+      attributes = Hash.new
+      
+      idRegions.each do |idRegion|
+	regionData = self.performRequest('regions/' + idRegion)
+	attributesRegion = Hash.new
+	attributesRegion["id"] = regionData["id"]
+	attributesRegion["name"] = regionData["name"]
+	attributesRegion["country"] = regionData["country"]
+	attributesRegion["latitude"] = regionData["latitude"]
+	attributesRegion["longitude"] = regionData["longitude"]
+	attributesRegion["nb_users"] = regionData["nb_users"]
+	attributesRegion["nb_cores"] = regionData["nb_cores"]
+	attributesRegion["nb_ram"] = regionData["nb_ram"]
+	attributesRegion["nb_disk"] = regionData["nb_disk"]
+	attributesRegion["nb_vm"] = regionData["nb_vm"]
+	attributes[idRegion] = attributesRegion
+      end
+      
+      totValues["total_regions_count"] = attributes.keys.count;
+      
+      returnData = Hash.new
+      returnData ["regions"] = attributes;
+      returnData ["tot"] = totValues;
+      
+      return returnData;
     end
-    
-    totValues = Hash.new
-    
-    totValues["total_nb_users"] = regionsData["total_nb_users"];
-    totValues["total_nb_cores"] = regionsData["total_nb_cores"];
-    totValues["total_nb_ram"] = regionsData["total_nb_ram"];
-    totValues["total_nb_disk"] = regionsData["total_nb_disk"];
-    totValues["total_nb_vm"] = regionsData["total_nb_vm"];
-    
-    attributes = Hash.new
-    
-    idRegions.each do |idRegion|
-      regionData = self.performRequest('regions/' + idRegion)
-      attributesRegion = Hash.new
-      attributesRegion["id"] = regionData["id"]
-      attributesRegion["name"] = regionData["name"]
-      attributesRegion["country"] = regionData["country"]
-      attributesRegion["latitude"] = regionData["latitude"]
-      attributesRegion["longitude"] = regionData["longitude"]
-      attributesRegion["nb_users"] = regionData["nb_users"]
-      attributesRegion["nb_cores"] = regionData["nb_cores"]
-      attributesRegion["nb_ram"] = regionData["nb_ram"]
-      attributesRegion["nb_disk"] = regionData["nb_disk"]
-      attributesRegion["nb_vm"] = regionData["nb_vm"]
-      attributes[idRegion] = attributesRegion
-    end
-    
-    totValues["total_regions_count"] = attributes.keys.count;
-    
-    returnData = Hash.new
-    returnData ["regions"] = attributes;
-    returnData ["tot"] = totValues;
-    
-    return returnData;
+    return nil
   end
   
   def getRegions
 
-    regionsData = self.getRegionsData
+    begin
+      regionsData = self.getRegionsData
+    rescue CustomException => e
+      render :json=>"Problem in retrieving data: "+e.data, :status => :service_unavailable
+      return
+    end
+    
+    
+    if regionsData == nil
+      render :json=>"Problem in retrieving data", :status => :service_unavailable
+      return
+    end
     render :json => regionsData.to_json
   end
   
   def getServices
     
-    regionsData = self.getRegionsData
+    begin
+      regionsData = self.getRegionsData
+    rescue CustomException => e
+      render :json=>"Problem in retrieving data: "+e.data, :status => :service_unavailable
+      return
+    end
     
-   
+    if regionsData == nil
+      render :json=>"Problem in retrieving data", :status => :service_unavailable
+      return
+    end
     
     attributesRegionsServices = regionsData["regions"]
     

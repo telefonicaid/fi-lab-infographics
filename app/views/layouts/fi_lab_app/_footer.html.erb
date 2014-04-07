@@ -25,6 +25,15 @@
 	{
 		$('.status').removeClass('active');
 		$('.infographic').addClass('active');
+		
+// 		$('#world-map').css('width',$('.section').css("width"));
+		$('.bigPanel').css('height',(Math.round($('#world-map').width()*366/545))+40);
+		$('#world-map').css('height',Math.round($('#world-map').width()*366/545));
+		$('#world-map-cpu').css('height',Math.round($('#world-map-cpu').width()*366/545));
+		$('#world-map-ram').css('height',Math.round($('#world-map-ram').width()*366/545));
+		$('#world-map-disk').css('height',Math.round($('#world-map-disk').width()*366/545));
+		$('#world-map-vm').css('height',Math.round($('#world-map-vm').width()*366/545));
+// 		$('#world-map-ge').css('height',Math.round($('#world-map-ge').width()*366/545));
 		/** =================================================================
 		*  Map
 		**/
@@ -232,6 +241,7 @@
 // 			      var obj = $.parseJSON(json);
 
 			      var nUsers = parseInt(json['tot']['total_nb_users']);
+			      var nOrganizations = parseInt(json['tot']['total_nb_organizations']);
 			      var nCores = parseInt(json['tot']['total_nb_cores']);
 			      var nRam = parseInt(json['tot']['total_nb_ram']); 
 			      var nHd = parseInt(json['tot']['total_nb_disk']);
@@ -302,13 +312,61 @@
 
 
 			      $('#usersNum').html(nUsers);
+			      $('#orgsNum').html(nOrganizations);
 			      $('#regionsNum').html(nRegions);
 			      $('#coresNum').html(nCores);
 			      $('#ramNum').html(nRam);
 			      $('#hdNum').html(nHd);
 			      $('#vmNum').html(nVm);
 
-			      var maxCent = Math.floor(nUsers/100);
+			      var maxMill = Math.floor(nOrganizations/1000);
+			      var i = 0;
+			      var biggerOrg = '';
+			      while (i < maxMill) {
+				biggerOrg = biggerOrg + '<img src="/assets/infographic/organization.png" />';
+				i+= 1;
+			      }
+			      $('#biggerOrg').html(biggerOrg);
+			      
+			      var maxCent = Math.floor((nOrganizations - maxMill*1000)/100);
+			      var i = 0;
+			      var bigOrg = '';
+			      while (i < maxCent) {
+				bigOrg = bigOrg + '<img src="/assets/infographic/organization.png" />';
+				i+= 1;
+			      }
+			      $('#bigOrg').html(bigOrg);
+
+			      var maxDec = Math.floor((nOrganizations - maxMill*1000 - maxCent*100)/10);
+			      i = 0;
+
+			      var mediumOrg = '';
+			      while (i < maxDec) {
+				mediumOrg = mediumOrg + '<img src="/assets/infographic/organization.png" />';
+				i+= 1;
+			      }
+			      $('#mediumOrg').html(mediumOrg);
+
+			      var maxUni = nOrganizations - maxMill*1000 - maxCent*100 - maxDec*10;//console.log("unità:"+maxUni);
+			      i = 0;
+
+			      var smallOrg = '';
+			      while (i < maxUni) {
+				smallOrg = smallOrg + '<img src="/assets/infographic/organization.png" />';
+				i+= 1;
+			      }
+			      $('#smallOrg').html(smallOrg); 
+			      
+			      var maxMill = Math.floor(nUsers/1000);
+			      var i = 0;
+			      var biggerMen = '';
+			      while (i < maxMill) {
+				biggerMen = biggerMen + '<img src="/assets/infographic/omino.png" />';
+				i+= 1;
+			      }
+			      $('#biggerMen').html(biggerMen);
+			      
+			      var maxCent = Math.floor((nUsers - maxMill*1000)/100);
 			      var i = 0;
 			      var bigMen = '';
 			      while (i < maxCent) {
@@ -317,7 +375,7 @@
 			      }
 			      $('#bigMen').html(bigMen);
 
-			      var maxDec = Math.floor((nUsers - maxCent*100)/10);
+			      var maxDec = Math.floor((nUsers - maxMill*1000 - maxCent*100)/10);
 			      i = 0;
 
 			      var mediumMen = '';
@@ -327,7 +385,7 @@
 			      }
 			      $('#mediumMen').html(mediumMen);
 
-			      var maxUni = nUsers - maxCent*100 - maxDec*10;//console.log("unità:"+maxUni);
+			      var maxUni = nUsers - maxMill*1000 - maxCent*100 - maxDec*10;//console.log("unità:"+maxUni);
 			      i = 0;
 
 			      var smallMen = '';
@@ -410,12 +468,21 @@
 
 			    },
 			    error: function(xhr, textStatus, errorThrown){
+				$('#biggerMen').html("&nbsp;");
 				$('#bigMen').html("&nbsp;");
 				$('#mediumMen').html("&nbsp;");
-				$('#smallMen').html("<%= FiLabInfographics.nodata %>");
+				$('#biggerOrg').html("&nbsp;");
+				$('#bigOrg').html("&nbsp;");
+				$('#mediumOrg').html("&nbsp;");
+// 				$('#smallMen').html("<%= FiLabInfographics.nodata %>");
+				var errore = "<%= FiLabInfographics.nodata %>";
+				if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					errore = xhr.responseText;
+				$('#smallMen').html(errore);
+				$('#smallOrg').html(errore);
 // 				alert('request failed->'+textStatus);
-// 				console.log(xhr.status + ' ' + textStatus + ' ' + errorThrown);
-			    } 
+// 				console.log(xhr.status + ' çççç'+xhr.responseText+'òòòò' + textStatus + ' ' + errorThrown);
+				} 
 			}
 		);
 		}
@@ -745,7 +812,7 @@
 							
 							allRows = allRows + "<DIV CLASS='status-row row-status-service row-status-closed'>"+
 								"<DIV CLASS='field field-group field-group-expand'>"+
-									"<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>"+
+									"<!--<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>-->"+
 								"</DIV>"+"<a name=\""+idRegion+"\"></a>"+
 								"<DIV CLASS='field field-service field-service-node "+idRegion+"'>"+idRegion+"</DIV>"+
 								
@@ -870,9 +937,13 @@
 					});
 				},
 				error: function(xhr, textStatus, errorThrown){
-				    $('#tableHeaderContent').html("<DIV CLASS='field field-header field-header-node'><%= FiLabInfographics.nodata %></DIV>");
-    // 				alert('request failed->'+textStatus);
-    // 				console.log(xhr.status + ' ' + textStatus + ' ' + errorThrown);
+// 				    $('#tableHeaderContent').html("<DIV CLASS='field field-header field-header-node'><%= FiLabInfographics.nodata %></DIV>");
+				    var errore = "<%= FiLabInfographics.nodata %>";
+				    if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					    errore = xhr.responseText;
+				    $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+//     				alert('request failed->'+textStatus);
+//     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
 				} 
 			   }
 			    

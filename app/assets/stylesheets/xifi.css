@@ -6,19 +6,43 @@ body {
 	clear: both;
 }
 
+.layoutContainer {
+	margin-top: 10px;
+}
+
 section.infographic {
-        margin-top: 10px;
-        width: 535px;
+/*         margin-top: 10px; */
+/*         width: 535px; */
+	top: 0;
+	left: 0;
+	min-width: 310px;
+	width: 49%;
+	margin-right: 2%;
         display: inline-block;
+	float:left;
 }
 
 section.partners {
-        margin-top: 10px;
+/*         margin-top: 10px; */
         display: inline-block;
+	float:left;
+	width: 49%;
+	min-width: 310px;
+}
+
+.parternList {
+  padding: 0px 10px 10px 20px;
+/*   margin: auto; */
+  text-align:center;
+}
+
+.parternList img{
+  margin-top: 10px;
+  width: 120px;
 }
 
 .title {
-	color: #006699;
+	color: #002D67;
 	font-size: 20px;
 	font-weight: bold;
 	margin-bottom: 10px;
@@ -26,6 +50,7 @@ section.partners {
 
 /*welcome page*/
 .section {
+  min-width: 310px;
   font-size: 16px;
 }
 
@@ -39,16 +64,16 @@ section.partners {
 }
 
 .smallPanel {
-	height: 200px;
+	height: 230px;
 }
 
 .bigPanel {
-	height: 400px;
+/* 	height: 400px; */
 }
 
 .leftIcon {
 	float: left;
-	margin: 17px 17px 17px 17px;
+	margin: 17px 0px 17px 17px;
 	width: 76px;
 }
 
@@ -58,7 +83,7 @@ section.partners {
 
 .centerDetail {
 	float: left;
-	color: #006699;
+	color: #002D67;
 	font-size: 20px;
 	font-weight: bold;
 	margin-top: 34px;
@@ -67,7 +92,7 @@ section.partners {
 
 .rightDetail {
 	float: right;
-	color: #006699;
+	color: #002D67;
 	font-size: 20px;
 	font-weight: bold;
 	margin-top: 34px;
@@ -76,7 +101,7 @@ section.partners {
 
 .barPercentage {
 	float: right;
-	color: #006699;
+	color: #002D67;
 	font-size: 20px;
 	font-weight: bold;
 	margin-top: 22px;
@@ -95,34 +120,69 @@ section.partners {
 
 .blue {
 	float: left;
-	background-color: #006699;
+	background-color: #002D67;
 	height: 45px;
 }
 
-#bigMen {
+#biggerOrg,#bigOrg,#mediumOrg,#smallOrg {
 	text-align: center;
-	padding-top: 20px;
+	padding-top: 5px;
 }
+
+#biggerOrg img {
+	height: 45px;
+	margin-right: 5px;
+}
+
+#bigOrg img {
+	height: 35px;
+	margin-right: 5px;
+}
+
+#mediumOrg img {
+	height: 25px;
+	margin-right: 5px;
+}
+
+#smallOrg img {
+	height: 20px;
+	margin-right: 5px;
+}
+
+#biggerMen,#bigMen,#mediumMen,#smallMen {
+	text-align: center;
+	padding-top: 5px;
+}
+
+#biggerMen img {
+	height: 65px;
+	margin-right: 5px;
+}
+
+/*#bigMen {
+	text-align: center;
+	padding-top: 5px;
+}*/
 
 #bigMen img {
 	height: 55px;
 	margin-right: 5px;
 }
 
-#mediumMen {
+/*#mediumMen {
 	text-align: center;
-	margin-top: 5px;
-}
+	padding-top: 5px;
+}*/
 
 #mediumMen img {
 	height: 45px;
 	margin-right: 5px;
 }
 
-#smallMen {
+/*#smallMen {
 	text-align: center;
-	margin-top: 5px;
-}
+	padding-top: 5px;
+}*/
 
 #smallMen img {
 	height: 35px;
@@ -131,38 +191,38 @@ section.partners {
 
 #world-map {
 	padding: 17px 17px 0px 26px;
-	width:545px;
-	height:366px;
+/* 	width:545px; */
+/* 	height:366px; */
 }
 
 #world-map-cpu {
 	padding: 17px 17px 0px 26px;
-	width:545px;
-	height:366px;
+	/*width:545px;
+	height:366px;*/
 }
 
 #world-map-ram {
 	padding: 17px 17px 0px 26px;
-	width:545px;
-	height:366px;
+	/*width:545px;
+	height:366px;*/
 }
 
 #world-map-disk {
 	padding: 17px 17px 0px 26px;
-	width:545px;
-	height:366px;
+	/*width:545px;
+	height:366px;*/
 }
 
 #world-map-vm {
 	padding: 17px 17px 0px 26px;
-	width:545px;
-	height:366px;
+	/*width:545px;
+	height:366px;*/
 }
 
 #world-map-ge {
 	padding: 17px 17px 0px 26px;
-	width:545px;
-	height:366px;
+	/*width:545px;
+	height:366px;*/
 }
 
 /*status page*/
@@ -310,4 +370,191 @@ border-top-right-radius: 6px;
 -moz-border-top-left-radius: 6px;
 -webkit-border-top-left-radius: 6px;
 border-top-left-radius: 6px;
+}
+
+/* CSS for table in status page */
+.collapsed
+{
+	display:none;
+}
+/* {{{ rows */
+.row-current
+{
+/* 	width:800px; */
+	width:585px;
+	height:30px;
+	line-height:30px;
+}
+.row-header
+{
+	border:1px solid #CFCFCF;
+	background-color:#ECEFF2;
+}
+.row-group
+{
+	border:1px solid #CFCFCF;
+	border-top-style:none;
+}
+.row-service
+{
+	height:97px;
+	border:1px solid #CFCFCF;
+	border-top-style:none;
+}
+/* }}} */
+/* {{{ fields */
+.field
+{
+	display:inline;
+	float:left;
+	height:30px;
+}
+.field-header
+{
+	color: #006699;
+	font-size:10px;
+	font-weight:bold;
+}
+.field-header-id
+{
+	width:60px;
+	margin-left:30px;
+	text-align:center;
+}
+.field-header-region
+{
+	width:40px;
+	margin-left:5px;
+}
+.field-header-field
+{
+	margin-left:30px;
+	width:80px;
+	text-align:center;
+}
+.field-group
+{
+}
+.field-group-expand
+{
+	margin-left:4px;
+	width:16px;
+/* 	cursor:pointer; */
+	cursor:hand;
+}
+.field-group-expand-padding
+{
+	margin-left:4px;
+	width:32px;
+}
+.field-group-expand-icon
+{
+	margin-top:7px;
+}
+.field-group-region
+{
+	margin-left:4px;
+	width:40px;
+}
+.field-group-id
+{
+	width:90px;
+}
+.field-group-message
+{
+	margin-left:8px;
+	width:275px;
+}
+.field-group-status-icon
+{
+	margin-top:7px;
+}
+.field-group-field
+{
+	/*margin-left:24px;*/
+	width:110px;
+	text-align:center;
+}
+.field-service
+{
+}
+.field-service-region
+{
+	margin-left:24px;
+	width:40px;
+}
+.field-service-id
+{
+/* 	margin-left:24px; */
+	padding-top: 35px ;
+	width:90px;
+}
+.field-service-message
+{
+	margin-left:8px;
+	width:251px;
+}
+.field-service-status-icon
+{
+	margin-top:7px;
+}
+.field-service-gauge
+{
+	width:107px;
+	text-align:center;
+}
+.field-service-field
+{
+	padding-top: 35px ;
+	width:107px;
+	text-align:center;
+}
+/* }}} */
+img.sprite
+{
+	background:url('/assets/infographic/status-icons.png') no-repeat;
+	border:0;
+	height:16px;
+	width:16px;
+}
+img.status-3
+{
+	background-position:0 -16px;
+}
+img.status-2
+{
+	background-position:0 -80px;
+}
+img.status-1
+{
+	background-position:0 -64px;
+}
+img.status-4
+{
+	background-position:0 -48px;
+}
+/* Investigating Status */
+img.status-5
+{
+	background-position:0 -96px;
+}
+/* Monitoring Status */
+img.status-6 {
+	background-position: 0 -112px;
+}
+img.info
+{
+	background-position:0 -32px;
+}
+img.collapse
+{
+	background-position:-16px 0;
+	width:10px;
+	margin-top:11px;
+}
+img.expand
+{
+	background-position:-26px 0;
+	width:10px;
+	margin-top:11px;
 }

@@ -20,8 +20,19 @@ class RegionController < ApplicationController
     
     begin
       res = req.get(url.path)
-    rescue Timeout::Error
-      raise CustomException.new("timeout")
+    rescue Exception => e
+        case e
+          when Timeout::Error
+            raise CustomException.new("timeout")
+          when Errno::ECONNREFUSED
+            raise CustomException.new("connection refused")
+          when Errno::ECONNRESET
+            raise CustomException.new("connection reset")
+          when Errno::EHOSTUNREACH
+            raise CustomException.new("host not reachable")
+          else
+            raise CustomException.new("error: #{e.to_s}")
+        end
     end
 # Logger.info('request');
 
@@ -39,8 +50,13 @@ class RegionController < ApplicationController
 #     end
 #   Logger.error(data);   
     
-    data = res.body    
-    result = JSON.parse(data)
+    data = res.body   
+    begin
+      result = JSON.parse(data)
+    rescue Exception => e
+      raise CustomException.new("Error parsing Data")
+    end
+      
     return result
 
 #  Logger.error(data);

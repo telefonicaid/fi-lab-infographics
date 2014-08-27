@@ -1,35 +1,43 @@
 require_dependency 'fi_lab_app'
 
 FiLabApp.setup do |config|
+
+  config.account_server = 'https://account.lab.fi-ware.org'
+
+  config.client_id = ''
+
+  config.client_secret = ''
+
   # The domain this app in installed at
   #
-  config.domain    = 'account.fi-ware.org'
+  # config.domain    = 'app.lab.fi-ware.org'
 
   # The servives available in the portal
   #
   # service level domain
-  # config.services_name = ['cloud','store','mashup']
+  #config.services_name = ['cloud','store','mashup']
   #
   # title for the nav bar
-  # config.services_title =  ['Cloud','Store','Mashup']
+  #config.services_title =  ['Cloud','Store','Mashup']
   #
   # css class for the nav bar
-  # config.services_class = ['cloud','store','mashup']
+  #config.services_class = ['cloud','store','mashup']
   #
   # enable or disable help page link 
   # config.help_enable = 1
   #
+  # enable or disable help submenu
+  # config.help_submenu_enable = 1
+  #
   # define serivce level domain for help
-  # config.help_name = ''
+  # config.help_name = 'help'
   #
   # define title for the help in the navigation bar
   # config.help_title = 'Help&info'
   #
   # define css class for help link
-  # config.help_class = 'help active' 
+  # config.help_class = 'help' 
 
-  # enable or disable help submenu 
-  # config.help_submenu_enable = 1
 
   # The subdomain of the portal: cloud, store, mashup
   #
@@ -42,7 +50,13 @@ FiLabApp.setup do |config|
   # config.gaCode = 'UA-xxxxxx-x'
 
   # The name of the App
-  # config.appname      = "Infographic and Status"
+  # config.appname      = "FI-Lab"
+
+  # The class of the App
+  # config.app_class      = "app"
+
+  # Enabler or this able the app menu entry
+  # config.app_menu_enable = 1 
 
   # The logo of the App
   #

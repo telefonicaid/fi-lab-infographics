@@ -1,13 +1,23 @@
 FiLabInfographics::Application.routes.draw do
-  get "welcome/index"
+  root 'welcome#index'
+  mount FiLabApp::Engine => "/"#"/fi_lab_app"
+  
+#   get "welcome/index"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
-  mount FiLabApp::Engine => "/fi_lab_app"
+  
+
+#   devise_for :users, :class_name => "FiLabApp::User", :module => :devise, :controllers => { :omniauth_callbacks => "fi_lab_app/users/omniauth_callbacks" }#, :sessions => "fi_lab_app/sessions" }
+#   get "welcome/index"
+#   get "welcome/protected"
+#   get "welcome/role"
+#   get "welcome/error"
 
   # You can have the root of your site routed with "root"
-  root 'welcome#index'
+#   root 'welcome#index'
   
+#   get '/info', to: 'welcome#index'
   get '/status', to: 'welcome#status'
 #  get '/nam' => redirect('http://138.4.47.33:5000/')
   
@@ -15,12 +25,22 @@ FiLabInfographics::Application.routes.draw do
     scope "/region" do
       get "/" => "region#getRegions"
       get "/vm" => "region#getVms"
-      get "/services" => "region#getServices"
+      get "/services" => "region#getServices" 
 #       get ":region_id" => "region#getRegion"
 #       get ":region_id/vm" => "region#getVMs"
 #       get ":region_id/vm/:vm_id" => "region#getVM"
     end
+    scope "/jira" do
+      post "/issue" => "jira#createIssue"
+    end
   end
+  
+  
+#   devise_scope :user do
+# # get '/users/sign_in', :to => 'sessions#new', :as => :new_user_session
+#     get 'users/:id', :to => 'users#show', :as => :user
+# # get '/logout' => 'devise/sessions#destroy', :as => :destroy_user_session
+#   end
 
 
   # Example of regular route:

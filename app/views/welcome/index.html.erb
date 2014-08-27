@@ -1,4 +1,10 @@
-    <section class="media-1"><h3 class="media-heading">
+<% if !user_logged(current_user)  %>
+  <section id="frontpage">
+  <div class="title"><title><%= @page_title or 'FiLab App Title' %></title></div>
+  <h1>Welcome to the default page of the app where not authenticated users can access!</h1>
+  </section>
+<% else  %>
+  <section class="media-1"><h3 class="media-heading">
       FI-Lab Nodes
     </h3>
     <span>
@@ -355,3 +361,565 @@
 	</div>
 </section>
 <div class="clear"></div>-->
+
+<% content_for :jsfooter do %>
+  <!-- #################################################################################### -->
+
+  <!-- ===== init ===== -->
+  <script type="text/javascript">
+	  $(document).ready(function() 
+	  {
+		  $('.status').removeClass('active');
+		  $('.infographic').addClass('active');
+		  
+  // 		$('#world-map').css('width',$('.section').css("width"));
+		  $('.bigPanel').css('height',(Math.round($('#world-map').width()*366/545))+40);
+		  $('#world-map').css('height',Math.round($('#world-map').width()*366/545));
+		  $('#world-map-cpu').css('height',Math.round($('#world-map-cpu').width()*366/545));
+		  $('#world-map-ram').css('height',Math.round($('#world-map-ram').width()*366/545));
+		  $('#world-map-disk').css('height',Math.round($('#world-map-disk').width()*366/545));
+		  $('#world-map-vm').css('height',Math.round($('#world-map-vm').width()*366/545));
+  // 		$('#world-map-ge').css('height',Math.round($('#world-map-ge').width()*366/545));
+		  /** =================================================================
+		  *  Map
+		  **/
+		  var map = new jvm.WorldMap({
+  // 		var map = $('#world-map').vectorMap({
+		  container: $('#world-map'),
+		  map: 'world_mill_en',
+			  backgroundColor: 'white',
+
+			  regionStyle: {
+							    initial: {
+							      fill: '#999999',
+							      "fill-opacity": 1,
+							      stroke: 'none',
+							      "stroke-width": 0,
+							      "stroke-opacity": 1
+							    },
+							    hover: {
+							      "fill-opacity": 0.8
+							    },
+							    selected: {
+								  fill: '#0071A4'
+							    },
+							    selectedHover: {
+							    }
+						  },
+			  markerStyle: {
+				initial: {
+				  fill: '#ff9900',
+				  stroke: '#383f47'
+				}
+			  }
+
+		  });
+
+		  $('#world-map').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
+
+		  var mapCpu = new jvm.WorldMap({
+  // 		$('#world-map-cpu').vectorMap({
+		  container: $('#world-map-cpu'),
+		  map: 'world_mill_en',
+		  regionStyle: {
+			    initial: {
+			      fill: '#ffffff',
+			      "fill-opacity": 1,
+			      stroke: 'none',
+			      "stroke-width": 0,
+			      "stroke-opacity": 1
+			    },
+			    hover: {
+			      "fill-opacity": 0.8
+			    },
+			    selected: {
+				  fill: 'orange'
+			    },
+			    selectedHover: {
+			    }
+		  },
+		  markerStyle: {
+			initial: {
+			  fill: '#ff9900',
+			  stroke: '#383f47'
+			}
+		  },
+		  series: {
+			    regions: [{/*values: {"IT":20,"DE":90},*/
+			  // attribute:'fill',
+					scale: ['#C8EEFF', '#0071A4'],
+  // 					      scale: {
+  // 							  84: '#4169E1',
+  // 							  64: '#FF69B4'
+  // 							},
+					normalizeFunction: 'linear'
+			    }]
+		  }			     
+
+		  });
+
+		  $('#world-map-cpu').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
+
+		  var mapRam = new jvm.WorldMap({
+  // 		$('#world-map-ram').vectorMap({
+		  container: $('#world-map-ram'),
+		  map: 'world_mill_en',
+		  regionStyle: {
+			    initial: {
+			      fill: '#ffffff',
+			      "fill-opacity": 1,
+			      stroke: 'none',
+			      "stroke-width": 0,
+			      "stroke-opacity": 1
+			    },
+			    hover: {
+			      "fill-opacity": 0.8
+			    },
+			    selected: {
+				  fill: 'orange'
+			    },
+			    selectedHover: {
+			    }
+		  },
+		  markerStyle: {
+			initial: {
+			  fill: '#ff9900',
+			  stroke: '#383f47'
+			}
+		  },
+		  series: {
+			    regions: [{
+					    scale: ['#C8EEFF', '#0071A4'],
+					    normalizeFunction: 'linear'
+			    }]
+		  }
+
+		  });
+
+		  $('#world-map-ram').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
+
+		  var mapDisk = new jvm.WorldMap({
+  // 		$('#world-map-disk').vectorMap({
+		  container: $('#world-map-disk'),
+		  map: 'world_mill_en',
+		  regionStyle: {
+			    initial: {
+			      fill: '#ffffff',
+			      "fill-opacity": 1,
+			      stroke: 'none',
+			      "stroke-width": 0,
+			      "stroke-opacity": 1
+			    },
+			    hover: {
+			      "fill-opacity": 0.8
+			    },
+			    selected: {
+				  fill: 'orange'
+			    },
+			    selectedHover: {
+			    }
+		  },
+		  markerStyle: {
+		    initial: {
+		      fill: '#ff9900',
+		      stroke: '#383f47'
+		    }
+		  },
+		  series: {
+			    regions: [{
+					    scale: ['#C8EEFF', '#0071A4'],
+					    normalizeFunction: 'linear'
+			    }]
+		  }
+
+		  });
+
+		  $('#world-map-disk').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
+
+		  var mapVm = new jvm.WorldMap({
+  // 		$('#world-map-vm').vectorMap({
+		  container: $('#world-map-vm'),
+		  map: 'world_mill_en',
+		  regionStyle: {
+			    initial: {
+			      fill: '#ffffff',
+			      "fill-opacity": 1,
+			      stroke: 'none',
+			      "stroke-width": 0,
+			      "stroke-opacity": 1
+			    },
+			    hover: {
+			      "fill-opacity": 0.8
+			    },
+			    selected: {
+				  fill: 'orange'
+			    },
+			    selectedHover: {
+			    }
+		  },
+		  markerStyle: {
+			initial: {
+			  fill: '#ff9900',
+			  stroke: '#383f47'
+			}
+		  },
+		  series: {
+			    regions: [{
+					    scale: ['#C8EEFF', '#0071A4'],
+					    normalizeFunction: 'linear'
+			    }]
+		  }
+
+		  });
+
+		  $('#world-map-vm').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
+
+		  function ajaxFun() { $.ajax (
+			    {
+			      type: "GET",
+			      url: "../api/v1/region",
+			      contentType: "application/json; charset=utf-8",
+			      data: {},
+			      dataType: "json",
+			      cache: false,
+			      success: function(json){
+
+  // 			      var obj = $.parseJSON(json);
+
+				var nUsers = parseInt(json['tot']['total_nb_users']);
+				var nOrganizations = parseInt(json['tot']['total_nb_organizations']);
+				var nCores = parseInt(json['tot']['total_nb_cores']);
+				var nRam = parseInt(json['tot']['total_nb_ram']); 
+				var nHd = parseInt(json['tot']['total_nb_disk']);
+				var nVm = parseInt(json['tot']['total_nb_vm']);
+				var nRegions = parseInt(json['tot']['total_regions_count']);
+
+				var selectedRegions = [];
+				var selectedMarkers = [];
+				var selectedRegionsCpu = [];
+				var selectedMarkersCpu = [];
+				var selectedRegionsRam = [];
+				var selectedMarkersRam = [];
+				var selectedRegionsDisk = [];
+				var selectedMarkersDisk = [];
+				var selectedRegionsVm = [];
+				var selectedMarkersVm = [];
+
+				$.each(json['regions'], function(key, val) {
+  // 				nUsers += parseInt(this['nUser']);
+  // 				nCores += parseInt(this['coreTot']);
+  // 				nRam += parseInt(this['ramTot']);
+  // 				nHd += parseInt(this['hdTot']);
+  // 				nVm += parseInt(this['vmTot']);
+  // 				nRegions += 1;
+
+  // 				selectedRegions = selectedRegions + '\'' + key  + '\'';
+				  selectedRegions.push(this['country']);
+				  selectedRegionsCpu[this['country']] = parseInt(this['nb_cores']);
+				  selectedRegionsRam[this['country']] = parseInt(this['nb_ram']);
+				  selectedRegionsDisk[this['country']] = parseInt(this['nb_disk']);
+				  selectedRegionsVm[this['country']] = parseInt(this['nb_vm']);
+
+				  if(this['latitude'] != "" && this['longitude'] != "")
+				  {
+				      var marker = {};
+				      marker["latLng"] = [];
+				      marker["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
+				      marker["name"] = this['name'];
+				      selectedMarkers.push(marker);
+				      
+				      var markerCpu = {};
+				      markerCpu["latLng"] = [];
+				      markerCpu["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
+				      markerCpu["name"] = this['name'] + " (" + this['nb_cores'] + " core)";
+				      selectedMarkersCpu.push(markerCpu);
+
+				      var markerRam = {};
+				      markerRam["latLng"] = [];
+				      markerRam["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
+				      markerRam["name"] = this['name'] + " (" + this['nb_ram'] + " Mb)";
+				      selectedMarkersRam.push(markerRam);
+
+				      var markerDisk = {};
+				      markerDisk["latLng"] = [];
+				      markerDisk["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
+				      markerDisk["name"] = this['name'] + " (" + this['nb_disk'] + " Gb)";
+				      selectedMarkersDisk.push(markerDisk);
+
+				      var markerVm = {};
+				      markerVm["latLng"] = [];
+				      markerVm["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
+				      markerVm["name"] = this['name'] + " (" + this['nb_vm'] + " vm)";
+				      selectedMarkersVm.push(markerVm);
+				  }
+
+
+				});
+
+
+				$('#usersNum').html(nUsers);
+				$('#orgsNum').html(nOrganizations);
+				$('#regionsNum').html(nRegions);
+				$('#coresNum').html(nCores);
+				$('#ramNum').html(nRam);
+				$('#hdNum').html(nHd);
+				$('#vmNum').html(nVm);
+
+				var maxMill = Math.floor(nOrganizations/1000);
+				var i = 0;
+				var biggerOrg = '';
+				while (i < maxMill) {
+				  biggerOrg = biggerOrg + '<img src="/assets/infographic/organization.png" />';
+				  i+= 1;
+				}
+				$('#biggerOrg').html(biggerOrg);
+				
+				var maxCent = Math.floor((nOrganizations - maxMill*1000)/100);
+				var i = 0;
+				var bigOrg = '';
+				while (i < maxCent) {
+				  bigOrg = bigOrg + '<img src="/assets/infographic/organization.png" />';
+				  i+= 1;
+				}
+				$('#bigOrg').html(bigOrg);
+
+				var maxDec = Math.floor((nOrganizations - maxMill*1000 - maxCent*100)/10);
+				i = 0;
+
+				var mediumOrg = '';
+				while (i < maxDec) {
+				  mediumOrg = mediumOrg + '<img src="/assets/infographic/organization.png" />';
+				  i+= 1;
+				}
+				$('#mediumOrg').html(mediumOrg);
+
+				var maxUni = nOrganizations - maxMill*1000 - maxCent*100 - maxDec*10;//console.log("unità:"+maxUni);
+				i = 0;
+
+				var smallOrg = '';
+				while (i < maxUni) {
+				  smallOrg = smallOrg + '<img src="/assets/infographic/organization.png" />';
+				  i+= 1;
+				}
+				$('#smallOrg').html(smallOrg); 
+				
+				var maxMill = Math.floor(nUsers/1000);
+				var i = 0;
+				var biggerMen = '';
+				while (i < maxMill) {
+				  biggerMen = biggerMen + '<img src="/assets/infographic/omino.png" />';
+				  i+= 1;
+				}
+				$('#biggerMen').html(biggerMen);
+				
+				var maxCent = Math.floor((nUsers - maxMill*1000)/100);
+				var i = 0;
+				var bigMen = '';
+				while (i < maxCent) {
+				  bigMen = bigMen + '<img src="/assets/infographic/omino.png" />';
+				  i+= 1;
+				}
+				$('#bigMen').html(bigMen);
+
+				var maxDec = Math.floor((nUsers - maxMill*1000 - maxCent*100)/10);
+				i = 0;
+
+				var mediumMen = '';
+				while (i < maxDec) {
+				  mediumMen = mediumMen + '<img src="/assets/infographic/omino.png" />';
+				  i+= 1;
+				}
+				$('#mediumMen').html(mediumMen);
+
+				var maxUni = nUsers - maxMill*1000 - maxCent*100 - maxDec*10;//console.log("unità:"+maxUni);
+				i = 0;
+
+				var smallMen = '';
+				while (i < maxUni) {
+				  smallMen = smallMen + '<img src="/assets/infographic/omino.png" />';
+				  i+= 1;
+				}
+				$('#smallMen').html(smallMen);  
+
+				var array_values_cpu = new Array();
+				for (var key in selectedRegionsCpu) {
+				  array_values_cpu.push(parseInt(selectedRegionsCpu[key]));
+				}
+
+				var array_values_ram = new Array();
+				for (var key in selectedRegionsRam) {
+				  array_values_ram.push(parseInt(selectedRegionsRam[key]));
+				}
+
+				var array_values_disk = new Array();
+				for (var key in selectedRegionsDisk) {
+				  array_values_disk.push(parseInt(selectedRegionsDisk[key]));
+				}
+
+				var array_values_vm = new Array();
+				for (var key in selectedRegionsVm) {
+				  array_values_vm.push(parseInt(selectedRegionsVm[key]));
+				}
+
+				map.clearSelectedRegions();
+				map.setSelectedRegions(selectedRegions);
+				
+				map.removeAllMarkers();
+				map.addMarkers(selectedMarkers);
+
+				mapCpu.series.regions[0].clear();
+  // 			      mapCpux.series.regions[0].params['min'] = 64;
+  // 			      mapCpux.series.regions[0].params['max'] = 84;
+  // 			      mapCpux.series.regions[0].scale['clearMinValue'] = 64;
+  // 			      mapCpux.series.regions[0].scale['clearMaxValue'] = 84;		     
+				var max_of_cpu = Math.max.apply(Math, array_values_cpu);
+				var min_of_cpu = Math.min.apply(Math, array_values_cpu);
+				mapCpu.series.regions[0].scale['minValue'] = min_of_cpu;
+				mapCpu.series.regions[0].scale['maxValue'] = max_of_cpu;
+  // 			      mapCpux.series.regions[0].setScale(['#C8EEFF', '#0071A4']);
+  // 			      mapCpux.series.regions[0].params['values'] = selectedRegionsCpu;
+				mapCpu.series.regions[0].setValues(selectedRegionsCpu); 
+				//console.log(mapCpu.series.regions[0]);			     
+  // 			      mapCpu.series.regions[0].normalizeFunction = 'polynomial';
+				mapCpu.removeAllMarkers();
+				mapCpu.addMarkers(selectedMarkersCpu);
+
+				mapRam.series.regions[0].clear();
+				var max_of_ram = Math.max.apply(Math, array_values_ram);
+				var min_of_ram = Math.min.apply(Math, array_values_ram);
+				mapRam.series.regions[0].scale['minValue'] = min_of_ram;
+				mapRam.series.regions[0].scale['maxValue'] = max_of_ram;
+				mapRam.series.regions[0].setValues(selectedRegionsRam);
+				mapRam.removeAllMarkers();
+				mapRam.addMarkers(selectedMarkersRam);
+
+				mapDisk.series.regions[0].clear();
+				var max_of_disk = Math.max.apply(Math, array_values_disk);
+				var min_of_disk = Math.min.apply(Math, array_values_disk);
+				mapDisk.series.regions[0].scale['minValue'] = min_of_disk;
+				mapDisk.series.regions[0].scale['maxValue'] = max_of_disk;
+				mapDisk.series.regions[0].setValues(selectedRegionsDisk);
+				mapDisk.removeAllMarkers();
+				mapDisk.addMarkers(selectedMarkersDisk);
+
+				mapVm.series.regions[0].clear();
+				var max_of_vm = Math.max.apply(Math, array_values_vm);
+				var min_of_vm = Math.min.apply(Math, array_values_vm);
+				mapVm.series.regions[0].scale['minValue'] = min_of_vm;
+				mapVm.series.regions[0].scale['maxValue'] = max_of_vm;
+				mapVm.series.regions[0].setValues(selectedRegionsVm);
+				mapVm.removeAllMarkers();
+				mapVm.addMarkers(selectedMarkersVm);
+
+
+			      },
+			      error: function(xhr, textStatus, errorThrown){
+				  $('#biggerMen').html("&nbsp;");
+				  $('#bigMen').html("&nbsp;");
+				  $('#mediumMen').html("&nbsp;");
+				  $('#biggerOrg').html("&nbsp;");
+				  $('#bigOrg').html("&nbsp;");
+				  $('#mediumOrg').html("&nbsp;");
+  // 				$('#smallMen').html("<%= FiLabInfographics.nodata %>");
+				  var errore = "<%= FiLabInfographics.nodata %>";
+				  if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					  errore = xhr.responseText;
+				  $('#smallMen').html(errore);
+				  $('#smallOrg').html(errore);
+  // 				alert('request failed->'+textStatus);
+  // 				console.log(xhr.status + ' çççç'+xhr.responseText+'òòòò' + textStatus + ' ' + errorThrown);
+				  } 
+			  }
+		  );
+		  }
+
+
+
+		  /** ================================================================= 
+		  *	Accordion Effect
+		  */
+		  $('.accordionPanel').not('.leaveOpen').hide();
+		  $('.accordionTitle').click( function()
+		  {
+			  var $this = $(this);
+			  $this.next('.accordionPanel').slideToggle(function()
+			  {
+				  if( $this.hasClass('closeme' ) )
+				  {
+					  $this.removeClass('closeme' );
+					  $this.addClass('openme' );
+				  }
+				  else
+				  {
+					  $this.removeClass('openme' );
+					  $this.addClass('closeme' );
+				  }
+			  });
+		  });
+		  $('.accordionTitle').hover( 
+			  function()
+			  {
+				  $(this).addClass('hovered');
+			  },
+			  function()
+			  {
+				  $(this).removeClass('hovered');
+			  }
+		  );
+
+		  /** ================================================================= **/
+		  //Chiamo il mio ajax la prima volta
+		  ajaxFun();
+		  //e poi lo richiamo dopo 1 minuto
+		  setInterval(function(){ajaxFun()}, 60000);
+
+  // 		$. ajax (
+  // 			  {
+  // 			    type: "GET",
+  // 			    dataType: 'json',
+  // 			    url: "http://192.168.59.2:1337/region",
+  // 			    data: data,
+  // 			    success: function (data)
+  // 			    {
+  // 				  console.log(data)
+  // 			    }
+  // 			}
+  // 		);
+
+  // 		$.ajax({
+  // 			url: "http://192.168.59.2:1337/region",
+  // 			cache: false
+  // 			})
+  // 			.done(function( html ) {
+  // 			  console.log(html);
+  // 			});
+
+  // 		var request = $.ajax({
+  // 				      url: "http://192.168.59.2:1337/region",
+  // 				      type: "GET",
+  // 				      data: {},
+  // 				      dataType: "json"
+  // 		});
+  // 		
+  // 		request.done(function( msg ) {
+  // 		  console.log("AAAAAAAAAAA");
+  // 		  console.log(msg);
+  // 		});
+  // 		
+  // 		request.fail(function( jqXHR, textStatus ) {
+  // 							    alert( "Request failed: " + textStatus+jqXHR );
+  // 							    });
+
+  // 		$.ajax({
+  // 			dataType: "json",
+  // 			url: url,
+  // 			data: data,
+  // 			success: success
+  // 		});
+
+  // 		setInterval('window.location.reload()', 60000);
+      
+	  });
+  </script>
+<% end %>
+<% end  %>

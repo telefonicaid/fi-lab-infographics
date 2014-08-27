@@ -13,13 +13,28 @@ class RegionController < ApplicationController
     require 'logger'
     
     url = URI.parse(FiLabInfographics.nodejs + "/monitoring/" + uri)
-    req = Net::HTTP.new(url.host, url.port)
+#     req = Net::HTTP.new(url.host, url.port)
+    http = Net::HTTP.new(url.host, url.port)
+    http.open_timeout = FiLabInfographics.timeout
+    http.read_timeout = FiLabInfographics.timeout
     
-    req.open_timeout = FiLabInfographics.timeout
-    req.read_timeout = FiLabInfographics.timeout
+    req = Net::HTTP::Get.new(url.request_uri)
+    req.initialize_http_header({"Accept" => "application/json"})
+    
+    
+    oauthToken = Base64.strict_encode64(current_user.token)
+    req.add_field("Authorization", "Bearer "+oauthToken)
+    Rails.logger.info(req.get_fields('Authorization'));
+    Rails.logger.info(req.get_fields('Accept'));
+    Rails.logger.info(url.request_uri);
+#     req.add_field("Accept", "application/json")
+    
+#     req.open_timeout = FiLabInfographics.timeout
+#     req.read_timeout = FiLabInfographics.timeout
     
     begin
-      res = req.get(url.path)
+#       res = req.get(url.path)
+      res = http.request(req)
     rescue Exception => e
         case e
           when Timeout::Error
@@ -271,6 +286,33 @@ class RegionController < ApplicationController
       services["overallStatus"] = serviceOverall;
       
       regionData["services"] = services;
+      
+      node = Hash.new
+      node["name"] = "";
+      node["jira_project_url"] = "";
+#       node["jira_project_id"] = "";
+      dbNode = Node.where(:rid => regionData["id"]).first
+      if dbNode != nil
+	node = Hash.new
+	node["name"] = dbNode.rid;
+	node["jira_project_url"] = dbNode.jira_project_url;
+# 	node["jira_project_id"] = dbNode.jira_project_id;
+# 	node["jira_project_id"] = "http://jira.fi-ware.org/browse/XIFI";
+      end
+#       regionData["node"] = node;
+      
+      allDbNodes = Node.order(:rid).all
+      allNodes = Array.new;
+      if !allDbNodes.nil?
+	allDbNodes.each do |singleNode|
+	  allNodes.push singleNode.rid;
+	end
+      end
+      
+      nodesList = Hash.new
+      nodesList["list"] = allNodes;
+      nodesList["selected"] = node;
+      regionData["allNodes"] = nodesList;
       
 #       attributesRegionsServices[regionData["id"]]["Nova"]["value"] = serviceRegionData["novaServiceStatus"]["value"];
 #       attributesRegionsServices[regionData["id"]]["Nova"]["description"] = serviceRegionData["novaServiceStatus"]["description"];

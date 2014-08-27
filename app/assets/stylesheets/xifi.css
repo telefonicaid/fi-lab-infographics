@@ -6,6 +6,10 @@ body {
 	clear: both;
 }
 
+.floatLeft {
+	float: left;
+}
+
 footer {
 	margin-top: 10px;
 }
@@ -573,3 +577,63 @@ img.expand
 	width:10px;
 	margin-top:11px;
 }
+
+label, input { display:block; }
+input.text{ width:95%;}
+.ui-widget-overlay {
+    position:absolute;
+    top:0;
+    left:0;
+    background:rgb(0, 0, 0);
+    opacity: .50 !important;
+    filter: Alpha(Opacity=50);
+    height:1100px;
+    width:100%;  
+}
+
+.icon-required{
+    color:red;
+}
+
+/*header.navbar nav.navbar-inner .brand {
+    margin: 0 0 0 -8px !important;
+    padding: 0 !important;
+}
+
+header.navbar nav.navbar-inner .filab-logo {
+    margin-left: 0;
+    margin-top: 2px;
+    width: 158px !important;
+}
+
+#oil-nav {
+    background-color: #f4f4f4;
+    border-bottom: 1px solid #f2f2f2;
+    box-shadow: 0 1px 8px rgba(50, 51, 51, 0.15);
+    display: block;
+    height: 39px;
+    padding: 1px 2%;
+    position: fixed;
+    width: 96%;
+    z-index: 2000000;
+}
+
+ul.oil-portal {
+    float: left;
+    height: 36px;
+    margin-bottom: 0;
+    margin-left: 3px;
+    padding: 0;
+    width: 650px;
+}
+
+ul.oil-portal li {
+    display: inline-block;
+    padding: 11px 18px 8px;
+}
+
+ul.oil-portal li.active {
+    background-color: #f9f9f9;
+    box-shadow: 0 3px 5px -1px #f9f9f9;
+    height: 22px;
+}*/

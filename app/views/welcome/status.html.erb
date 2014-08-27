@@ -132,9 +132,601 @@
 			  
 </DIV>
 
-<div id="popupDialog" title="Jira Ticket" style="display:none;">
+<!--<div id="popupDialog" title="Jira Ticket" style="display:none;">
   <p>
      <label for="widgetName">Open a new ticket for the selected node:</label>
      <textarea name="ticketText" cols="40" rows="5"></textarea>
   </p>
+</div>-->
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ------------------------------------------- -->
+<div id="popupDialog" title="Jira Ticket" style="display:none;" >
+    <h2 class="dialog-title"></h2>
+    <form>
+        <div class="content-body">
+            <div class="event-shield-wrapper">
+                <div class="event-shield"></div>
+                <div class="aui-message info custom-msg">
+		    <span class="aui-icon icon-info"></span>
+		    <p>Please provide details in this form. Thanks!!</p>
+		</div>
+                <fieldset class="hidden parameters">
+                    <input id="projectId" value="XIFI" type="hidden">
+                </fieldset>
+                <input name="atl_token" value="BE6O-ZUVS-TB0B-H8VQ|6b881b8cb180bc0620bedbed29193fde2d49b14a|lin" type="hidden">
+                <input name="pid" value="10700" type="hidden">
+                <div class="custom-fields-container">
+
+		    <div class="field-group">
+			<label for="summary">Summary<span class="icon-required">*</span></label>
+			<input class="text ui-widget-content ui-corner-all" id="summary" name="summary" value="" type="text">
+                    </div>
+                    <div class="field-group">
+			<label for="customfield_10108" >FI-Lab Node</label>
+			<select class="select cf-select" name="customfield_10108" id="customfield_10108">
+			    <!--<option value="-1">None</option>
+                            <option selected="selected" value="10100">FI-LAB</option>
+                            <option value="10101">Test-bed</option>
+                            <option value="10102">Other</option>-->
+			</select>
+		    </div>
+		    <div class="field-group">
+			<label for="description">Description</label>
+			<div class="wiki-edit">
+			    <div id="description-wiki-edit" class="wiki-edit-content">
+				<textarea style="overflow-y: auto; height: 200px; width:95%;" class="textarea long-field wiki-textfield long-field mentionable" id="description" name="description" rows="12" wrap="virtual" data-projectkey="XIFI"></textarea>
+				<div class="content-inner">            
+				</div>
+			    </div>
+			</div>
+			<!--<div class="field-tools">
+    
+			    <a class="fullscreen" href="#" id="description-preview_link" title="preview">
+				<span class="aui-icon wiki-renderer-icon"></span>
+			    </a>
+			    <a class="help-lnk" id="viewHelp" href="/secure/WikiRendererHelpAction.jspa?section=texteffects" title="Get local help about wiki markup help" data-helplink="local">
+				<span class="aui-icon aui-icon-small aui-iconfont-help"></span>
+			    </a>
+			</div>-->
+		    </div>
+		    <!--<div class="field-group aui-field-versionspicker frother-control-renderer">
+			<label for="versions">Affects Version/s</label>
+			<span class="field-value">None</span>
+                    </div>-->
+                    <div class="field-group">
+			<label for="priority" >Priority</label>
+			<!--<div data-query="" class="aui-ss aui-ss-has-entity-icon" id="priority-single-select">
+			    <input id="priority-field" class="text aui-ss-field ajs-dirty-warning-exempt" autocomplete="off">
+			    <div class="ajs-layer-placeholder">
+				<div style="width: 247.767px; position: absolute; left: 155px; top: 373px; display: none;" class="ajs-layer box-shadow">
+				    <div style="display: block;" class="aui-list" id="priority-suggestions" tabindex="-1">
+					<div class="aui-list-scroll" tabindex="-1">
+					    <ul class="aui-last">
+						<li class="aui-list-item aui-list-item-li-blocker active">
+						    <a title="Blocker" href="#" class="aui-list-item-link imagebacked aui-iconised-link">
+							<img class="icon" src="/images/icons/priorities/blocker.png" alt="">Blocker
+						    </a>
+						</li>
+						<li class="aui-list-item aui-list-item-li-major">
+						    <a title="Major" href="#" class="aui-list-item-link imagebacked aui-iconised-link">
+							<img class="icon" src="/images/icons/priorities/major.png" alt="">Major
+						    </a>
+						</li>
+						<li class="aui-list-item aui-list-item-li-minor">
+						    <a title="Minor" href="#" class="aui-list-item-link imagebacked aui-iconised-link">
+							<img class="icon" src="/images/icons/priorities/minor.png" alt="">Minor
+						    </a>
+						</li>
+						<li class="aui-list-item aui-list-item-li-trivial">
+						    <a title="Trivial" href="#" class="aui-list-item-link imagebacked aui-iconised-link">
+							<img class="icon" src="/images/icons/priorities/trivial.png" alt="">Trivial
+						    </a>
+						</li>
+					    </ul>
+					</div>
+				    </div>
+				 </div>
+			    </div>
+			    <span class="icon aui-ss-icon noloading drop-menu"><span>More</span></span>
+			    <img class="aui-ss-entity-icon" src="/images/icons/priorities/critical.png" alt="">
+			 </div>-->
+			 <select id="priority" name="priority">
+			    <option class="imagebacked" data-icon="/assets/infographic/jira/blocker.png" value="1">
+				Blocker
+			    </option>
+                            <option class="imagebacked" data-icon="/assets/infographic/jira/critical.png" value="2">
+				Critical
+			    </option>
+                            <option class="imagebacked" selected="selected" data-icon="/assets/infographic/jira/major.png" value="3">
+				Major
+			    </option>
+                            <option class="imagebacked" data-icon="/assets/infographic/jira/minor.png" value="4">
+				Minor
+			    </option>
+                            <option class="imagebacked" data-icon="/assets/infographic/jira/trivial.png" value="5">
+				Trivial
+			    </option>
+			  </select>
+			  <!--<a class="help-lnk" href="/secure/ShowConstantsHelp.jspa?decorator=popup#PriorityLevels" title="Get local help about Priority" data-helplink="local"><span class="aui-icon aui-icon-small aui-iconfont-help"></span></a>-->
+		    </div>
+		    <div class="field-group">
+			<label for="type" >Type</label>
+			<select id="type" name="type">
+			    <option class="imagebacked" value="1">
+				Bug
+			    </option>
+                            <option class="imagebacked" value="2">
+				New Feature
+			    </option>
+                            <option class="imagebacked" selected="selected" value="3">
+				Task
+			    </option>
+                            <option class="imagebacked" value="4">
+				Improvement
+			    </option>
+                            <!--commented because XIFI has no parents projects<option class="imagebacked" value="5">
+				Sub-task
+			    </option>-->
+			    <option class="imagebacked" value="6">
+				Epic
+			    </option>
+			    <option class="imagebacked" value="7">
+				Story
+			    </option>
+			    <!--<option class="imagebacked" value="8">
+				Technical task
+			    </option>-->
+			  </select>
+		    </div>
+		    <!--<fieldset class="group">
+		        <legend><span>Attach file</span></legend>
+			<div id="screenshot-group" class="field-group">
+			    <input multiple="multiple" name="screenshot" class="file" id="screenshot" type="file">
+			</div>
+		    </fieldset>-->
+		</div>
+
+		<!--<fieldset class="hidden parameters">
+		    <input title="collectorId" value="c3404461" type="hidden">
+		    <input name="pid" value="10700" type="hidden">
+		    <input name="atl_token" value="BE6O-ZUVS-TB0B-H8VQ|6b881b8cb180bc0620bedbed29193fde2d49b14a|lin" type="hidden">
+		    <div id="attach-max-size" class="hidden">10485760</div>
+		    <input multiple="multiple" class="hidden" name="_tricky_" type="file">
+		</fieldset>-->
+                
+		<!--<div id="name-group" class="contact-form-fields field-group ">
+		    <label for="fullname">Name</label>
+		    <input name="fullname" class="text" id="fullname" type="text">
+		</div>-->
+
+		<div id="email-group" class="contact-form-fields field-group ">
+		    <label for="email">Email<span class="icon-required">*</span></label>
+		    <input name="email" class="text" id="email" type="text">
+	        </div>
+	    </div>
+	</div>
+	<!--<div class="dialog-button-panel">
+	    <input class="button button-panel-button submit-button" value="Submit" type="submit">
+	    <a href="#" class="cancel">Close</a>
+        </div>-->
+    </form>
 </div>
+<!-- ------------------------------------------- -->
+<div class="clear"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<% content_for :jsfooter do %>
+  <script type="text/javascript">
+
+	  $(document).ready(function() 
+	  {
+		  $('.infographic').removeClass('active');
+		  $('.status').addClass('active');
+		  
+		  var selectedMarkers = [];
+		  
+		  var mapNodes = new jvm.WorldMap({
+		  container: $('#world-map-nodes'),
+		  map: 'world_mill_en',
+		  regionStyle: {
+			    initial: {
+			      fill: '#ffffff',
+			      "fill-opacity": 1,
+			      stroke: 'none',
+			      "stroke-width": 0,
+			      "stroke-opacity": 1
+			    },
+			    hover: {
+			      "fill-opacity": 0.8
+			    },
+			    selected: {
+				  fill: 'orange'
+			    },
+			    selectedHover: {
+			    }
+		  },
+		  markerStyle: {
+			initial: {
+			  fill: '#ff9900',
+			  stroke: '#383f47'
+			}
+		  },
+		  onMarkerClick: function(events, index) {
+  // 		    alert(selectedMarkers[index].name);
+		      var aTag = $("a[name='"+selectedMarkers[index].name+"']");
+		      $('html,body').animate({scrollTop: aTag.offset().top},'slow');
+		      $('.field-service').css('text-weight','normal');
+		      $('.field-service').css('color','#8C8C8C');
+		      $('.'+selectedMarkers[index].name).css('text-weight','bold');
+		      $('.'+selectedMarkers[index].name).css('color','black');	    
+		  }//,
+		  /*series: {
+			    regions: [{values: {"IT":20,"DE":90},
+			  // attribute:'fill',
+  //				      scale: ['#C8EEFF', '#0071A4'],
+  // 					      scale: {
+  // 							  84: '#4169E1',
+  // 							  64: '#FF69B4'
+  // 							},
+  //				      normalizeFunction: 'linear'
+			    }]
+		  }	*/		     
+
+		  });
+		  
+		  $('#world-map-nodes').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
+		  
+		  function isValidEmailAddress(emailAddress) {
+		      var pattern = new RegExp(/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i);
+		      return pattern.test(emailAddress);
+		  };
+
+		  function ajaxFun() { $.ajax (
+			    {
+				  type: "GET",
+				  url: "../api/v1/region/services",
+				  contentType: "application/json; charset=utf-8",
+				  data: {},
+				  dataType: "json",
+				  cache: false,
+				  success: function(json){
+				  
+					  var allHeaders = "";
+					  var allRows = "";
+					  var servicesNames = Object.keys(json[Object.keys(json)[0]]["services"]);//I will get Nova,Cinder,...
+					  selectedMarkers = [];
+					  
+					  $.each(json, function(idRegion, regionAttributes) {
+						  if(idRegion != null && regionAttributes != null)
+						  {
+							  var markers = {};
+							  markers["latLng"] =  [parseFloat(regionAttributes['latitude']),parseFloat(regionAttributes['longitude'])];
+							  markers["name"] = idRegion;
+							  var statusColor;
+							  if(regionAttributes["services"]['overallStatus']['value']=="red") statusColor = 'rgba(255,0,0,1.0)';
+							  else if(regionAttributes["services"]['overallStatus']['value']=="green") statusColor = 'rgba(0,255,0,1.0)';
+							  else if(regionAttributes["services"]['overallStatus']['value']=="yellow") statusColor = 'rgba(255,255,0,1.0)';
+							  else if(regionAttributes["services"]['overallStatus']['value']=="gray") statusColor = 'rgba(0,0,0,0.5)';
+							  
+							  markers["style"] = {fill: statusColor, r:5};
+							  selectedMarkers.push(markers);
+							  
+							  
+							  var allSubRows = "";
+							  
+  // 							$.each(regionAttributes["services"], function(serviceName, valSub) {
+  // 								if(serviceName != null && valSub != null)
+  // 								{
+  // 									console.log(serviceName);
+  // 									var colorValue = valSub["value"];
+  // 									var colorPng = colorValue + "light.png";
+  // 									
+  // 									if(serviceName == "overallStatus")
+  // 									{
+  // 										var colorValue = valSub;
+  // 										var colorPng = colorValue + "light.png";
+  // 										allSubRows = "<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>" + allSubRows;
+  // 									}
+  // 									
+  // 									
+  // 									else allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+  // 									
+  // 								}
+  // 							});
+							  
+							  
+							  
+							  var colorValueOverall = regionAttributes["services"]["overallStatus"]['value'];
+							  var colorPng = colorValueOverall + "light.png";
+							  allSubRows = "<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>" + allSubRows;
+							  
+							  
+  // 							console.log(servicesNames);
+							  $.each(servicesNames, function( index, value ) {
+								  if(value != "overallStatus")
+								  {
+									  colorPng = regionAttributes["services"][value]["value"]+"light.png";
+									  allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
+								  }
+							  });
+							  
+							  
+							  
+							  
+							  
+							  allRows = allRows + "<DIV CLASS='status-row row-status-service row-status-closed'>"+
+								  "<DIV CLASS='field field-group field-group-expand'>"+
+									  "<!--<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>-->"+
+								  "</DIV>"+"<a name=\""+idRegion+"\"></a>"+
+								  "<DIV CLASS='field field-service field-service-node "+idRegion+"'>"+idRegion+"</DIV>"+
+								  
+								  allSubRows+
+								  
+								  "<DIV CLASS='field field-service field-service-status-support'>"+
+									  "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"$('#popupDialog').data('allNodes','"+encodeURIComponent(JSON.stringify(regionAttributes["allNodes"]))+"').dialog('open');\"/>"+
+									  "<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href ='"+regionAttributes["allNodes"]["selected"]["jira_project_url"]+"';\" style=\"cursor:pointer;\"/>"+
+								  "</DIV>"+			
+							  "</DIV>"+
+							  "<!--<DIV CLASS='row-message'>"+
+								  regionAttributes["services"]["overallStatus"]['description']+
+							  "</DIV>-->";
+						  }
+						  
+						  var allSubHeaders = "";
+						  $.each(servicesNames, function( index, value ) {
+							  if(value != "overallStatus")
+							  {
+								  allSubHeaders = allSubHeaders + "<DIV CLASS='field field-header field-header-service'>"+value+"</DIV>";
+							  }
+						  });
+							  
+						  allHeaders = "<DIV CLASS='field field-header field-header-node'>Node</DIV>"+
+						  "<DIV CLASS='field field-header field-header-overall'>Overall</DIV>"+
+						  
+						  allSubHeaders+
+						  
+						  "<DIV CLASS='field field-header field-header-support'>Support</DIV>";
+						  
+						  $('#tableHeaderContent').html(allHeaders);
+						  $('#tableContent').html(allRows);
+					  });
+					  
+					  mapNodes.removeAllMarkers();
+					  mapNodes.addMarkers(selectedMarkers);
+					  
+					  $(".row-message").hide();
+					  $('.field-group-federation').click( function()
+					  {
+						  var $image = $(this).children();
+						  if( $image.hasClass('collapse' ) )
+						  {
+							  $image.removeClass('collapse' );
+							  $image.addClass('expand' );
+						  }
+						  else
+						  {
+							  $image.removeClass('expand' );
+							  $image.addClass('collapse' );
+						  }
+						  var $parent = $(this).parent();
+						  
+						  var $message = $parent.next(".row-message");
+						  $message.slideToggle(function()
+						  {
+							  if( $parent.hasClass('row-status-closed' ) )
+							  {
+								  $parent.removeClass('row-status-closed' );
+								  $parent.addClass('row-status-opened' );
+							  }
+							  else
+							  {
+								  $parent.removeClass('row-status-opened' );
+								  $parent.addClass('row-status-closed' );
+							  }
+						  });
+					  });
+					  $('.field-group-expand').click( function()
+					  {
+						  var $image = $(this).children();
+						  if( $image.hasClass('collapse' ) )
+						  {
+							  $image.removeClass('collapse' );
+							  $image.addClass('expand' );
+						  }
+						  else
+						  {
+							  $image.removeClass('expand' );
+							  $image.addClass('collapse' );
+						  }
+						  var $parent = $(this).parent();
+						  
+						  var $message = $parent.next(".row-message");
+						  $message.slideToggle(function()
+						  {
+							  if( $parent.hasClass('row-status-closed' ) )
+							  {
+								  $parent.removeClass('row-status-closed' );
+								  $parent.addClass('row-status-opened' );
+							  }
+							  else
+							  {
+								  $parent.removeClass('row-status-opened' );
+								  $parent.addClass('row-status-closed' );
+							  }
+						  });
+					  });
+					  
+					  $('#popupDialog').dialog({
+					      closeOnEscape: true,
+					      resizable: false,
+					      modal: true,
+					      width: '400', 
+					      height: '300',
+					      fluid: true,					      
+					      autoOpen: false,
+					      autoResize: true,
+					      show: 'fade',
+					      hide: 'fade',
+					      buttons: {
+						    'Close': function() {
+								$("input#summary").val('');
+								$("textarea#description").val('');
+								$(this).dialog('close');
+							      },
+						    'Submit': function() {
+			  // 				      $('#mainForm input#target').val( $(this).find('#widgetName').val() );
+								if($("input#summary").val() == "" || $("input#email").val() == "")
+								{
+								    alert("Please fill all fields marked with *");
+								}
+								else if(!isValidEmailAddress($("input#email").val()))
+								{
+								    alert("Please enter a valid email address");
+								}
+								else 
+								{
+								    var regionId = $("#customfield_10108").val();
+								    var type = $("#type").val();
+								    var priority = $("#priority").val();
+								    var summary = $("input#summary").val();
+								    var description = $("textarea#description").val();
+								    var email = $("input#email").val();
+								
+								    $.ajax({ 
+								      type: 'POST', 
+								      url: "../api/v1/jira/issue",
+								      data: {
+									  'region_id' : regionId,
+									  'type':type,
+									  'priority':priority,
+									  'summary':summary,
+									  'description':description,
+									  'email':email
+								      },
+								      dataType: "json",
+								      cache: false, 
+								      success: function(data){
+									$("input#summary").val('');
+									$("textarea#description").val('');
+// 									
+									$('#popupDialog').dialog('close');
+// 									$(this).dialog('close');
+// alert("");
+								      },
+								      error: function(xhr, textStatus, errorThrown){
+									var errore = "retry later";
+									if(errorThrown != null && errorThrown != "" && errorThrown != "null")
+									  errore = errorThrown;
+									alert("An error occurred during sending: "+errore);
+								      }
+								    });
+
+								    
+								}
+							      }
+						  },
+					      open: function (event, ui) {
+// 						  $('.ui-widget-overlay').hide().fadeIn();
+						  $(this).css("overflow-y", "auto");
+						  $(this).css("overflow-x", "hidden");
+						  
+						  $(".ui-dialog-titlebar-close").hide();
+						  
+						  var allNodes = JSON.parse(decodeURIComponent($('#popupDialog').data('allNodes')));
+						  var nodeSelected = allNodes["selected"]["name"];
+						  
+						  var htmlOptions = "";
+						  
+						  $.each(allNodes["list"], function( index, value ) {
+						      var selected = "";
+						      if(value == nodeSelected) selected = "selected='selected'";
+						      htmlOptions = htmlOptions + "<option "+selected+" value='"+value+"'>"+value+"</option>";
+						  });
+						  
+						  $("#customfield_10108").html(htmlOptions);
+						  $(this).parents(".ui-dialog:first").css('background-color','#ffffff');
+						  $(this).parents(".ui-dialog:first").css('color','gray');
+						  $(this).parents(".ui-dialog:first").css('padding','15px');
+// 						  $(this).parents(".ui-dialog:first").css('text-align','left');
+						  }
+					  });
+				  },
+				  error: function(xhr, textStatus, errorThrown){
+  // 				    $('#tableHeaderContent').html("<DIV CLASS='field field-header field-header-node'><%= FiLabInfographics.nodata %></DIV>");
+				      var errore = "<%= FiLabInfographics.nodata %>";
+				      if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+					      errore = xhr.responseText;
+				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+  //     				alert('request failed->'+textStatus);
+  //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
+				  } 
+			    }
+			      
+		  )};
+
+		//Chiamo il mio ajax la prima volta
+		ajaxFun();
+		//e poi lo richiamo dopo 30 secondi
+		setInterval(function(){ajaxFun()}, 30000);
+	  });
+			      
+			      
+			      
+			      
+			      
+  /*	
+	  var markers = {};
+	  markers["latLng"] = [46.06787, 11.12108];
+	  markers["name"] = 'Trento';
+	  markers["style"] = {fill: 'rgba(255,0,0,1.0)', r:5};
+	  selectedMarkers.push(markers);
+	  var markers = {};
+	  markers["latLng"] = [52.30000, 13.25000];
+	  markers["name"] = 'Berlin';
+	  markers["style"] = {fill: 'rgba(0,255,0,1.0)', r:5};
+	  selectedMarkers.push(markers);
+	  var markers = {};
+	  markers["latLng"] = [48.86667, 2.33333];
+	  markers["name"] = 'Paris';
+	  markers["style"] = {fill: 'rgba(255,255,0,1.0)', r:5};
+	  selectedMarkers.push(markers);
+	  var markers = {};
+	  markers["latLng"] = [40.4, -3.68333];
+	  markers["name"] = 'Madrid';
+	  markers["style"] = {fill: 'rgba(0,0,0,0.5)', r:5};
+	  selectedMarkers.push(markers);
+		  
+	  
+
+		  
+		  mapNodes.addMarkers(selectedMarkers);
+		  */
+		  
+		  
+	  
+		  
+  </script>
+<% end %>

@@ -1,0 +1,38 @@
+        <div class="help-bar">
+          <div class="help-box span3">
+            <%= link_to (raw('
+              <img src="/assets/status.png">
+              <div>
+                <h4>FIWARE Lab status</h4>
+                  Check the status of FIWARE Lab
+              </div>')), root_url(subdomain: 'status.lab') %>
+          </div>
+           <div class="help-box nst span3">
+             <%= link_to (raw('
+              <img src="/assets/map.png">
+              <div>
+               <h4>FIWARE Lab nodes</h4>
+                 Who are FIWARE Lab nodes
+             </div>')), root_url(subdomain: 'infographic.lab') %>
+          </div>
+          <div class="help-box nst span3">
+            <a href="http://ops.fiware.org" target="_blank">
+              <img src="/assets/fi-ops.png">
+              <div>
+                <h4>Operating FIWARE Lab</h4>
+                  Learn about FIWARE Ops
+              </div>
+            </a>
+          </div>
+          <div class="help-box nst span3">
+            <a href="http://join.lab.fiware.org" target="_blank">
+              <img src="/assets/join.png">
+              <div>
+                <h4>Be part of FIWARE Lab</h4>
+                  Connect your Cloud to FIWARE Lab
+              </div>
+            </a>
+          </div>
+          <div class="clear"></div>
+        </div>
+

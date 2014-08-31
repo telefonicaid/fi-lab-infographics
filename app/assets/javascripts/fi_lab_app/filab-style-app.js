@@ -23,4 +23,5 @@
 //= require colorfont
 //= require jquery-jvectormap-1.2.2.min.js
 //= require jquery-jvectormap-world-mill-en.js
+//= require infographic/jira_dialog.js
 //= require_self

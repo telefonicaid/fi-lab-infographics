@@ -83,7 +83,12 @@ class RegionController < ApplicationController
   
   def getRegionsData
     #     regionsData = self.performRequest('region')
-    regionsData = self.performRequest('regions')
+    begin
+      regionsData = self.performRequest('regions')
+    rescue CustomException => e
+      raise e
+    end
+    
     
     if regionsData != nil
     
@@ -117,7 +122,11 @@ class RegionController < ApplicationController
       attributes = Hash.new
       
       idRegions.each do |idRegion|
-	regionData = self.performRequest('regions/' + idRegion)
+	begin
+	  regionData = self.performRequest('regions/' + idRegion)
+	rescue CustomException => e
+	  raise e
+	end	
 	attributesRegion = Hash.new
 	attributesRegion["id"] = regionData["id"]
 	attributesRegion["name"] = regionData["name"]
@@ -180,8 +189,12 @@ class RegionController < ApplicationController
     attributesRegionsServices.each do |key,regionData|
       
       
-      
-      servicesRegionData = self.performRequest('regions/' + regionData["id"] + '/services')
+      begin
+	servicesRegionData = self.performRequest('regions/' + regionData["id"] + '/services')
+      rescue CustomException => e
+	render :json=>"Problem in retrieving data: "+e.data, :status => :service_unavailable
+	return
+      end
       
       serviceNova = Hash.new
       serviceNeutron = Hash.new

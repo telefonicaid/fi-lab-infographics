@@ -74,20 +74,27 @@ class JiraController < ApplicationController
   def createIssue
     
 #     params read
-#     'region_id','type','priority','summary','description','email'
+#     'region_id','environmentId','priority','summary','description','name','email'
 #     Rails.logger.info("THE REGION ID: "+params[:region_id]);
     
-    jira_project_id = "XIFI"
-    if(FiLabInfographics.jira_test == 0)
+    jira_project_id = "XIFI"#base_project
+    environment_id = Hash.new
+    environment_id["id"] = params[:environment_id]#FI-Lab,Test-bed or Other
     
-#       ---------------------------------------------
-#       to set jira_project_id dinamically
-#       ---------------------------------------------
-      dbNode = Node.where(:rid => params[:region_id]).first
-      if dbNode != nil
-	jira_project_id = dbNode.jira_project_id;
+    if(params[:environment_id] == "10100")#FI-Lab
+      jira_project_id = "XIFI"#test_project
+      if(FiLabInfographics.jira_test == 0)
+      
+  #       ---------------------------------------------
+  #       to set jira_project_id dinamically
+  #       ---------------------------------------------
+	dbNode = Node.where(:rid => params[:region_id]).first
+	if dbNode != nil
+	  jira_project_id = dbNode.jira_project_id;
+	end
       end
-    end
+    end 
+    
       
     inputIssueData = Hash.new
     fields = Hash.new
@@ -96,7 +103,7 @@ class JiraController < ApplicationController
     parent_key = Hash.new
     parent_key["key"] = "XIFI-SUB" #or id=10700
     issuetype_id = Hash.new
-    issuetype_id["id"] = params[:type]#1 is Bug,2 New Feature,3 is Task,4 Improvement,5 Sub-task,6 Epic,7 Story, 8 Technical task
+    issuetype_id["id"] = "1"#1 is Bug,2 New Feature,3 is Task,4 Improvement,5 Sub-task,6 Epic,7 Story, 8 Technical task
     prioritytype_id = Hash.new
     prioritytype_id["id"] = params[:priority]#1 is Blocker,2 Critical,3 Major,4 Minor,5 Trivial
     fields["project"] = project_key
@@ -105,6 +112,8 @@ class JiraController < ApplicationController
     fields["description"] = params[:description]
     fields["issuetype"] = issuetype_id
     fields["priority"] = prioritytype_id
+    fields["customfield_10108"] = environment_id
+    fields["customfield_10302"] = params[:name]
     fields["customfield_10301"] = params[:email]
     inputIssueData["fields"] = fields
     

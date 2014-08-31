@@ -1,57 +1,14 @@
-<% if !user_logged(current_user)  %>
-  <section id="frontpage">
-  <div class="title"><title><%= @page_title or 'FiLab App Title' %></title></div>
-  <h1>Welcome to the default page of the app where not authenticated users can access!</h1>
-  </section>
-<% else  %>
   <section class="media-1"><h3 class="media-heading">
-      FI-Lab Nodes
+      FIWARE Lab Nodes
     </h3>
     <span>
-      FI-Lab is a working instance of FI-WARE available for experimentation. FI-Lab is hosted on multiple nodes across Europe. 
+      FIWARE Lab is a working instance of FI-WARE available for experimentation. FIWARE Lab is hosted on multiple nodes across Europe. 
     </span>
     <p>
-      This page provides a real time infographics of the capacities of FI-Lab nodes.
+      This page provides a real time infographics of the capacities of FIWARE Lab nodes.
     </p>
+    <%= render :partial => "topbar" %>
   </section>
-        <!--<div class="help-bar">
-          <div class="help-box span3">
-            <%= link_to (raw('
-              <img src="/assets/status.png">
-              <div>
-                <h4>FI-Lab status</h4>
-                  Check the status of FI-Lab
-              </div>')), '/status' %>
-          </div>
-           <div class="help-box nst span3">
-            <a href="/" target="_blank">
-              <img src="/assets/map.png">
-              <div>
-                <h4>FI-Lab nodes</h4>
-                  Who are FI-Lab nodes
-              </div>
-            </a>
-          </div>
-          <div class="help-box nst span3">
-            <a href="https://www.fi-xifi.eu/fi-ops.html" target="_blank">
-              <img src="/assets/fi-ops.png">
-              <div>
-                <h4>Operate FI-Lab</h4>
-                  Learn about FI-Ops
-              </div>
-            </a>
-          </div>
-          <div class="help-box nst span3">
-            <a href="https://www.fi-xifi.eu/fi-ops.html" target="_blank">
-              <img src="/assets/join.png">
-              <div>
-                <h4>Be part of FI-Lab</h4>
-                  Connect your node to FI-Lab
-              </div>
-            </a>
-          </div>
-          <div class="clear"></div>
-        </div>-->
 
 <div class="layoutContainer">
 	<div class="row-fluid">
@@ -367,6 +324,10 @@
 
   <!-- ===== init ===== -->
   <script type="text/javascript">
+
+          $(window).resize(function(){
+            location.reload();
+          });
 	  $(document).ready(function() 
 	  {
 		  $('.status').removeClass('active');
@@ -922,4 +883,3 @@
 	  });
   </script>
 <% end %>
-<% end  %>

@@ -1,0 +1,15 @@
+<div class="nav menu-toolbar affix">
+  <h5><%= FiLabApp.appname%></h5>
+  <h5 class="tablet"><%= FiLabApp.appname%></h5>
+  <ul class="main_nav">
+    <li class="home<%= ' active' if controller.controller_name == 'users' %>">
+      <%= link_to fi_lab_app.user_path(current_user.id) do %>
+        <i class='icon_menu-20-home'></i>
+        <h2>Home</h2>
+      <% end %>
+    </li>
+    <% if user_role(current_user,'InfrastructureOwner') %>
+    <% end %>
+    <hr class="soften">
+  </ul>
+</div>

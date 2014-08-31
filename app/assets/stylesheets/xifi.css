@@ -77,7 +77,8 @@ section.partners {
 }
 
 .smallPanel {
-	height: 230px;
+/*	height: 230px; */
+padding-bottom: 10px;
 }
 
 .bigPanel {

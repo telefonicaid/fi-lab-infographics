@@ -1,3 +1,5 @@
+require 'oauth2'
+ 
 class CustomException < Exception
   attr_accessor :data
   def initialize(data)
@@ -6,7 +8,33 @@ class CustomException < Exception
 end
 
 class RegionController < ApplicationController
+
+  def self.getToken
+    if @@token.expired?
+      @@token = @@token.refresh!
+    end
+
+    logger.info "providing token: " + @@token.token
+    return @@token
+  end
   
+  def self.setToken(token)
+    logger.info "setting token: " + token.token
+    @@token=token
+  end
+
+  def initialize
+    super # this calls ActionController::Base initialize
+
+    client = OAuth2::Client.new(FiLabApp.client_id, FiLabApp.client_secret,
+      :site => FiLabApp.account_server, :authorize_url => FiLabApp.account_server + '/authorize', :token_url => FiLabApp.account_server + '/token')
+
+    token = client.client_credentials.get_token
+    logger.info 'acquired token:' + token.token
+
+    RegionController.setToken(token)
+  end
+
   def performRequest (uri)
     require 'net/http'
     require 'timeout'
@@ -22,7 +50,7 @@ class RegionController < ApplicationController
     req.initialize_http_header({"Accept" => "application/json"})
     
     
-    oauthToken = Base64.strict_encode64(current_user.token)
+    oauthToken = Base64.strict_encode64( RegionController.getToken.token )
     req.add_field("Authorization", "Bearer "+oauthToken)
     Rails.logger.info(req.get_fields('Authorization'));
     Rails.logger.info(req.get_fields('Accept'));

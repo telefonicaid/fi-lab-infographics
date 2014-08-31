@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140804090145) do
+ActiveRecord::Schema.define(version: 20140828211608) do
 
   create_table "fi_lab_app_organizations", force: true do |t|
     t.string   "name"
@@ -48,6 +48,36 @@ ActiveRecord::Schema.define(version: 20140804090145) do
     t.integer  "node_id"
   end
 
+  create_table "fi_lab_infographics_institution_categories", force: true do |t|
+    t.string "name"
+    t.string "logo"
+  end
+
+  create_table "fi_lab_infographics_institutions", force: true do |t|
+    t.integer "category_id"
+    t.string  "name"
+    t.string  "logo"
+  end
+
+  create_table "fi_lab_infographics_messages", force: true do |t|
+    t.integer  "user_id",    null: false
+    t.integer  "node_id"
+    t.string   "message"
+    t.datetime "created_at"
+  end
+
+  create_table "fi_lab_infographics_nodes", force: true do |t|
+    t.string "rid"
+    t.string "name"
+    t.string "jira_project_url"
+    t.string "jira_project_id"
+  end
+
+  create_table "fi_lab_infographics_nodes_institutions", id: false, force: true do |t|
+    t.integer "node_id",        null: false
+    t.integer "institution_id", null: false
+  end
+
   create_table "fi_lap_app_roles_organizations", id: false, force: true do |t|
     t.integer "role_id",         null: false
     t.integer "organization_id", null: false
@@ -61,36 +91,6 @@ ActiveRecord::Schema.define(version: 20140804090145) do
   create_table "fi_lap_app_users_roles", id: false, force: true do |t|
     t.integer "user_id", null: false
     t.integer "role_id", null: false
-  end
-  
-  create_table "fi_lab_infographics_nodes", force: true do |t|
-    t.string   "rid"
-    t.string   "name"
-    t.string   "jira_project_url"
-    t.string   "jira_project_id"
-  end
-  
-  create_table "fi_lab_infographics_messages", force: true do |t|
-    t.integer "user_id", null: false
-    t.integer "node_id", null: true
-    t.string  "message"
-    t.datetime "created_at"
-  end
-  
-  create_table "fi_lab_infographics_institutions", force: true do |t|
-    t.integer  "category_id"
-    t.string   "name"
-    t.string   "logo"
-  end
-  
-  create_table "fi_lab_infographics_institution_categories", force: true do |t|
-    t.string   "name"
-    t.string   "logo"
-  end
-  
-  create_table "fi_lab_infographics_nodes_institutions", id: false, force: true do |t|
-    t.integer "node_id", null: false
-    t.integer "institution_id", null: false
   end
 
 end

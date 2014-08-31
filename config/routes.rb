@@ -1,8 +1,20 @@
+require 'domain_constraint'
+
 FiLabInfographics::Application.routes.draw do
-  root 'welcome#index'
+
+  constraints DomainConstraint.new('status.lab') do
+    get '/',  to: "welcome#status", as: 'status_root'
+  end
+
+  constraints DomainConstraint.new('infographic.lab') do
+    get '/',  to: "welcome#info", as: 'info_root'
+  end
+ 
+  root :to => 'welcome#info'
+  
   mount FiLabApp::Engine => "/"#"/fi_lab_app"
   
-#   get "welcome/index"
+#  get "welcome/index"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -15,9 +27,9 @@ FiLabInfographics::Application.routes.draw do
 #   get "welcome/error"
 
   # You can have the root of your site routed with "root"
-#   root 'welcome#index'
+ # root 'welcome#index'
   
-#   get '/info', to: 'welcome#index'
+  get '/info', to: 'welcome#info'
   get '/status', to: 'welcome#status'
 #  get '/nam' => redirect('http://138.4.47.33:5000/')
   

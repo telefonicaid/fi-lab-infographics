@@ -482,6 +482,10 @@
 						  
 						  $('#tableHeaderContent').html(allHeaders);
 						  $('#tableContent').html(allRows);
+						  
+						  var height = $('#world-map-nodes').height()+$('#status').height()+80;
+						  $('.wrapper').css("cssText", "height: "+height+"px !important;");
+						  
 					  });
 					  
 					  mapNodes.removeAllMarkers();

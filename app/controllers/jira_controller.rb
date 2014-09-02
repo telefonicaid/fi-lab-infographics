@@ -119,9 +119,16 @@ class JiraController < ApplicationController
     
     Rails.logger.info(inputIssueData);
     
-    outputIssueData = self.performRequest(inputIssueData)
+    begin
+      outputIssueData = self.performRequest(inputIssueData)
+      render :json => outputIssueData.to_json
+    rescue CustomException => e
+      errors = Hash.new
+      errors["errors"] = e.data
+      render :json=>errors, :status => :service_unavailable
+    end
     
-    render :json => outputIssueData.to_json
+    
   end
   
 end

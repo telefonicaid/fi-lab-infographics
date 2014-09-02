@@ -147,6 +147,7 @@
 <div id="atlScriptlet" class="aui-dialog collector-dialog custom-collector" style="display:none;">
     <h2 class="dialog-title">Report Issue</h2>
     <form id="jic-collector-form" class="aui " action="http://jira.fi-ware.org/rest/collectors/1.0/template/custom/c3404461" method="POST">
+	<img id="img-loading" src="/assets/infographic/jira/loading_barber_pole_horz.gif" style="display: none;margin: 25% 35%;position: absolute;z-index: 1000000;" class="atlwdg-loading">
         <div class="content-body">
             <div class="event-shield-wrapper">
                 <div class="event-shield"></div>
@@ -286,7 +287,7 @@
            </div>
         </div>
         <div class="dialog-button-panel">
-            <input class="button button-panel-button submit-button" value="Submit" type="button" onclick="submitJiraFun();">
+            <input class="button button-panel-button submit-button" value="Submit" type="button" onclick="submitJiraFun('<%= FiLabInfographics.jira_success_message %>');">
             <div class="cancel" onclick="$('input#summary').val('');$('textarea#description').val('');$('#atlScriptlet').dialog('close');">Close</div>
         </div>
     </form>

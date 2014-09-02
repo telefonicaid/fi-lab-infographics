@@ -17,7 +17,7 @@ function isValidEmailAddress(emailAddress) {
   return pattern.test(emailAddress);
 };
 		  
-function submitJiraFun() { 
+function submitJiraFun(successMsg) { 
   
   if($("input#summary").val() == "" || $("input#customfield_10302").val() == "" || $("input#customfield_10301").val() == "")
   {
@@ -38,6 +38,10 @@ function submitJiraFun() {
       var name = $("input#customfield_10302").val();
       var email = $("input#customfield_10301").val();
   
+      $("input.submit-button").attr('disabled', 'disabled');
+      $( "#jic-collector-form" ).addClass("disabled");
+      $( "#img-loading" ).show();
+    
       $.ajax({ 
 	type: 'POST', 
 	url: "../api/v1/jira/issue",
@@ -53,29 +57,105 @@ function submitJiraFun() {
 	},
 	dataType: "json",
 	cache: false, 
-	success: function(data){
+	success: /*function(n,l,p,m){
+	  var o=AJS.$('<div class="msg-container"></div>');
+	  var k;
+	  if(n.errors!==undefined){
+	    
+	    return
+	    
+	  }
+	  if(n.url!==undefined){
+	   var q='<a class="issue-key" target="_blank" href="'+n.url+'">'+n.key+"</a>";
+	   k="<p>"+AJS.format("Your feedback has been recorded in {0}. This window will automatically close in 5 seconds.",q)+"</p>"
+	    
+	  }
+	  else{
+	    k="<p>"+"Thanks for providing your feedback! This window will automatically close in 5 seconds."+"</p>"
+	    
+	  }
+	  AJS.messages.success(o,{title:"Thank you for your feedback!",body:k,closeable:false});
+	  m.prepend(o);
+	  setTimeout(function(){window.top.postMessage("cancelFeedbackDialog","*")},5000)
 	  
+	},
+	error:function(l,k,m){
+	  d(l.status===400?JSON.parse(l.responseText):{})
+	  
+	}
+	
+      });*/
+      function(data){
+	  $("#img-loading").hide();
 	  if(data["errors"] != null)
-	    alert("An error occurred during sending: JIRA issue");
+	  {
+	    $( ".content-body" ).before('<div class="msg-container" id="error_message"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>An error occurred during sending: JIRA issue. This window will automatically close in 5 seconds.</p><!-- .aui-message --></div></div>');
+	    
+	    $("#error_message").delay(5000).queue(function(next){
+		$("#jic-collector-form").removeClass("disabled");
+		$("input.submit-button").removeAttr('disabled');
+		$("#error_message").hide(400,function(){$("#error_message").remove();});	      
+		next();
+	    });
+	    
+// 	    alert("An error occurred during sending: JIRA issue");
+	  }
 	  else
 	  {
-	    $("input#summary").val('');
-	    $("textarea#description").val('');
-	    $("input#customfield_10302").val('');
-	    $("input#customfield_10301").val('');
+	    $( ".content-body" ).before('<div class="msg-container" id="success_message"><div class="aui-message success  shadowed "><p class="title"><span class="aui-icon icon-success"></span><strong>'+successMsg+'</strong></p><p>The issue can be tracked online at this link: <a href="http://jira.fi-ware.org/browse/'+data["key"]+'" target="_blank" class="issue-key">http://jira.fi-ware.org/browse/'+data["key"]+'</a>. This window will automatically close in 5 seconds.</p><!-- .aui-message --></div></div>');
 	    
-	    alert("New issue created: "+data["key"]+"\nURL: "+data["self"]);
+// 	    $("#success_message").delay(5000).hide(400);
+	    $("#success_message").delay(5000).queue(function(next){
+		$("#jic-collector-form").removeClass("disabled");
+		$("input.submit-button").removeAttr('disabled');
+		$("input#summary").val('');
+		$("textarea#description").val('');
+		$("input#customfield_10302").val('');
+		$("input#customfield_10301").val('');
+		$("#success_message").hide(400,function(){
+		  $('#atlScriptlet').dialog('close');
+		  $("#success_message").remove();
+		  
+		});	      
+		next();
+	    });
+
+	    
+// 	    $( "#success_message" ).remove();
+	    
+// 	    $( "#jic-collector-form" ).removeClass("disabled");
+// 	    $("input.submit-button").removeAttr('disabled');
+	    
+	    
+	    
+
+	
+// 	    alert("New issue created: "+data["key"]+"\nURL: "+ "http://jira.fi-ware.org/browse/"+data["key"]);
   // 									
-	    $('#atlScriptlet').dialog('close');
+	    
 	  }
 // 									$(this).dialog('close');
 // alert("");
 	},
 	error: function(xhr, textStatus, errorThrown){
+	  $("#img-loading").hide();
 	  var errore = "retry later";
 	  if(errorThrown != null && errorThrown != "" && errorThrown != "null")
 	    errore = errorThrown;
-	  alert("An error occurred during sending: "+errore);
+// 	  alert("An error occurred during sending: "+errore);
+	  
+	  $( ".content-body" ).before('<div class="msg-container" id="error_message"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>An error occurred during sending: '+errore+'. This window will automatically close in 5 seconds.</p><!-- .aui-message --></div></div>');
+	    
+	  $("#error_message").delay(5000).queue(function(next){
+	      $("#jic-collector-form").removeClass("disabled");
+	      $("input.submit-button").removeAttr('disabled');
+	      $("#error_message").hide(400,function(){$("#error_message").remove();});	      
+	      next();
+// 	      .clearQueue();
+	  });
+	    
+// 	    alert("An error occurred during sending: JIRA issue");
+	  
 	}
       });
 

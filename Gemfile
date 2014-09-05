@@ -32,6 +32,10 @@ gem 'select2-rails'
 gem 'i18n'
 gem 'i18n-js'
 gem 'flashy'
+gem 'mime-types'
+gem 'netrc'
+gem 'rdoc'
+gem 'rest-client'
 git 'https://github.com/SmartInfrastructures/filab-style-app.git', branch: 'master' do
   gem 'fi_lab_app'
 end

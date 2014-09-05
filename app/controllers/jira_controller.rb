@@ -17,6 +17,7 @@ class JiraController < ApplicationController
     http.open_timeout = FiLabInfographics.timeout
     http.read_timeout = FiLabInfographics.timeout
     
+    
     req = Net::HTTP::Post.new(url.request_uri)
     req.body = data.to_json
     req.initialize_http_header({"Content-Type" => "application/json"})
@@ -71,11 +72,175 @@ class JiraController < ApplicationController
     
   end
   
-  def createIssue
+  def performRequestWithAttachment (issueKey, attachment)
+    require 'rest_client'
+
+    url = URI.parse(FiLabInfographics.jira + "/rest/api/2/issue/"+issueKey+"/attachments")
     
+   
+    
+#     Rails.logger.info("IL FILE SI TROVA QUI: "+attachment);
+    
+    type = MIME::Types.type_for("trivial.png").first.content_type
+   
+    Rails.logger.info("TYPE> "+type)
+#     Rails.logger.info("FILE> "+type)
+#     resource = RestClient::Resource.new(FiLabInfographics.jira, :user => FiLabInfographics.jira_username, :password => FiLabInfographics.jira_password, :headers => {"X-Atlassian-Token" => "nocheck"})
+#     result = resource["rest/api/2/issue/"+issueKey+"/attachments"].post File.new(attachment, 'rb')#, :content_type => type
+    
+    
+    request = RestClient::Request.new(
+	:method => :post,
+	:url => FiLabInfographics.jira + "/rest/api/2/issue/"+issueKey+"/attachments",
+	:user => FiLabInfographics.jira_username,
+	:password => FiLabInfographics.jira_password,
+	:headers => {"X-Atlassian-Token" => "nocheck"},
+	:payload => {
+	  :multipart => true,
+	  :file => File.new(attachment, 'rb')
+	}) 
+    
+    result = request.execute
+    
+#     resource = RestClient::Resource.new(@url, @username, @password)
+#     result = resource.post(FiLabInfographics.jira + "/rest/api/2/issue/"+issueKey+"/attachments", :file => File.new(attachment))
+    
+    
+#     http = Net::HTTP.new(url.host, url.port)
+#     http.open_timeout = FiLabInfographics.timeout
+#     http.read_timeout = FiLabInfographics.timeout
+#     
+#     
+#     #prepare the query
+#     data, headers = Multipart::Post.prepare_query("document" => attachment)
+#     
+#     
+#     
+#     
+# #     req = Net::HTTP::Post.new(url.request_uri)
+# #     req.body = data.to_json
+# #     req.initialize_http_header({"X-Atlassian-Token" => "nocheck"})
+#     req.basic_auth(FiLabInfographics.jira_username, FiLabInfographics.jira_password)
+    
+    
+#     res = Net::HTTP.start(url.host, url.port) {|http|
+#         http.open_timeout = FiLabInfographics.timeout
+# 	http.read_timeout = FiLabInfographics.timeout	
+# 	
+# 	#prepare the query
+# 	data, headers = Multipart::Post.prepare_query("file" => attachment)	
+# 	
+#         req = Net::HTTP::Post.new(url.request_uri, initheader = headers)
+#         req.body = data
+# 	req.basic_auth(FiLabInfographics.jira_username, FiLabInfographics.jira_password)
+# 	
+#         begin
+# 	  http.request(req)
+# 	rescue Exception => e
+# 	    case e
+# 	      when Timeout::Error
+# 		raise CustomException.new("timeout")
+# 	      when Errno::ECONNREFUSED
+# 		raise CustomException.new("connection refused")
+# 	      when Errno::ECONNRESET
+# 		raise CustomException.new("connection reset")
+# 	      when Errno::EHOSTUNREACH
+# 		raise CustomException.new("host not reachable")
+# 	      else
+# 		raise CustomException.new("error: #{e.to_s}")
+# 	    end
+# 	end
+#       }
+#     
+#     data = res.body  
+#     Rails.logger.info(data);
+#     begin
+#       result = JSON.parse(data)
+#     rescue Exception => e
+#       raise CustomException.new("Error parsing Data")
+#     end
+       
+    return result
+      
+#       res = http.start {|con| con.post(upload_uri.path, data, headers) }
+    
+    
+    
+#     begin
+#       res = http.request(req)
+#     rescue Exception => e
+#         case e
+#           when Timeout::Error
+#             raise CustomException.new("timeout")
+#           when Errno::ECONNREFUSED
+#             raise CustomException.new("connection refused")
+#           when Errno::ECONNRESET
+#             raise CustomException.new("connection reset")
+#           when Errno::EHOSTUNREACH
+#             raise CustomException.new("host not reachable")
+#           else
+#             raise CustomException.new("error: #{e.to_s}")
+#         end
+#     end
+# Logger.info('request');
+
+#    res = Net::HTTP.start(url.host, url.port) { |http| 
+#      http.request(req) 
+#    } 
+  
+#     begin
+#       res = Net::HTTP.start(url.host, url.port) {|http|
+#       http.request(req)
+#       }
+#     rescue Net::OpenTimeout => e
+# 	puts "-----------------"+e.message+"------------------------"
+# 	raise e.message
+#     end
+#   Logger.error(data);   
+    
+#     data = res.body  
+#     Rails.logger.info(data);
+#     begin
+#       result = JSON.parse(data)
+#     rescue Exception => e
+#       raise CustomException.new("Error parsing Data")
+#     end
+#        
+#     return result
+
+
+ 
+    
+#     return result ["queryContextResponse"] ["contextResponseList"]
+    
+  end
+  
+  def createIssue
+    require 'tempfile'
 #     params read
 #     'region_id','environmentId','priority','summary','description','name','email'
 #     Rails.logger.info("THE REGION ID: "+params[:region_id]);
+    
+    file = params[:file_attach]
+    filePath = Rails.root.join('tmp', file.original_filename)
+    File.open(filePath, 'wb') do |f|      
+      f.write(file.read)      
+    end
+#     fileTmp=Base64.strict_encode64(File.read(Rails.root.join('tmp', file.original_filename)) )
+#     fileTmp = File.read(Rails.root.join('tmp', file.original_filename)) 
+    
+#     File.open(Rails.root.join('tmp', file.original_filename), 'rb') do |f|
+#       fileTmp = f.read()
+#     end
+
+    
+#     file = Tempfile.new(params[:file_attach].tempfile.path);
+#     begin
+#         Rails.logger.info(file.path);
+#     ensure
+#         file.close
+# #         file.unlink   # deletes the temp file
+#     end
     
     jira_project_id = "XIFI"#base_project
     environment_id = Hash.new
@@ -121,6 +286,18 @@ class JiraController < ApplicationController
     
     begin
       outputIssueData = self.performRequest(inputIssueData)
+      if(outputIssueData != nil)
+	begin
+	outputAttachmentData = self.performRequestWithAttachment(outputIssueData["key"],filePath)
+	Rails.logger.info(outputAttachmentData);
+	File.delete(filePath)
+	rescue CustomException => e
+	  File.delete(filePath)
+	  errors = Hash.new
+	  errors["errors"] = "Issue created without attachment"
+	  render :json=>errors, :status => :service_unavailable
+	end
+      end
       render :json => outputIssueData.to_json
     rescue CustomException => e
       errors = Hash.new

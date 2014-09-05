@@ -161,10 +161,10 @@ class RegionController < ApplicationController
 	attributesRegion["country"] = regionData["country"]
 	attributesRegion["latitude"] = regionData["latitude"]
 	attributesRegion["longitude"] = regionData["longitude"]
-	attributesRegion["nb_users"] = regionData["nb_users"]
-	attributesRegion["nb_cores"] = regionData["nb_cores"]
-	attributesRegion["nb_ram"] = regionData["nb_ram"]
-	attributesRegion["nb_disk"] = regionData["nb_disk"]
+	attributesRegion["nb_users"] = regionData["measures"][0]["nb_users"]
+	attributesRegion["nb_cores"] = regionData["measures"][0]["nb_cores"]
+	attributesRegion["nb_ram"] = regionData["measures"][0]["nb_ram"]
+	attributesRegion["nb_disk"] = regionData["measures"][0]["nb_disk"]
 	attributesRegion["nb_vm"] = regionData["nb_vm"]
 	attributes[idRegion] = attributesRegion
       end
@@ -342,18 +342,18 @@ class RegionController < ApplicationController
       end
 #       regionData["node"] = node;
       
-      allDbNodes = Node.order(:rid).all
-      allNodes = Array.new;
-      if !allDbNodes.nil?
-	allDbNodes.each do |singleNode|
-	  allNodes.push singleNode.rid;
-	end
-      end
+#       allDbNodes = Node.order(:rid).all
+#       allNodes = Array.new;
+#       if !allDbNodes.nil?
+# 	allDbNodes.each do |singleNode|
+# 	  allNodes.push singleNode.rid;
+# 	end
+#       end
       
-      nodesList = Hash.new
-      nodesList["list"] = allNodes;
-      nodesList["selected"] = node;
-      regionData["allNodes"] = nodesList;
+#       nodesList = Hash.new
+#       nodesList["list"] = allNodes;
+#       nodesList["selected"] = node;
+      regionData["nodeSelected"] = node;
       
 #       attributesRegionsServices[regionData["id"]]["Nova"]["value"] = serviceRegionData["novaServiceStatus"]["value"];
 #       attributesRegionsServices[regionData["id"]]["Nova"]["description"] = serviceRegionData["novaServiceStatus"]["description"];
@@ -403,6 +403,23 @@ class RegionController < ApplicationController
 #     puts attributesRegionsServices
     render :json => attributesRegionsServices.to_json
       
+  end
+  
+  def getRegionIdList
+    
+    allDbNodes = Node.order(:rid).all
+    allNodes = Array.new;
+    if !allDbNodes.nil?
+      allDbNodes.each do |singleNode|
+	allNodes.push singleNode.rid;
+      end
+    end
+    
+    nodesList = Hash.new
+    nodesList["list"] = allNodes;
+    nodesList["successMsg"] = FiLabInfographics.jira_success_message;
+    render :json => nodesList.to_json
+    
   end
   
   def getVms

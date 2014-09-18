@@ -596,6 +596,7 @@ input.text{ width:95%;}
     color:red;
 }
 
+.ui-dialog { z-index: 1000 !important ;}
 /*header.navbar nav.navbar-inner .brand {
     margin: 0 0 0 -8px !important;
     padding: 0 !important;

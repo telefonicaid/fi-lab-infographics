@@ -36,6 +36,7 @@ gem 'mime-types'
 gem 'netrc'
 gem 'rdoc'
 gem 'rest-client'
+gem 'rack-cors', :require => 'rack/cors'
 git 'https://github.com/SmartInfrastructures/filab-style-app.git', branch: 'master' do
   gem 'fi_lab_app'
 end

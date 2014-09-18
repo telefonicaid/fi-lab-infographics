@@ -10,6 +10,9 @@
     </li>
     <% if user_role(current_user,'InfrastructureOwner') %>
     <% end %>
+    <% if user_role(current_user,'Provider') %>
+     pippo
+    <% end %>
     <hr class="soften">
   </ul>
 </div>

@@ -12,10 +12,12 @@ class JiraController < ApplicationController
     require 'timeout'
     require 'logger'
 
+#    raise CustomException.new("timeout")
+
     url = URI.parse(FiLabInfographics.jira + "/rest/api/2/issue/")
     http = Net::HTTP.new(url.host, url.port)
-    http.open_timeout = FiLabInfographics.timeout
-    http.read_timeout = FiLabInfographics.timeout
+    http.open_timeout = 15#FiLabInfographics.timeout
+    http.read_timeout = 15#FiLabInfographics.timeout
     
     
     req = Net::HTTP::Post.new(url.request_uri)
@@ -94,13 +96,30 @@ class JiraController < ApplicationController
 	:url => FiLabInfographics.jira + "/rest/api/2/issue/"+issueKey+"/attachments",
 	:user => FiLabInfographics.jira_username,
 	:password => FiLabInfographics.jira_password,
+	:timeout => 30,
+	:open_timeout => 30,
 	:headers => {"X-Atlassian-Token" => "nocheck"},
 	:payload => {
 	  :multipart => true,
 	  :file => File.new(attachment, 'rb')
 	}) 
     
-    result = request.execute
+    begin
+      result = request.execute
+    rescue Exception => e
+        case e
+          when Timeout::Error
+            raise CustomException.new("timeout")
+          when Errno::ECONNREFUSED
+            raise CustomException.new("connection refused")
+          when Errno::ECONNRESET
+            raise CustomException.new("connection reset")
+          when Errno::EHOSTUNREACH
+            raise CustomException.new("host not reachable")
+          else
+            raise CustomException.new("error: #{e.to_s}")
+        end
+    end
     
 #     resource = RestClient::Resource.new(@url, @username, @password)
 #     result = resource.post(FiLabInfographics.jira + "/rest/api/2/issue/"+issueKey+"/attachments", :file => File.new(attachment))
@@ -220,12 +239,15 @@ class JiraController < ApplicationController
 #     params read
 #     'region_id','environmentId','priority','summary','description','name','email'
 #     Rails.logger.info("THE REGION ID: "+params[:region_id]);
-    
+file=nil
+ 
+if !params[:file_attach].nil? && params[:file_attach]!="undefined"
     file = params[:file_attach]
     filePath = Rails.root.join('tmp', file.original_filename)
     File.open(filePath, 'wb') do |f|      
       f.write(file.read)      
     end
+end
 #     fileTmp=Base64.strict_encode64(File.read(Rails.root.join('tmp', file.original_filename)) )
 #     fileTmp = File.read(Rails.root.join('tmp', file.original_filename)) 
     
@@ -245,10 +267,11 @@ class JiraController < ApplicationController
     jira_project_id = "XIFI"#base_project
     environment_id = Hash.new
     environment_id["id"] = params[:environment_id]#FI-Lab,Test-bed or Other
-    
+#    issueType = "1"    
+
     if(params[:environment_id] == "10100")#FI-Lab
       jira_project_id = "XIFI"#test_project
-      if(FiLabInfographics.jira_test == 0)
+      if(FiLabInfographics.jira_test == 0 && params[:region_id] != "none")
       
   #       ---------------------------------------------
   #       to set jira_project_id dinamically
@@ -256,23 +279,34 @@ class JiraController < ApplicationController
 	dbNode = Node.where(:rid => params[:region_id]).first
 	if dbNode != nil
 	  jira_project_id = dbNode.jira_project_id;
+#	  issueType = "5"
 	end
+      elsif (FiLabInfographics.jira_test == 0 && params[:region_id] == "none")
+	jira_project_id = "FIL"
       end
     end 
-    
+
+    if params[:environment_id] == "10101"
+	jira_project_id = "XIFI"#test_project
+      	if(FiLabInfographics.jira_test == 0)
+		jira_project_id = "TBS"
+	end
+    end    
       
     inputIssueData = Hash.new
     fields = Hash.new
     project_key = Hash.new
     project_key["key"] = jira_project_id #or id=10700
     parent_key = Hash.new
-    parent_key["key"] = "XIFI-SUB" #or id=10700
+    parent_key["id"] = "10301" #or id=10700
     issuetype_id = Hash.new
-    issuetype_id["id"] = "1"#1 is Bug,2 New Feature,3 is Task,4 Improvement,5 Sub-task,6 Epic,7 Story, 8 Technical task
+    issuetype_id["id"] = "1"#issueType#1 is Bug,2 New Feature,3 is Task,4 Improvement,5 Sub-task,6 Epic,7 Story, 8 Technical task
     prioritytype_id = Hash.new
     prioritytype_id["id"] = params[:priority]#1 is Blocker,2 Critical,3 Major,4 Minor,5 Trivial
     fields["project"] = project_key
-#     fields["parent"] = parent_key
+    #if issueType == "5"
+     #fields["parent"] = parent_key
+    #end
     fields["summary"] = params[:summary]
     fields["description"] = params[:description]
     fields["issuetype"] = issuetype_id
@@ -282,11 +316,12 @@ class JiraController < ApplicationController
     fields["customfield_10301"] = params[:email]
     inputIssueData["fields"] = fields
     
-    Rails.logger.info(inputIssueData);
+#    Rails.logger.info("\nThe issue:\n"+inputIssueData);
+    Rails.logger.info("\n---------------\nTHE JIRA PROJECT: "+jira_project_id+"\n--------------\n");
     
     begin
       outputIssueData = self.performRequest(inputIssueData)
-      if(outputIssueData != nil)
+      if(outputIssueData != nil && file != nil)
 	begin
 	outputAttachmentData = self.performRequestWithAttachment(outputIssueData["key"],filePath)
 	Rails.logger.info(outputAttachmentData);
@@ -296,6 +331,7 @@ class JiraController < ApplicationController
 	  errors = Hash.new
 	  errors["errors"] = "Issue created without attachment"
 	  render :json=>errors, :status => :service_unavailable
+	  return
 	end
       end
       render :json => outputIssueData.to_json

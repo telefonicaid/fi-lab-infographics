@@ -295,10 +295,10 @@ if(!jQuery.contains(document, $('#atlScriptlet')))
                         '<div class="field-group">'+
                             '<label for="customfield_10108">FI-WARE Environment</label>'+
 			    '<select class="select cf-select" name="customfield_10108" id="customfield_10108" onChange="changeJiraEnvironmentFun();">'+
-			        '<option value="-1">None</option>'+
+			        '<!--<option value="-1">None</option>-->'+
 				'<option selected="selected" value="10100">FI-LAB</option>'+
                                 '<option value="10101">Test-bed</option>'+
-                                '<option value="10102">Other</option>'+
+                                '<!--<option value="10102">Other</option>-->'+
 			    '</select>'+
 			'</div>'+
 			'<div class="field-group">'+
@@ -499,7 +499,7 @@ $('#atlScriptlet').dialog({
 	    dataType: "json",
 	    cache: false,
 	    success: function(json){
-		var htmlOptions = "";
+		var htmlOptions = "<option value='none'>None</option>";
       
 		$.each(json["list"], function( index, value ) {
 		    var selected = "";

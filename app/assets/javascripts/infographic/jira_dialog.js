@@ -266,11 +266,11 @@ if(!jQuery.contains(document, $('#atlScriptlet')))
 {
   var dialogHtmlStructure = '<!-- ------------------------------------------- -->'+
 '<div id="atlwdg-container" class="atlwdg-popup atlwdg-box-shadow atlwdg-hidden" style="width: 810px; margin-top: -271px; margin-left: -405px; display: block;">'+
-    '<img src="http://jira.fi-ware.org/images/throbber/loading_barber_pole_horz.gif" style="display: none;" class="atlwdg-loading">'+
+    '<!--<img src="http://jira.fi-ware.org/images/throbber/loading_barber_pole_horz.gif" style="display: none;" class="atlwdg-loading">-->'+
     '<div id="atlScriptlet" class="aui-dialog collector-dialog custom-collector" style="display:none;">'+
         '<h2 class="dialog-title">Report Issue</h2>'+
         '<form id="jic-collector-form" class="aui " action="http://jira.fi-ware.org/rest/collectors/1.0/template/custom/c3404461" method="POST">'+
-	    '<img id="img-loading" src="/assets/infographic/jira/loading_barber_pole_horz.gif" style="display: none;margin: 25% 35%;position: absolute;z-index: 1000000;" class="atlwdg-loading">'+
+	    '<img id="img-loading" src="http://status.lab.fi-ware.org:81/assets/infographic/jira/loading_barber_pole_horz.gif" style="display: none;margin: 25% 35%;position: absolute;z-index: 1000000;" class="atlwdg-loading">'+
             '<div class="content-body">'+
                 '<div class="event-shield-wrapper">'+
                     '<div class="event-shield"></div>'+
@@ -295,10 +295,10 @@ if(!jQuery.contains(document, $('#atlScriptlet')))
                         '<div class="field-group">'+
                             '<label for="customfield_10108">FI-WARE Environment</label>'+
 			    '<select class="select cf-select" name="customfield_10108" id="customfield_10108" onChange="changeJiraEnvironmentFun();">'+
-			        '<option value="-1">None</option>'+
+			        '<!--<option value="-1">None</option>-->'+
 				'<option selected="selected" value="10100">FI-LAB</option>'+
                                 '<option value="10101">Test-bed</option>'+
-                                '<option value="10102">Other</option>'+
+                                '<!--<option value="10102">Other</option>-->'+
 			    '</select>'+
 			'</div>'+
 			'<div class="field-group">'+
@@ -481,6 +481,7 @@ $('#atlScriptlet').dialog({
   // 							      }
       },
   open: function (event, ui) {
+    $(this).css("zIndex", "1000");
   // 						  $(this).css("overflow-y", "auto");
   // 						  $(this).css("overflow-x", "hidden");
       changeJiraEnvironmentFun();
@@ -499,7 +500,8 @@ $('#atlScriptlet').dialog({
 	    dataType: "json",
 	    cache: false,
 	    success: function(json){
-		var htmlOptions = "";
+// 		var json = jQuery.parseJSON(serverData);
+		var htmlOptions = "<option value='none'>None</option>";
       
 		$.each(json["list"], function( index, value ) {
 		    var selected = "";

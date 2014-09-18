@@ -7,7 +7,7 @@ end
 
 class JiraController < ApplicationController
   protect_from_forgery except: :createIssue
-- skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
+  skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
 
   def performRequest (data)
     require 'net/http'

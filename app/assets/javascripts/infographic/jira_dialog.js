@@ -70,7 +70,7 @@ function submitJiraFun() {
     
       $.ajax({ 
 	type: 'POST', 
-	url: "http://status.lab.fi-ware.org:81/api/v1/jira/issue",
+	url: "http://status.lab.fi-ware.org/api/v1/jira/issue",
 	processData: false,
         contentType: false,
 	data: m_data/*{
@@ -202,7 +202,7 @@ if (!document.getElementById('batch'))
     link.id   = 'batch';
     link.rel  = 'stylesheet';
     link.type = 'text/css';
-    link.href = 'http://status.lab.fi-ware.org:81/assets/batch.css';
+    link.href = 'http://status.lab.fi-ware.org/assets/batch.css';
     link.media = 'all';
     head.appendChild(link);
 }
@@ -213,7 +213,7 @@ if (!document.getElementById('com.atlassian.auiplugin:aui-experimental-labels'))
     link.id   = 'batch';
     link.rel  = 'stylesheet';
     link.type = 'text/css';
-    link.href = 'http://status.lab.fi-ware.org:81/assets/com.atlassian.auiplugin:aui-experimental-labels.css';
+    link.href = 'http://status.lab.fi-ware.org/assets/com.atlassian.auiplugin:aui-experimental-labels.css';
     link.media = 'all';
     head.appendChild(link);
 }
@@ -224,7 +224,7 @@ if (!document.getElementById('com.atlassian.jira.collector.plugin.jira-issue-col
     link.id   = 'batch';
     link.rel  = 'stylesheet';
     link.type = 'text/css';
-    link.href = 'http://status.lab.fi-ware.org:81/assets/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:form-collector.css';
+    link.href = 'http://status.lab.fi-ware.org/assets/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:form-collector.css';
     link.media = 'all';
     head.appendChild(link);
 }
@@ -235,7 +235,7 @@ if (!document.getElementById('jira.webresources:autocomplete'))
     link.id   = 'batch';
     link.rel  = 'stylesheet';
     link.type = 'text/css';
-    link.href = 'http://status.lab.fi-ware.org:81/assets/jira.webresources:autocomplete.css';
+    link.href = 'http://status.lab.fi-ware.org/assets/jira.webresources:autocomplete.css';
     link.media = 'all';
     head.appendChild(link);
 }
@@ -246,7 +246,7 @@ if (!document.getElementById('jira.webresources:global-static'))
     link.id   = 'batch';
     link.rel  = 'stylesheet';
     link.type = 'text/css';
-    link.href = 'http://status.lab.fi-ware.org:81/assets/jira.webresources:global-static.css';
+    link.href = 'http://status.lab.fi-ware.org/assets/jira.webresources:global-static.css';
     link.media = 'all';
     head.appendChild(link);
 }
@@ -257,7 +257,7 @@ if (!document.getElementById('xifi'))
     link.id   = 'batch';
     link.rel  = 'stylesheet';
     link.type = 'text/css';
-    link.href = 'http://status.lab.fi-ware.org:81/assets/xifi.css';
+    link.href = 'http://status.lab.fi-ware.org/assets/xifi.css';
     link.media = 'all';
     head.appendChild(link);
 }
@@ -270,7 +270,7 @@ if(!jQuery.contains(document, $('#atlScriptlet')))
     '<div id="atlScriptlet" class="aui-dialog collector-dialog custom-collector" style="display:none;">'+
         '<h2 class="dialog-title">Report Issue</h2>'+
         '<form id="jic-collector-form" class="aui " action="http://jira.fi-ware.org/rest/collectors/1.0/template/custom/c3404461" method="POST">'+
-	    '<img id="img-loading" src="http://status.lab.fi-ware.org:81/assets/infographic/jira/loading_barber_pole_horz.gif" style="display: none;margin: 25% 35%;position: absolute;z-index: 1000000;" class="atlwdg-loading">'+
+	    '<img id="img-loading" src="http://status.lab.fi-ware.org/assets/infographic/jira/loading_barber_pole_horz.gif" style="display: none;margin: 25% 35%;position: absolute;z-index: 1000000;" class="atlwdg-loading">'+
             '<div class="content-body">'+
                 '<div class="event-shield-wrapper">'+
                     '<div class="event-shield"></div>'+
@@ -494,13 +494,13 @@ $('#atlScriptlet').dialog({
       $.ajax (
       {
 	    type: "GET",
-	    url: "http://status.lab.fi-ware.org:81/api/v1/region/list",
+	    url: "http://status.lab.fi-ware.org/api/v1/region/list",
 	    contentType: "application/json; charset=utf-8",
 	    data: {},
 	    dataType: "json",
 	    cache: false,
 	    success: function(json){
-// 		var json = jQuery.parseJSON(serverData);
+
 		var htmlOptions = "<option value='none'>None</option>";
       
 		$.each(json["list"], function( index, value ) {

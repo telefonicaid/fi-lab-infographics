@@ -6,8 +6,6 @@ class CustomException < Exception
 end
 
 class JiraController < ApplicationController
-  protect_from_forgery except: :createIssue
-  skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
   
   def performRequest (data)
     require 'net/http'
@@ -54,8 +52,8 @@ class JiraController < ApplicationController
 #       http.request(req)
 #       }
 #     rescue Net::OpenTimeout => e
-#       puts "-----------------"+e.message+"------------------------"
-#       raise e.message
+# 	puts "-----------------"+e.message+"------------------------"
+# 	raise e.message
 #     end
 #   Logger.error(data);   
     
@@ -94,17 +92,17 @@ class JiraController < ApplicationController
     
     
     request = RestClient::Request.new(
-        :method => :post,
-        :url => FiLabInfographics.jira + "/rest/api/2/issue/"+issueKey+"/attachments",
-        :user => FiLabInfographics.jira_username,
-        :password => FiLabInfographics.jira_password,
-        :timeout => 30,
-        :open_timeout => 30,
-        :headers => {"X-Atlassian-Token" => "nocheck"},
-        :payload => {
-          :multipart => true,
-          :file => File.new(attachment, 'rb')
-        }) 
+	:method => :post,
+	:url => FiLabInfographics.jira + "/rest/api/2/issue/"+issueKey+"/attachments",
+	:user => FiLabInfographics.jira_username,
+	:password => FiLabInfographics.jira_password,
+	:timeout => 30,
+	:open_timeout => 30,
+	:headers => {"X-Atlassian-Token" => "nocheck"},
+	:payload => {
+	  :multipart => true,
+	  :file => File.new(attachment, 'rb')
+	}) 
     
     begin
       result = request.execute
@@ -146,31 +144,31 @@ class JiraController < ApplicationController
     
 #     res = Net::HTTP.start(url.host, url.port) {|http|
 #         http.open_timeout = FiLabInfographics.timeout
-#       http.read_timeout = FiLabInfographics.timeout
-# 
-#       #prepare the query
-#       data, headers = Multipart::Post.prepare_query("file" => attachment)
-# 
+# 	http.read_timeout = FiLabInfographics.timeout	
+# 	
+# 	#prepare the query
+# 	data, headers = Multipart::Post.prepare_query("file" => attachment)	
+# 	
 #         req = Net::HTTP::Post.new(url.request_uri, initheader = headers)
 #         req.body = data
-#       req.basic_auth(FiLabInfographics.jira_username, FiLabInfographics.jira_password)
-# 
+# 	req.basic_auth(FiLabInfographics.jira_username, FiLabInfographics.jira_password)
+# 	
 #         begin
-#         http.request(req)
-#       rescue Exception => e
-#           case e
-#             when Timeout::Error
-#               raise CustomException.new("timeout")
-#             when Errno::ECONNREFUSED
-#               raise CustomException.new("connection refused")
-#             when Errno::ECONNRESET
-#               raise CustomException.new("connection reset")
-#             when Errno::EHOSTUNREACH
-#               raise CustomException.new("host not reachable")
-#             else
-#               raise CustomException.new("error: #{e.to_s}")
-#           end
-#       end
+# 	  http.request(req)
+# 	rescue Exception => e
+# 	    case e
+# 	      when Timeout::Error
+# 		raise CustomException.new("timeout")
+# 	      when Errno::ECONNREFUSED
+# 		raise CustomException.new("connection refused")
+# 	      when Errno::ECONNRESET
+# 		raise CustomException.new("connection reset")
+# 	      when Errno::EHOSTUNREACH
+# 		raise CustomException.new("host not reachable")
+# 	      else
+# 		raise CustomException.new("error: #{e.to_s}")
+# 	    end
+# 	end
 #       }
 #     
 #     data = res.body  
@@ -214,8 +212,8 @@ class JiraController < ApplicationController
 #       http.request(req)
 #       }
 #     rescue Net::OpenTimeout => e
-#       puts "-----------------"+e.message+"------------------------"
-#       raise e.message
+# 	puts "-----------------"+e.message+"------------------------"
+# 	raise e.message
 #     end
 #   Logger.error(data);   
     
@@ -278,21 +276,21 @@ end
   #       ---------------------------------------------
   #       to set jira_project_id dinamically
   #       ---------------------------------------------
-        dbNode = Node.where(:rid => params[:region_id]).first
-        if dbNode != nil
-          jira_project_id = dbNode.jira_project_id;
-#         issueType = "5"
-        end
+	dbNode = Node.where(:rid => params[:region_id]).first
+	if dbNode != nil
+	  jira_project_id = dbNode.jira_project_id;
+#	  issueType = "5"
+	end
       elsif (FiLabInfographics.jira_test == 0 && params[:region_id] == "none")
-        jira_project_id = "FIL"
+	jira_project_id = "FIL"
       end
     end 
 
     if params[:environment_id] == "10101"
-        jira_project_id = "XIFI"#test_project
-        if(FiLabInfographics.jira_test == 0)
-                jira_project_id = "TBS"
-        end
+	jira_project_id = "XIFI"#test_project
+      	if(FiLabInfographics.jira_test == 0)
+		jira_project_id = "TBS"
+	end
     end    
       
     inputIssueData = Hash.new
@@ -324,17 +322,17 @@ end
     begin
       outputIssueData = self.performRequest(inputIssueData)
       if(outputIssueData != nil && file != nil)
-        begin
-        outputAttachmentData = self.performRequestWithAttachment(outputIssueData["key"],filePath)
-        Rails.logger.info(outputAttachmentData);
-        File.delete(filePath)
-        rescue CustomException => e
-          File.delete(filePath)
-          errors = Hash.new
-          errors["errors"] = "Issue created without attachment"
-          render :json=>errors, :status => :service_unavailable
-          return
-        end
+	begin
+	outputAttachmentData = self.performRequestWithAttachment(outputIssueData["key"],filePath)
+	Rails.logger.info(outputAttachmentData);
+	File.delete(filePath)
+	rescue CustomException => e
+	  File.delete(filePath)
+	  errors = Hash.new
+	  errors["errors"] = "Issue created without attachment"
+	  render :json=>errors, :status => :service_unavailable
+	  return
+	end
       end
       render :json => outputIssueData.to_json
     rescue CustomException => e

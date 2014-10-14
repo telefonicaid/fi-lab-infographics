@@ -39,6 +39,7 @@ FiLabInfographics::Application.routes.draw do
       get "/vm" => "region#getVms"
       get "/services" => "region#getServices" 
       get "/list" => "region#getRegionIdList"
+#      options "/list" => "region#getRegionIdList"
 #       get ":region_id" => "region#getRegion"
 #       get ":region_id/vm" => "region#getVMs"
 #       get ":region_id/vm/:vm_id" => "region#getVM"

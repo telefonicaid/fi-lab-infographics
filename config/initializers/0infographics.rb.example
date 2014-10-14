@@ -9,6 +9,7 @@ FiLabInfographics.setup do |config|
   # config.jira_username = 'jira_username'
   # config.jira_password = 'jira_password'
   # config.jira_test = 1
+  # config.jira_default_project = 'FIL'
   # config.jira_success_message = 'Thanks for reporting your issue. You will receive a notification for every update to the issue.'
 
 end

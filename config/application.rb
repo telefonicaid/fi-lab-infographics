@@ -26,7 +26,7 @@ module FiLabInfographics
    
     config.assets.paths << Rails.root.join("app", "assets", "stylesheets", "fi_lab_app", "fonts")
     
-    config.middleware.insert_before "ActionDispatch::Static", "Rack::Cors" do
+ config.middleware.insert_before "ActionDispatch::Static", "Rack::Cors" do
       allow do
 	
 	origins '*'

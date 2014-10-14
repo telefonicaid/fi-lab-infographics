@@ -75,7 +75,7 @@ function submitJiraFun() {
         contentType: false,
 	data: m_data/*{
 	    'region_id' : regionId,
-	    'environment_id' : environmentId,
+//	    'environment_id' : environmentId,
 // 	    'type':type,
 	    'priority':priority,
 	    'summary':summary,
@@ -117,7 +117,7 @@ function submitJiraFun() {
 	  $("#img-loading").hide();
 	  if(data["errors"] != null)
 	  {
-	    $( ".content-body" ).before('<div class="msg-container" id="error_message"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>An error occurred during sending: JIRA issue. This window will automatically close in 5 seconds.</p><!-- .aui-message --></div></div>');
+	    $( ".content-body" ).before('<div class="msg-container" id="error_message"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>An error occurred during sending: JIRA issue. Please conctact the email <a href="mailto:fiware-lab-help@lists.fi-ware.org">helpdesk</a>.  This window will automatically close in 5 seconds.</p><!-- .aui-message --></div></div>');
 	    
 	    $("#error_message").delay(5000).queue(function(next){
 		$("#jic-collector-form").removeClass("disabled");
@@ -173,7 +173,7 @@ function submitJiraFun() {
 	    errore = errorThrown;
 // 	  alert("An error occurred during sending: "+errore);
 	  
-	  $( ".content-body" ).before('<div class="msg-container" id="error_message"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>An error occurred during sending: '+errore+'. This window will automatically close in 5 seconds.</p><!-- .aui-message --></div></div>');
+	  $( ".content-body" ).before('<div class="msg-container" id="error_message"><div class="aui-message error  shadowed "><p class="title"><span class="aui-icon icon-error"></span><strong>Warning!</strong></p><p>An error occurred during sending: '+errore+'. Please contact the email <a href="mailto:fiware-lab-help@lists.fi-ware.org">helpdesk</a>. This window will automatically close in 5 seconds.</p><!-- .aui-message --></div></div>');
 	    
 	  $("#error_message").delay(5000).queue(function(next){
 	      $("#jic-collector-form").removeClass("disabled");
@@ -304,10 +304,10 @@ if(!jQuery.contains(document, $('#atlScriptlet')))
 			'<div class="field-group">'+
 			    '<label>Region</label><div id="regionNone">None</div>'+
 			    '<select class="select cf-select" name="region" id="customfield_10109">'+
-			    '<!--<option selected="selected" value="0">None</option>'+
+			    '<option selected="selected" value="0">None</option>'+
 					    '<option value="1">Berlin</option>'+
 						'<option value="2">Trento</option>'+
-						'<option value="3">Prague</option>-->'+
+						'<option value="3">Prague</option>'+
 			    '</select>'+
                         '</div>'+
                         '<div class="field-group">'+

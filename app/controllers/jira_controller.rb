@@ -241,15 +241,15 @@ class JiraController < ApplicationController
 #     params read
 #     'region_id','environmentId','priority','summary','description','name','email'
 #     Rails.logger.info("THE REGION ID: "+params[:region_id]);
-file=nil
+    file=nil
  
-if !params[:file_attach].nil? && params[:file_attach]!="undefined"
-    file = params[:file_attach]
-    filePath = Rails.root.join('tmp', file.original_filename)
-    File.open(filePath, 'wb') do |f|      
-      f.write(file.read)      
+    if !params[:file_attach].nil? && params[:file_attach]!="undefined"
+      file = params[:file_attach]
+      filePath = Rails.root.join('tmp', file.original_filename)
+      File.open(filePath, 'wb') do |f|      
+        f.write(file.read)      
+      end
     end
-end
 #     fileTmp=Base64.strict_encode64(File.read(Rails.root.join('tmp', file.original_filename)) )
 #     fileTmp = File.read(Rails.root.join('tmp', file.original_filename)) 
     
@@ -266,9 +266,9 @@ end
 # #         file.unlink   # deletes the temp file
 #     end
     
-    jira_project_id = "XIFI"#base_project
+    jira_project_id = FiLabInfographics.jira_default_project
     environment_id = Hash.new
-    environment_id["id"] = params[:environment_id]#FI-Lab,Test-bed or Other
+    environment_id["id"] = params[:environment_id]#FI-Lab or Test-bed
 #    issueType = "1"    
 
     if(params[:environment_id] == "10100")#FI-Lab
@@ -284,16 +284,16 @@ end
 #	  issueType = "5"
 	end
       elsif (FiLabInfographics.jira_test == 0 && params[:region_id] == "none")
-	jira_project_id = "FIL"
+	jira_project_id = FiLabInfographics.jira_default_project
       end
     end 
 
-    if params[:environment_id] == "10101"
+    if params[:environment_id] == "10101"#Test-bed
 	jira_project_id = "XIFI"#test_project
       	if(FiLabInfographics.jira_test == 0)
 		jira_project_id = "TBS"
 	end
-    end    
+    end     
       
     inputIssueData = Hash.new
     fields = Hash.new

@@ -1,4 +1,5 @@
 require 'oauth2'
+require 'time'
  
 class CustomException < Exception
   attr_accessor :data
@@ -8,13 +9,14 @@ class CustomException < Exception
 end
 
 class RegionController < ApplicationController
+  
+  @@token = nil  
 
   def self.getToken
     if @@token.expired?
       @@token = @@token.refresh!
+      logger.info "new token: " + @@token.token
     end
-
-    logger.info "providing token: " + @@token.token
     return @@token
   end
   
@@ -25,14 +27,16 @@ class RegionController < ApplicationController
 
   def initialize
     super # this calls ActionController::Base initialize
+    
+    if @@token==nil
+      client = OAuth2::Client.new(FiLabApp.client_id, FiLabApp.client_secret,
+        :site => FiLabApp.account_server, :authorize_url => FiLabApp.account_server + '/authorize', :token_url => FiLabApp.account_server + '/token')
 
-    client = OAuth2::Client.new(FiLabApp.client_id, FiLabApp.client_secret,
-      :site => FiLabApp.account_server, :authorize_url => FiLabApp.account_server + '/authorize', :token_url => FiLabApp.account_server + '/token')
-
-    token = client.client_credentials.get_token
-    logger.info 'acquired token:' + token.token
-
-    RegionController.setToken(token)
+      token = client.client_credentials.get_token
+      logger.debug 'acquired token:' + token.token
+ 
+      RegionController.setToken(token)
+    end
   end
 
   def performRequest (uri)
@@ -41,7 +45,6 @@ class RegionController < ApplicationController
     require 'logger'
     
     url = URI.parse(FiLabInfographics.nodejs + "/monitoring/" + uri)
-#     req = Net::HTTP.new(url.host, url.port)
     http = Net::HTTP.new(url.host, url.port)
     http.open_timeout = FiLabInfographics.timeout
     http.read_timeout = FiLabInfographics.timeout
@@ -52,16 +55,13 @@ class RegionController < ApplicationController
     
     oauthToken = Base64.strict_encode64( RegionController.getToken.token )
     req.add_field("Authorization", "Bearer "+oauthToken)
-    Rails.logger.info(req.get_fields('Authorization'));
-    Rails.logger.info(req.get_fields('Accept'));
-    Rails.logger.info(url.request_uri);
-#     req.add_field("Accept", "application/json")
+    Rails.logger.debug(req.get_fields('Authorization'));
+    Rails.logger.debug(req.get_fields('Accept'));
+    Rails.logger.debug(url.request_uri);
     
-#     req.open_timeout = FiLabInfographics.timeout
-#     req.read_timeout = FiLabInfographics.timeout
-    
+    startTime=Time.now.to_i
+
     begin
-#       res = req.get(url.path)
       res = http.request(req)
     rescue Exception => e
         case e
@@ -77,21 +77,6 @@ class RegionController < ApplicationController
             raise CustomException.new("error: #{e.to_s}")
         end
     end
-# Logger.info('request');
-
-#    res = Net::HTTP.start(url.host, url.port) { |http| 
-#      http.request(req) 
-#    } 
-  
-#     begin
-#       res = Net::HTTP.start(url.host, url.port) {|http|
-#       http.request(req)
-#       }
-#     rescue Net::OpenTimeout => e
-# 	puts "-----------------"+e.message+"------------------------"
-# 	raise e.message
-#     end
-#   Logger.error(data);   
     
     data = res.body   
     begin
@@ -99,18 +84,17 @@ class RegionController < ApplicationController
     rescue Exception => e
       raise CustomException.new("Error parsing Data")
     end
+    endTime=Time.now.to_i
+
+    delta=endTime-startTime
+    Rails.logger.info("duration: ");
+    Rails.logger.info(delta)
       
     return result
 
-#  Logger.error(data);
- 
-    
-#     return result ["queryContextResponse"] ["contextResponseList"]
-    
   end
   
   def getRegionsData
-    #     regionsData = self.performRequest('region')
     begin
       regionsData = self.performRequest('regions')
     rescue CustomException => e
@@ -122,18 +106,6 @@ class RegionController < ApplicationController
     
       idRegions = [] 
       
-  #     regionsData.each do |contextElementResponse|
-  #       contextElementResponse["contextElementResponse"].each do |contextElement|   
-  # 	contextElement["contextElement"].each do |entityId|
-  # 	  entityId["entityId"].each do |id|
-  # 	    id["id"].each do |idRegion|
-  # 	      idRegions.push(idRegion)
-  # 	    end
-  # 	  end
-  # 	end
-  #       end
-  #     end
-
       regionsData["_embedded"]["regions"].each do |region|
 		idRegions.push(region["id"])
       end

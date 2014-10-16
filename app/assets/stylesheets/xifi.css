@@ -606,6 +606,32 @@ input.text{ width:95%;}
   font-weight:bold;
   margin-top:25px;
 }
+
+#cookie-law {
+    background: none repeat scroll 0 0 rgba(44, 44, 44, 0.9);
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    z-index: 1040;
+}
+#cookie-law p {
+    color: white;
+    font-size: 15px;
+    line-height: 19px;
+    margin: 0 100px;
+    padding: 10px;
+    text-align: center;
+}
+#cookie-law a {
+    color: white;
+    font-weight: bold;
+}
+#close-cookie-banner {
+    font-weight: bold;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
 /*header.navbar nav.navbar-inner .brand {
     margin: 0 0 0 -8px !important;
     padding: 0 !important;

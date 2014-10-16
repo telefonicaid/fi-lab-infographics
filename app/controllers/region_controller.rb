@@ -54,7 +54,8 @@ class RegionController < ApplicationController
     
     
     oauthToken = Base64.strict_encode64( RegionController.getToken.token )
-    req.add_field("Authorization", "Bearer "+oauthToken)
+#     //DECOMMENT IN ORDER TO USE OAUTH
+#     req.add_field("Authorization", "Bearer "+oauthToken)
     Rails.logger.debug(req.get_fields('Authorization'));
     Rails.logger.debug(req.get_fields('Accept'));
     Rails.logger.debug(url.request_uri);
@@ -67,22 +68,34 @@ class RegionController < ApplicationController
         case e
           when Timeout::Error
             raise CustomException.new("timeout")
+	    return
           when Errno::ECONNREFUSED
             raise CustomException.new("connection refused")
+	    return
           when Errno::ECONNRESET
             raise CustomException.new("connection reset")
+	    return
           when Errno::EHOSTUNREACH
             raise CustomException.new("host not reachable")
+	    return
           else
             raise CustomException.new("error: #{e.to_s}")
+	    return
         end
     end
+    
+#     if res.code == 503
+#       raise CustomException.new(res.body)
+#       return
+#     end
     
     data = res.body   
     begin
       result = JSON.parse(data)
     rescue Exception => e
-      raise CustomException.new("Error parsing Data")
+      Rails.logger.info("\nTHE HTTP STATUS: "+res.code+"\nTHE DATA RESPONSE: "+data+"\n--------------\n")
+#       raise CustomException.new("Error parsing Data")
+      raise CustomException.new(data)
     end
     endTime=Time.now.to_i
 
@@ -95,15 +108,80 @@ class RegionController < ApplicationController
   end
   
   def getRegionsData
+    
+    begin
+      totRegionsData = self.getRegionsTotData
+    rescue CustomException => e
+      raise e
+      return
+    end
+    
+    if totRegionsData != nil
+      
+      idRegions = totRegionsData["total_regions_ids"]
+    
+      attributes = Hash.new
+    
+      idRegions.each do |idRegion|
+	begin
+	  attributesRegion = self.getRegionsDataForNodeId(idRegion)
+	rescue CustomException => e
+	  raise e
+	  return
+	end
+	
+	attributes[idRegion] = attributesRegion
+	
+      end    
+      
+      returnData = Hash.new
+      returnData ["regions"] = attributes;
+      returnData ["tot"] = totRegionsData;
+      
+      return returnData;
+      
+    end
+    return nil
+  end
+  
+  def renderRegions
+
+    begin
+      regionsData = self.getRegionsData
+    rescue CustomException => e
+      render :json=>"Problem in retrieving data for all nodes: "+e.data, :status => :service_unavailable
+      return
+    end
+    
+    
+    if regionsData == nil
+      render :json=>"Problem in retrieving data: no data", :status => :service_unavailable
+      return
+    end
+    render :json => regionsData.to_json
+  end
+  
+  def renderRegionsTotData
+    begin
+      totRegionsData = self.getRegionsTotData
+    rescue CustomException => e
+      render :json=>"Problem in retrieving tot data for all regions : "+e.data, :status => :service_unavailable
+      return
+    end  
+      
+    render :json => totRegionsData.to_json
+  end
+  
+  def getRegionsTotData
     begin
       regionsData = self.performRequest('regions')
     rescue CustomException => e
       raise e
+      return
     end
     
     
     if regionsData != nil
-    
       idRegions = [] 
       
       regionsData["_embedded"]["regions"].each do |region|
@@ -118,68 +196,196 @@ class RegionController < ApplicationController
       totValues["total_nb_ram"] = regionsData["total_nb_ram"];
       totValues["total_nb_disk"] = regionsData["total_nb_disk"];
       totValues["total_nb_vm"] = regionsData["total_nb_vm"];
+      totValues["total_regions_ids"] = idRegions;
+      totValues["total_regions_count"] = idRegions.count;
       
-      attributes = Hash.new
+      return totValues
       
-      idRegions.each do |idRegion|
-	begin
-	  regionData = self.performRequest('regions/' + idRegion)
-	rescue CustomException => e
-	  raise e
-	end	
-	attributesRegion = Hash.new
-	attributesRegion["id"] = regionData["id"]
-	attributesRegion["name"] = regionData["name"]
-	attributesRegion["country"] = regionData["country"]
-	attributesRegion["latitude"] = regionData["latitude"]
-	attributesRegion["longitude"] = regionData["longitude"]
-	attributesRegion["nb_users"] = regionData["measures"][0]["nb_users"]
-	attributesRegion["nb_cores"] = regionData["measures"][0]["nb_cores"]
-	attributesRegion["nb_ram"] = regionData["measures"][0]["nb_ram"]
-	attributesRegion["nb_disk"] = regionData["measures"][0]["nb_disk"]
-	attributesRegion["nb_vm"] = regionData["nb_vm"]
-	attributes[idRegion] = attributesRegion
-      end
-      
-      totValues["total_regions_count"] = attributes.keys.count;
-      
-      returnData = Hash.new
-      returnData ["regions"] = attributes;
-      returnData ["tot"] = totValues;
-      
-      return returnData;
     end
     return nil
   end
   
-  def getRegions
-
+  def renderRegionsDataForRegion
+    idNode = params[:nodeId]
     begin
-      regionsData = self.getRegionsData
+      regionsData = self.getRegionsDataForNodeId(idNode)
     rescue CustomException => e
-      render :json=>"Problem in retrieving data: "+e.data, :status => :service_unavailable
+      render :json=>"Problem in retrieving data for region "+idNode+": "+e.data, :status => :service_unavailable
       return
     end
     
-    
-    if regionsData == nil
-      render :json=>"Problem in retrieving data", :status => :service_unavailable
-      return
-    end
     render :json => regionsData.to_json
   end
   
-  def getServices
+  def getRegionsDataForNodeId (idNode)
+    begin
+      regionsData = self.performRequest('regions/' + idNode)
+    rescue CustomException => e
+      raise e
+    end
+    
+    if regionsData != nil
+            
+      attributesRegion = Hash.new
+      attributesRegion["id"] = regionsData["id"]
+      attributesRegion["name"] = regionsData["name"]
+      attributesRegion["country"] = regionsData["country"]
+      attributesRegion["latitude"] = regionsData["latitude"]
+      attributesRegion["longitude"] = regionsData["longitude"]
+      attributesRegion["nb_users"] = regionsData["measures"][0]["nb_users"]
+      attributesRegion["nb_cores"] = regionsData["measures"][0]["nb_cores"]
+      attributesRegion["nb_ram"] = regionsData["measures"][0]["nb_ram"]
+      attributesRegion["nb_disk"] = regionsData["measures"][0]["nb_disk"]
+      attributesRegion["nb_vm"] = regionsData["nb_vm"]
+      return attributesRegion
+      
+    end 
+    return nil
+  end
+  
+  def renderServicesForRegion
+    idNode = params[:nodeId]
+    begin
+      services = self.getServicesForNodeId(idNode)
+    rescue CustomException => e
+      render :json=>"Problem in retrieving services for region "+idNode+": "+e.data, :status => :service_unavailable
+      return
+    end
+    
+    render :json => services.to_json
+  end
+  
+  def getServicesForNodeId (idNode)    
+    
+    begin
+      servicesRegionData = self.performRequest('regions/' + idNode + '/services')
+    rescue CustomException => e
+      raise e
+    end
+    
+    serviceNova = Hash.new
+    serviceNeutron = Hash.new
+    serviceCinder = Hash.new
+    serviceGlance = Hash.new
+    serviceKP = Hash.new
+    serviceOverall = Hash.new
+    
+    serviceNova["value"] = "gray";
+    serviceNova["description"] = "";
+    
+    
+    serviceNeutron["value"] = "gray";
+    serviceNeutron["description"] = "";
+    
+    
+    serviceCinder["value"] = "gray";
+    serviceCinder["description"] = "";
+    
+    
+    serviceGlance["value"] = "gray";
+    serviceGlance["description"] = "";
+    
+    
+    serviceKP["value"] = "gray";
+    serviceKP["description"] = "";
+    
+    serviceOverall["value"] = "gray";
+    serviceOverall["description"] = "No Messages";
+    
+    if servicesRegionData != nil &&  
+	  servicesRegionData["measures"] != nil && 
+	  servicesRegionData["measures"][0] != nil
+      
+      serviceRegionData = servicesRegionData["measures"][0]
+      
+      if serviceRegionData["novaServiceStatus"] != nil
+	if serviceRegionData["novaServiceStatus"]["value"] != nil && serviceRegionData["novaServiceStatus"]["value"] != "undefined"
+	  serviceNova["value"] = serviceRegionData["novaServiceStatus"]["value"];
+	end
+	if serviceRegionData["novaServiceStatus"]["description"] != nil 
+	  serviceNova["description"] = serviceRegionData["novaServiceStatus"]["description"];
+	end
+      end
+      
+      if serviceRegionData["neutronServiceStatus"] != nil
+	if serviceRegionData["neutronServiceStatus"]["value"] != nil && serviceRegionData["neutronServiceStatus"]["value"] != "undefined"
+	  serviceNeutron["value"] = serviceRegionData["neutronServiceStatus"]["value"];
+	end
+	if serviceRegionData["neutronServiceStatus"]["description"] != nil
+	  serviceNeutron["description"] = serviceRegionData["neutronServiceStatus"]["description"];
+	end
+      end
+      
+      if serviceRegionData["cinderServiceStatus"] != nil
+	if serviceRegionData["cinderServiceStatus"]["value"] != nil && serviceRegionData["cinderServiceStatus"]["value"] != "undefined"
+	  serviceCinder["value"] = serviceRegionData["cinderServiceStatus"]["value"];
+	end
+	if serviceRegionData["cinderServiceStatus"]["description"] != nil
+	  serviceCinder["description"] = serviceRegionData["cinderServiceStatus"]["description"];
+	end
+      end
+      
+      
+      if serviceRegionData["glanceServiceStatus"] != nil
+	if serviceRegionData["glanceServiceStatus"]["value"] != nil && serviceRegionData["glanceServiceStatus"]["value"] != "undefined"
+	  serviceGlance["value"] = serviceRegionData["glanceServiceStatus"]["value"];
+	end
+	if serviceRegionData["glanceServiceStatus"]["description"] != nil
+	  serviceGlance["description"] = serviceRegionData["glanceServiceStatus"]["description"];
+	end
+      end
+      
+      
+      if serviceRegionData["KPServiceStatus"] != nil
+	if serviceRegionData["KPServiceStatus"]["value"] != nil && serviceRegionData["KPServiceStatus"]["value"] != "undefined"
+	  serviceKP["value"] = serviceRegionData["KPServiceStatus"]["value"];
+	end
+	if serviceRegionData["KPServiceStatus"]["description"] != nil
+	  serviceKP["description"] = serviceRegionData["KPServiceStatus"]["description"];
+	end
+      end
+      
+      
+      if serviceRegionData["OverallStatus"] != nil
+	if serviceRegionData["OverallStatus"]["value"] != nil && serviceRegionData["OverallStatus"]["value"] != "undefined"
+	  serviceOverall["value"] = serviceRegionData["OverallStatus"]["value"];
+	end
+	if serviceRegionData["OverallStatus"]["description"] != nil
+	  serviceOverall["description"] = serviceRegionData["OverallStatus"]["description"];
+	end
+      end
+      
+    end
+    
+    services = Hash.new
+    services["Nova"] = serviceNova;
+    services["Neutron"] = serviceNeutron;
+    services["Cinder"] = serviceCinder;
+    services["Glance"] = serviceGlance;
+    services["Keystone P."] = serviceKP;
+    services["overallStatus"] = serviceOverall;
+    
+    
+    dbNode = Node.where(:rid => idNode).first
+    if dbNode != nil
+      services["overallStatus"]["jira_project_url"] = dbNode.jira_project_url;
+    end   
+    
+    return services
+    
+  end
+  
+  def renderServices
     
     begin
       regionsData = self.getRegionsData
     rescue CustomException => e
-      render :json=>"Problem in retrieving data: "+e.data, :status => :service_unavailable
+      render :json=>"Problem in retrieving data for all nodes: "+e.data, :status => :service_unavailable
       return
     end
     
     if regionsData == nil
-      render :json=>"Problem in retrieving data", :status => :service_unavailable
+      render :json=>"Problem in retrieving data: no data", :status => :service_unavailable
       return
     end
     
@@ -188,144 +394,15 @@ class RegionController < ApplicationController
     
     attributesRegionsServices.each do |key,regionData|
       
-      
       begin
-	servicesRegionData = self.performRequest('regions/' + regionData["id"] + '/services')
+	services = self.getServicesForNodeId(regionData["id"])
       rescue CustomException => e
-	render :json=>"Problem in retrieving data: "+e.data, :status => :service_unavailable
+	render :json=>"Problem in retrieving services for region "+regionData["id"]+": "+e.data, :status => :service_unavailable
 	return
       end
       
-      serviceNova = Hash.new
-      serviceNeutron = Hash.new
-      serviceCinder = Hash.new
-      serviceGlance = Hash.new
-      serviceKP = Hash.new
-      serviceOverall = Hash.new
-      
-      serviceNova["value"] = "gray";
-      serviceNova["description"] = "";
-      
-      
-      serviceNeutron["value"] = "gray";
-      serviceNeutron["description"] = "";
-      
-      
-      serviceCinder["value"] = "gray";
-      serviceCinder["description"] = "";
-      
-      
-      serviceGlance["value"] = "gray";
-      serviceGlance["description"] = "";
-      
-      
-      serviceKP["value"] = "gray";
-      serviceKP["description"] = "";
-      
-      serviceOverall["value"] = "gray";
-      serviceOverall["description"] = "No Messages";
-	
-      if servicesRegionData != nil &&  
-	  servicesRegionData["measures"] != nil && 
-	  servicesRegionData["measures"][0] != nil
-	
-	serviceRegionData = servicesRegionData["measures"][0]
-	
-	if serviceRegionData["novaServiceStatus"] != nil
-	  if serviceRegionData["novaServiceStatus"]["value"] != nil && serviceRegionData["novaServiceStatus"]["value"] != "undefined"
-	    serviceNova["value"] = serviceRegionData["novaServiceStatus"]["value"];
-	  end
-	  if serviceRegionData["novaServiceStatus"]["description"] != nil 
-	    serviceNova["description"] = serviceRegionData["novaServiceStatus"]["description"];
-	  end
-	end
-	
-	if serviceRegionData["neutronServiceStatus"] != nil
-	  if serviceRegionData["neutronServiceStatus"]["value"] != nil && serviceRegionData["neutronServiceStatus"]["value"] != "undefined"
-	    serviceNeutron["value"] = serviceRegionData["neutronServiceStatus"]["value"];
-	  end
-	  if serviceRegionData["neutronServiceStatus"]["description"] != nil
-	    serviceNeutron["description"] = serviceRegionData["neutronServiceStatus"]["description"];
-	  end
-	end
-	
-	if serviceRegionData["cinderServiceStatus"] != nil
-	  if serviceRegionData["cinderServiceStatus"]["value"] != nil && serviceRegionData["cinderServiceStatus"]["value"] != "undefined"
-	    serviceCinder["value"] = serviceRegionData["cinderServiceStatus"]["value"];
-	  end
-	  if serviceRegionData["cinderServiceStatus"]["description"] != nil
-	    serviceCinder["description"] = serviceRegionData["cinderServiceStatus"]["description"];
-	  end
-	end
-	
-	
-	if serviceRegionData["glanceServiceStatus"] != nil
-	  if serviceRegionData["glanceServiceStatus"]["value"] != nil && serviceRegionData["glanceServiceStatus"]["value"] != "undefined"
-	    serviceGlance["value"] = serviceRegionData["glanceServiceStatus"]["value"];
-	  end
-	  if serviceRegionData["glanceServiceStatus"]["description"] != nil
-	    serviceGlance["description"] = serviceRegionData["glanceServiceStatus"]["description"];
-	  end
-	end
-	
-	
-	if serviceRegionData["KPServiceStatus"] != nil
-	  if serviceRegionData["KPServiceStatus"]["value"] != nil && serviceRegionData["KPServiceStatus"]["value"] != "undefined"
-	    serviceKP["value"] = serviceRegionData["KPServiceStatus"]["value"];
-	  end
-	  if serviceRegionData["KPServiceStatus"]["description"] != nil
-	    serviceKP["description"] = serviceRegionData["KPServiceStatus"]["description"];
-	  end
-	end
-	
-	
-	if serviceRegionData["OverallStatus"] != nil
-	  if serviceRegionData["OverallStatus"]["value"] != nil && serviceRegionData["OverallStatus"]["value"] != "undefined"
-	    serviceOverall["value"] = serviceRegionData["OverallStatus"]["value"];
-	  end
-	  if serviceRegionData["OverallStatus"]["description"] != nil
-	    serviceOverall["description"] = serviceRegionData["OverallStatus"]["description"];
-	  end
-	end
-	
-      end
-      
-      services = Hash.new
-      services["Nova"] = serviceNova;
-      services["Neutron"] = serviceNeutron;
-      services["Cinder"] = serviceCinder;
-      services["Glance"] = serviceGlance;
-      services["Keystone P."] = serviceKP;
-      services["overallStatus"] = serviceOverall;
-      
       regionData["services"] = services;
       
-      node = Hash.new
-      node["name"] = "";
-      node["jira_project_url"] = "";
-#       node["jira_project_id"] = "";
-      dbNode = Node.where(:rid => regionData["id"]).first
-      if dbNode != nil
-	node = Hash.new
-	node["name"] = dbNode.rid;
-	node["jira_project_url"] = dbNode.jira_project_url;
-# 	node["jira_project_id"] = dbNode.jira_project_id;
-# 	node["jira_project_id"] = "http://jira.fi-ware.org/browse/XIFI";
-      end
-#       regionData["node"] = node;
-      
-#       allDbNodes = Node.order(:rid).all
-#       allNodes = Array.new;
-#       if !allDbNodes.nil?
-# 	allDbNodes.each do |singleNode|
-# 	  allNodes.push singleNode.rid;
-# 	end
-#       end
-      
-#       nodesList = Hash.new
-#       nodesList["list"] = allNodes;
-#       nodesList["selected"] = node;
-      regionData["nodeSelected"] = node;
       
 #       attributesRegionsServices[regionData["id"]]["Nova"]["value"] = serviceRegionData["novaServiceStatus"]["value"];
 #       attributesRegionsServices[regionData["id"]]["Nova"]["description"] = serviceRegionData["novaServiceStatus"]["description"];
@@ -377,7 +454,7 @@ class RegionController < ApplicationController
       
   end
   
-  def getRegionIdList
+  def renderRegionIdListFromDb
     
     allDbNodes = Node.order(:rid).all
     allNodes = Array.new;
@@ -394,7 +471,7 @@ class RegionController < ApplicationController
     
   end
   
-  def getVms
+  def renderVms
     
     regionsData = self.performRequest('regions')
     

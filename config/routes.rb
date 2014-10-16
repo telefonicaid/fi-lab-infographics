@@ -35,10 +35,13 @@ FiLabInfographics::Application.routes.draw do
   
   scope "/api/v1" do
     scope "/region" do
-      get "/" => "region#getRegions"
-      get "/vm" => "region#getVms"
-      get "/services" => "region#getServices" 
-      get "/list" => "region#getRegionIdList"
+      get "/" => "region#renderRegions"      
+      get "/totData"  => "region#renderRegionsTotData"
+      get "/vm" => "region#renderVms"
+      get "/services" => "region#renderServices" 
+      get "/services/:nodeId" => "region#renderServicesForRegion"
+      get "/list" => "region#renderRegionIdListFromDb"
+      get "/:nodeId"  => "region#renderRegionsDataForRegion"
 #      options "/list" => "region#getRegionIdList"
 #       get ":region_id" => "region#getRegion"
 #       get ":region_id/vm" => "region#getVMs"

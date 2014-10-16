@@ -35,18 +35,18 @@
 
 <div class="title">Nodes</div>
 <div id="world-map-nodes"></div>
-
+<div id="errorMessage"></div>
 <DIV ID="status">
 		  
 	<DIV id="tableHeaderContent" CLASS='status-row status-row-header'>
-		<!--<DIV CLASS='field field-header field-header-node'>Node</DIV>
+		<DIV CLASS='field field-header field-header-node'>Node</DIV>
 		<DIV CLASS='field field-header field-header-overall'>Overall</DIV>
 		<DIV CLASS='field field-header field-header-service'>Nova</DIV>
 		<DIV CLASS='field field-header field-header-service'>Neutron</DIV>
 		<DIV CLASS='field field-header field-header-service'>Cinder</DIV>
 		<DIV CLASS='field field-header field-header-service'>Glance</DIV>
-		<DIV CLASS='field field-header field-header-service'>Keystone Proxy</DIV>
-		<DIV CLASS='field field-header field-header-support'>Support</DIV>-->
+		<DIV CLASS='field field-header field-header-service'>Keystone P.</DIV>
+		<DIV CLASS='field field-header field-header-support'>Support</DIV>
 	</DIV>
 
 	
@@ -304,8 +304,8 @@
 								  allSubRows+/*encodeURIComponent(JSON.stringify(regionAttributes["allNodes"]))*/
 								  
 								  "<DIV CLASS='field field-service field-service-status-support'>"+
-									  "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+regionAttributes["nodeSelected"]["name"]+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>"+
-									  "<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href ='"+regionAttributes["nodeSelected"]["jira_project_url"]+"';\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>"+
+									  "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+idRegion+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>"+
+									  "<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href ='"+regionAttributes["services"]["overallStatus"]["jira_project_url"]+"';\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>"+
 								  "</DIV>"+			
 							  "</DIV>"+
 							  "<!--<DIV CLASS='row-message'>"+
@@ -313,23 +313,24 @@
 							  "</DIV>-->";
 						  }
 						  
-						  var allSubHeaders = "";
+						  /*var allSubHeaders = "";
 						  $.each(servicesNames, function( index, value ) {
 							  if(value != "overallStatus")
 							  {
 								  allSubHeaders = allSubHeaders + "<DIV CLASS='field field-header field-header-service'>"+value+"</DIV>";
 							  }
 						  });
-							  
-						  allHeaders = "<DIV CLASS='field field-header field-header-node'>Node</DIV>"+
-						  "<DIV CLASS='field field-header field-header-overall'>Overall</DIV>"+
-						  
-						  allSubHeaders+
-						  
-						  "<DIV CLASS='field field-header field-header-support'>Support</DIV>";
-						  
-						  $('#tableHeaderContent').html(allHeaders);
+							 */ 
+// 						  allHeaders = "<DIV CLASS='field field-header field-header-node'>Node</DIV>"+
+// 						  "<DIV CLASS='field field-header field-header-overall'>Overall</DIV>"+
+// 						  
+// 						  allSubHeaders+
+// 						  
+// 						  "<DIV CLASS='field field-header field-header-support'>Support</DIV>";
+// 						  
+// 						  $('#tableHeaderContent').html(allHeaders);
 						  $('#tableContent').html(allRows);
+						  $('#errorMessage').html("");
 						  
 						  var height = $('#world-map-nodes').height()+$('#status').height()+80;
 						  $('.wrapper').css("cssText", "height: "+height+"px !important;");
@@ -408,7 +409,8 @@
 				      var errore = "<%= FiLabInfographics.nodata %>";
 				      if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
 					      errore = xhr.responseText;
-				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+// 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
+				      $('#errorMessage').html(errore);
   //     				alert('request failed->'+textStatus);
   //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
 				  } 

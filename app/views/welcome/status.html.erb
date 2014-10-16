@@ -291,9 +291,8 @@
 								  }
 							  });
 							  
-							  
-							  
-							  
+							  var jira_url = regionAttributes["services"]["overallStatus"]["jira_project_url"]
+							  if( jira_url == "undefined") jira_url = "#";
 							  
 							  allRows = allRows + "<DIV CLASS='status-row row-status-service row-status-closed'>"+
 								  "<DIV CLASS='field field-group field-group-expand'>"+
@@ -305,7 +304,7 @@
 								  
 								  "<DIV CLASS='field field-service field-service-status-support'>"+
 									  "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+idRegion+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>"+
-									  "<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href ='"+regionAttributes["services"]["overallStatus"]["jira_project_url"]+"';\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>"+
+									  "<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href ='"+jira_url+"';\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>"+
 								  "</DIV>"+			
 							  "</DIV>"+
 							  "<!--<DIV CLASS='row-message'>"+

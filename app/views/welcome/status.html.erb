@@ -292,7 +292,7 @@
 							  });
 							  
 							  var jira_url = regionAttributes["services"]["overallStatus"]["jira_project_url"]
-							  if( jira_url == "undefined") jira_url = "#";
+							  if( !jira_url) jira_url = "#";
 							  
 							  allRows = allRows + "<DIV CLASS='status-row row-status-service row-status-closed'>"+
 								  "<DIV CLASS='field field-group field-group-expand'>"+

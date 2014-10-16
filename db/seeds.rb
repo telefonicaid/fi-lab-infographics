@@ -11,4 +11,8 @@
 	             {rid: 'Lannion', name: 'Lannion', jira_project_url: 'http://jira.fi-ware.org/browse/LAN', jira_project_id: 'LAN'},
 	             {rid: 'Prague', name: 'Prague', jira_project_url: 'http://jira.fi-ware.org/browse/PRAG', jira_project_id: 'PRAG'},
 	             {rid: 'Waterford', name: 'Waterford', jira_project_url: 'http://jira.fi-ware.org/browse/WAT', jira_project_id: 'WAT'},
-	             {rid: 'Spain', name: 'Spain', jira_project_url: 'http://jira.fi-ware.org/browse/SEV', jira_project_id: 'SEV'}])
+	             {rid: 'Spain', name: 'Spain', jira_project_url: 'http://jira.fi-ware.org/browse/SEV', jira_project_id: 'SEV'},
+		     {rid: 'Athens_Neuropublic', name: 'Athens_Neuropublic', jira_project_url: 'http://jira.fi-ware.org/browse/NEOR', jira_project_id: 'NEOR'},
+	             {rid: 'ATHENS_UPRC', name: 'ATHENS_UPRC', jira_project_url: 'http://jira.fi-ware.org/browse/UPRC', jira_project_id: 'UPRC'},
+	             {rid: 'Karlskrona', name: 'Karlskrona', jira_project_url: 'http://jira.fi-ware.org/browse/ASI', jira_project_id: 'ASI'},
+	             {rid: 'NITOS-UTH', name: 'NITOS-UTH', jira_project_url: 'http://jira.fi-ware.org/browse/UTH', jira_project_id: 'UTH'}])

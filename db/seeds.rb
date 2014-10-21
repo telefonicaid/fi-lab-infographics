@@ -19,4 +19,5 @@
 	             {rid: 'Gent', name: 'Gent', jira_project_url: 'http://jira.fi-ware.org/browse/IM', jira_project_id: 'IM'},
 	             {rid: 'Poznan', name: 'Poznan', jira_project_url: 'http://jira.fi-ware.org/browse/PSNC', jira_project_id: 'PSNC'},
 	             {rid: 'Budapest', name: 'Budapest', jira_project_url: 'http://jira.fi-ware.org/browse/WIG', jira_project_id: 'WIG'},
-	             {rid: 'Zurich', name: 'Zurich', jira_project_url: 'http://jira.fi-ware.org/browse/ZHAW', jira_project_id: 'ZHAW'}])
+	             {rid: 'Zurich', name: 'Zurich', jira_project_url: 'http://jira.fi-ware.org/browse/ZHAW', jira_project_id: 'ZHAW'},
+	             {rid: 'Stockholm', name: 'Stockholm', jira_project_url: 'http://jira.fi-ware.org/browse/ASI', jira_project_id: 'ASI'}])

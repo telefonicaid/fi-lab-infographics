@@ -39,6 +39,7 @@ class RegionController < ApplicationController
     end
   end
 
+  #perform request to federation monitoring API
   def performRequest (uri)
     require 'net/http'
     require 'timeout'
@@ -107,6 +108,26 @@ class RegionController < ApplicationController
 
   end
   
+  #check and shift two map points too close 
+  def checkLatLong (points)
+    
+    points.each do |regionToCheckKey,regionToCheck|
+      points.each do |regionKey,region|
+	if regionToCheck["id"] != region["id"]
+	  if (regionToCheck["latitude"].to_f - region["latitude"].to_f).abs < 0.4
+	    regionToCheck["latitude"] = regionToCheck["latitude"].to_f+0.5
+	  end
+	  if (regionToCheck["longitude"].to_f - region["longitude"].to_f).abs < 0.4
+	    regionToCheck["longitude"] = regionToCheck["longitude"].to_f+0.5
+	  end
+	end
+      end
+    end
+    
+    return points
+  end
+  
+  #get all general data and specific data about all regions 
   def getRegionsData
     
     begin
@@ -134,6 +155,7 @@ class RegionController < ApplicationController
 	
       end    
       
+      attributes = checkLatLong (attributes);
       returnData = Hash.new
       returnData ["regions"] = attributes;
       returnData ["tot"] = totRegionsData;
@@ -144,6 +166,7 @@ class RegionController < ApplicationController
     return nil
   end
   
+  #render all general data and specific data about all regions 
   def renderRegions
 
     begin
@@ -161,6 +184,7 @@ class RegionController < ApplicationController
     render :json => regionsData.to_json
   end
   
+  #render all general data about regions 
   def renderRegionsTotData
     begin
       totRegionsData = self.getRegionsTotData
@@ -172,6 +196,7 @@ class RegionController < ApplicationController
     render :json => totRegionsData.to_json
   end
   
+  #get all general data about regions 
   def getRegionsTotData
     begin
       regionsData = self.performRequest('regions')
@@ -205,6 +230,7 @@ class RegionController < ApplicationController
     return nil
   end
   
+  #render specific data about one region
   def renderRegionsDataForRegion
     idNode = params[:nodeId]
     begin
@@ -217,6 +243,7 @@ class RegionController < ApplicationController
     render :json => regionsData.to_json
   end
   
+  #get specific data about one region
   def getRegionsDataForNodeId (idNode)
     begin
       regionsData = self.performRequest('regions/' + idNode)
@@ -243,6 +270,7 @@ class RegionController < ApplicationController
     return nil
   end
   
+  #render specific data about services of one region
   def renderServicesForRegion
     idNode = params[:nodeId]
     begin
@@ -255,6 +283,7 @@ class RegionController < ApplicationController
     render :json => services.to_json
   end
   
+  #get specific data about services of one region
   def getServicesForNodeId (idNode)    
     
     begin
@@ -375,6 +404,7 @@ class RegionController < ApplicationController
     
   end
   
+  #render data about services of all regions
   def renderServices
     
     begin

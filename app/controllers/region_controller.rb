@@ -56,7 +56,7 @@ class RegionController < ApplicationController
     
     oauthToken = Base64.strict_encode64( RegionController.getToken.token )
 #     //DECOMMENT IN ORDER TO USE OAUTH
-#     req.add_field("Authorization", "Bearer "+oauthToken)
+    req.add_field("Authorization", "Bearer "+oauthToken)
     Rails.logger.debug(req.get_fields('Authorization'));
     Rails.logger.debug(req.get_fields('Accept'));
     Rails.logger.debug(url.request_uri);

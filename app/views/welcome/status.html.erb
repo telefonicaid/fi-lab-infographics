@@ -31,9 +31,22 @@
 	</DIV>
 			  
 </DIV>
--->
 
-<div class="title">Nodes</div>
+-->
+  <section class="media-1"><h3 class="media-heading">
+      FIWARE Lab Status
+    </h3>
+    <span>
+      FIWARE Lab is a working instance of FIWARE available for experimentation. FIWARE Lab is hosted on multiple nodes across Europe.
+    </span>
+    <p>
+      This page provides a real time status of FIWARE Lab nodes. Some nodes may not be displayed if monitoring probes are not installed.
+    </p>
+    <%= render :partial => "topbar" %>
+  </section>
+
+<div class="layoutContainer">
+<div class="row-fluid">
 <div id="world-map-nodes"></div>
 <div id="errorMessage"></div>
 <DIV ID="status">
@@ -46,115 +59,17 @@
 		<DIV CLASS='field field-header field-header-service'>Cinder</DIV>
 		<DIV CLASS='field field-header field-header-service'>Glance</DIV>
 		<DIV CLASS='field field-header field-header-service'>Keystone P.</DIV>
-		<DIV CLASS='field field-header field-header-support'>Support</DIV>
+		<!-- <DIV CLASS='field field-header field-header-support'>Support</DIV>-->
 	</DIV>
 
 	
 	<DIV id="tableContent">
 		
-		<!--<DIV CLASS='status-row row-status-service row-status-closed'>
-			<DIV CLASS='field field-group field-group-expand'>
-				<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>
-			</DIV>
-			<DIV CLASS='field field-service field-service-node Trento'>Trento</DIV>
-			<DIV CLASS='field field-service field-service-overall'><img src="/assets/infographic/yellowlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/greenlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/greenlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/greenlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/redlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/greenlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-support'>
-				<img src="/assets/infographic/help.png" height="30" onclick="$('#popupDialog').dialog('open');"/>
-				<img src="/assets/infographic/jira.png" height="30" onclick="alert('go to jira');"/>
-			</DIV>			
-		</DIV>
-		<DIV CLASS='row-message'>
-			For the moment there are no messages.
-		</DIV>
-		<DIV CLASS='status-row row-status-service row-status-closed'>
-			<DIV CLASS='field field-group field-group-expand'>
-				<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>
-			</DIV>
-			<DIV CLASS='field field-service field-service-node Berlin'>Berlin</DIV>
-			<DIV CLASS='field field-service field-service-overall'><img src="/assets/infographic/yellowlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/greenlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/greenlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/redlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/greenlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/redlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-support'>
-				<img src="/assets/infographic/help.png" height="30" onclick="$('#popupDialog').dialog('open');"/>
-				<img src="/assets/infographic/jira.png" height="30" onclick="alert('go to jira');"/>
-			</DIV>			
-		</DIV>
-		<DIV CLASS='row-message'>
-			For the moment there are no messages.
-		</DIV>
-		<DIV CLASS='status-row row-status-service row-status-closed'>
-			<DIV CLASS='field field-group field-group-expand'>
-				<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>
-			</DIV>
-			<DIV CLASS='field field-service field-service-node Paris'>Paris</DIV>
-			<DIV CLASS='field field-service field-service-overall'><img src="/assets/infographic/greenlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/greenlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/greenlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/greenlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/greenlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/greenlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-support'>
-				<img src="/assets/infographic/help.png" height="30" onclick="$('#popupDialog').dialog('open');"/>
-				<img src="/assets/infographic/jira.png" height="30" onclick="alert('go to jira');"/>
-			</DIV>			
-		</DIV>
-		<DIV CLASS='row-message'>
-			General Problems.
-		</DIV>
-		<DIV CLASS='status-row row-status-service row-status-closed'>
-			<DIV CLASS='field field-group field-group-expand'>
-				<IMG CLASS='field-group-expand-icon sprite expand' SRC='/assets/infographic/blank.gif'>
-			</DIV>
-			<DIV CLASS='field field-service field-service-node Madrid'>Madrid</DIV>
-			<DIV CLASS='field field-service field-service-overall'><img src="/assets/infographic/redlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/redlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/redlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/redlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/redlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-field'><img src="/assets/infographic/redlight.png" height="25"/></DIV>
-			<DIV CLASS='field field-service field-service-status-support'>
-				<img src="/assets/infographic/help.png" height="30" onclick="$('#popupDialog').dialog('open');"/>
-				<img src="/assets/infographic/jira.png" height="30" onclick="alert('go to jira');"/>
-			</DIV>			
-		</DIV>
-		<DIV CLASS='row-message'>
-			Under Maintenance.
-		</DIV>-->
 	</DIV>
 			  
 </DIV>
-
-<!--<div id="popupDialog" title="Jira Ticket" style="display:none;">
-  <p>
-     <label for="widgetName">Open a new ticket for the selected node:</label>
-     <textarea name="ticketText" cols="40" rows="5"></textarea>
-  </p>
-</div>-->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</div>
+</div>
 
 
 <% content_for :jsfooter do %>
@@ -255,34 +170,10 @@
 							  
 							  var allSubRows = "";
 							  
-  // 							$.each(regionAttributes["services"], function(serviceName, valSub) {
-  // 								if(serviceName != null && valSub != null)
-  // 								{
-  // 									console.log(serviceName);
-  // 									var colorValue = valSub["value"];
-  // 									var colorPng = colorValue + "light.png";
-  // 									
-  // 									if(serviceName == "overallStatus")
-  // 									{
-  // 										var colorValue = valSub;
-  // 										var colorPng = colorValue + "light.png";
-  // 										allSubRows = "<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>" + allSubRows;
-  // 									}
-  // 									
-  // 									
-  // 									else allSubRows = allSubRows + "<DIV CLASS='field field-service field-service-status-field'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>";
-  // 									
-  // 								}
-  // 							});
-							  
-							  
-							  
 							  var colorValueOverall = regionAttributes["services"]["overallStatus"]['value'];
 							  var colorPng = colorValueOverall + "light.png";
 							  allSubRows = "<DIV CLASS='field field-service field-service-overall'><img src=\"/assets/infographic/"+colorPng+"\" height=\"25\"/></DIV>" + allSubRows;
 							  
-							  
-  // 							console.log(servicesNames);
 							  $.each(servicesNames, function( index, value ) {
 								  if(value != "overallStatus")
 								  {
@@ -302,10 +193,10 @@
 								  
 								  allSubRows+/*encodeURIComponent(JSON.stringify(regionAttributes["allNodes"]))*/
 								  
-								  "<DIV CLASS='field field-service field-service-status-support'>"+
-									  "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+idRegion+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>"+
-									  "<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href ='"+jira_url+"';\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>"+
-								  "</DIV>"+			
+//								  "<DIV CLASS='field field-service field-service-status-support'>"+
+//									  "<img src=\"/assets/infographic/help.png\" height=\"30\" onclick=\"var theDialog = $('#atlScriptlet').data('regionSelected','"+idRegion+"'); theDialog.dialog('open');\" style=\"cursor:pointer;\" title=\"Report an issue\" alt=\"Report an issue\"/>"+
+//									  "<img src=\"/assets/infographic/jira.png\" height=\"30\" onclick=\"window.location.href ='"+jira_url+"';\" style=\"cursor:pointer;\" title=\"Browse open issues\" alt=\"Browse open issues\"/>"+
+//								  "</DIV>"+			
 							  "</DIV>"+
 							  "<!--<DIV CLASS='row-message'>"+
 								  regionAttributes["services"]["overallStatus"]['description']+
@@ -404,14 +295,10 @@
 					  
 				  },
 				  error: function(xhr, textStatus, errorThrown){
-  // 				    $('#tableHeaderContent').html("<DIV CLASS='field field-header field-header-node'><%= FiLabInfographics.nodata %></DIV>");
 				      var errore = "<%= FiLabInfographics.nodata %>";
 				      if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
 					      errore = xhr.responseText;
-// 				      $('#tableHeaderContent').html("<DIV CLASS='field field-header'>"+errore+"</DIV>");
 				      $('#errorMessage').html(errore);
-  //     				alert('request failed->'+textStatus);
-  //     				console.log(xhr.status + ' çççç'+xhr.body+'òòòò' + textStatus + ' ' + errorThrown);
 				  } 
 			    }
 			      
@@ -422,41 +309,6 @@
 		//e poi lo richiamo dopo 30 secondi
 		setInterval(function(){ajaxFun()}, 60000);
 	  });
-			      
-			      
-			      
-			      
-			      
-  /*	
-	  var markers = {};
-	  markers["latLng"] = [46.06787, 11.12108];
-	  markers["name"] = 'Trento';
-	  markers["style"] = {fill: 'rgba(255,0,0,1.0)', r:5};
-	  selectedMarkers.push(markers);
-	  var markers = {};
-	  markers["latLng"] = [52.30000, 13.25000];
-	  markers["name"] = 'Berlin';
-	  markers["style"] = {fill: 'rgba(0,255,0,1.0)', r:5};
-	  selectedMarkers.push(markers);
-	  var markers = {};
-	  markers["latLng"] = [48.86667, 2.33333];
-	  markers["name"] = 'Paris';
-	  markers["style"] = {fill: 'rgba(255,255,0,1.0)', r:5};
-	  selectedMarkers.push(markers);
-	  var markers = {};
-	  markers["latLng"] = [40.4, -3.68333];
-	  markers["name"] = 'Madrid';
-	  markers["style"] = {fill: 'rgba(0,0,0,0.5)', r:5};
-	  selectedMarkers.push(markers);
-		  
-	  
-
-		  
-		  mapNodes.addMarkers(selectedMarkers);
-		  */
-		  
-		  
-	  
-		  
+			    		  
   </script>
 <% end %>

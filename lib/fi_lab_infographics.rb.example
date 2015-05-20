@@ -9,7 +9,8 @@ module FiLabInfographics
   mattr_accessor :jira_success_message
   mattr_accessor :jira_default_project
 #   @@nodejs = 'http://192.168.1.100:80' 
-  @@nodejs = 'http://193.205.211.69:1026' 
+#  @@nodejs = 'http://193.205.211.69:1026' 
+  @@nodejs = 'http://130.206.84.4:1028'
   @@timeout = 5
   @@nodata = 'No Data'
   @@jira = 'http://jira.fi-ware.org'

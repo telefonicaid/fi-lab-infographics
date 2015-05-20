@@ -2,7 +2,7 @@
       FIWARE Lab Nodes
     </h3>
     <span>
-      FIWARE Lab is a working instance of FI-WARE available for experimentation. FIWARE Lab is hosted on multiple nodes across Europe. 
+      FIWARE Lab is a working instance of FIWARE available for experimentation. FIWARE Lab is hosted on multiple nodes across Europe. 
     </span>
     <p>
       This page provides a real time infographics of the capacities of FIWARE Lab nodes.
@@ -10,7 +10,11 @@
     <%= render :partial => "topbar" %>
   </section>
 
-<div class="layoutContainer">
+<div id="error" style="display: none; text-align: center;" class="layoutContainer">
+  <span id="errorMessage"></span>
+</div>
+
+<div id="infographics" class="layoutContainer">
 	<div class="row-fluid">
 	  <div class="span6" style="margin: 0 auto;float: none;">
 		<div class="section">
@@ -70,12 +74,13 @@
 					<img src="/assets/infographic/iconCpu.png" height="55"/>
 				</div>
 				<div class="rightDetail">
-					<span id="coresNum"></span> core
+					<span id="coresNum"></span> cores
 				</div>
 				<div class="clear"></div>
 			</div>
 			<div class="bodySection accordionPanel bigPanel">
 				<div id="world-map-cpu"></div>
+                        <div style="font-size: 10px;padding-left: 26px;">N.B. numbers in this map refer to virtual cores (which usually have a over commit factor of 16 w.r.t. physical cores)</div>
 			</div>
 		    </div>
 
@@ -85,12 +90,13 @@
 					<img src="/assets/infographic/iconRam.png" height="55"/>
 				</div>
 				<div class="rightDetail">
-					<span id="ramNum"></span> Mb
+					<span id="ramNum"></span> GB
 				</div>
 				<div class="clear"></div>
 			</div>
 			<div class="bodySection accordionPanel bigPanel">
 				<div id="world-map-ram"></div>
+                                                <div style="font-size: 10px;padding-left: 26px;">N.B. numbers in this map refer to virtual ram (which usually have an over commit factor of 1.5 w.r.t. physycal ram</div>
 			</div>
 		    </div>
 
@@ -100,7 +106,7 @@
 					<img src="/assets/infographic/iconDisk.png" height="55"/>
 				</div>
 				<div class="rightDetail">
-					<span id="hdNum"></span> Gb
+					<span id="hdNum"></span> TB
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -108,7 +114,20 @@
 				<div id="world-map-disk"></div>
 			</div>
 		    </div>
-
+                    <div class="section">
+                        <div class="headerSection accordionTitle">
+                                <div class="leftIcon">
+                                        <img src="/assets/infographic/iconNetwork.png" height="55"/>
+                                </div>
+                                <div class="rightDetail">
+                                        <span id="ipNum"></span> public IPs
+                                </div>
+                                <div class="clear"></div>
+                        </div>
+                        <div class="bodySection accordionPanel bigPanel">
+                                <div id="world-map-ip"></div>
+                        </div>
+                    </div>
 		    <div class="section">
 			<div class="headerSection accordionTitle">
 				<div class="leftIcon">
@@ -201,7 +220,7 @@
 			<img src="/assets/infographic/iconRam.png" height="55"/>
 		</div>
 		<div class="rightDetail">
-			<span id="ramNum"></span> Mb
+			<span id="ramNum"></span> GB
 		</div>
 		<div class="clear"></div>
 	</div>
@@ -216,7 +235,7 @@
 			<img src="/assets/infographic/iconDisk.png" height="55"/>
 		</div>
 		<div class="rightDetail">
-			<span id="hdNum"></span> Gb
+			<span id="hdNum"></span> TB
 		</div>
 		<div class="clear"></div>
 	</div>
@@ -340,6 +359,7 @@
 		  $('#world-map-ram').css('height',Math.round($('#world-map-ram').width()*366/545));
 		  $('#world-map-disk').css('height',Math.round($('#world-map-disk').width()*366/545));
 		  $('#world-map-vm').css('height',Math.round($('#world-map-vm').width()*366/545));
+                  $('#world-map-ip').css('height',Math.round($('#world-map-ip').width()*366/545));
   // 		$('#world-map-ge').css('height',Math.round($('#world-map-ge').width()*366/545));
 		  /** =================================================================
 		  *  Map
@@ -497,6 +517,47 @@
 
 		  $('#world-map-disk').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
 
+
+                var mapIp = new jvm.WorldMap({
+  //            $('#world-map-ip').vectorMap({
+                  container: $('#world-map-ip'),
+                  map: 'world_mill_en',
+                  regionStyle: {
+                            initial: {
+                              fill: '#ffffff',
+                              "fill-opacity": 1,
+                              stroke: 'none',
+                              "stroke-width": 0,
+                              "stroke-opacity": 1
+                            },
+                            hover: {
+                              "fill-opacity": 0.8
+                            },
+                            selected: {
+                                  fill: 'orange'
+                            },
+                            selectedHover: {
+                            }
+                  },
+                  markerStyle: {
+                    initial: {
+                      fill: '#ff9900',
+                      stroke: '#383f47'
+                    }
+                  },
+                  series: {
+                            regions: [{
+                                            scale: ['#C8EEFF', '#0071A4'],
+                                            normalizeFunction: 'linear'
+                            }]
+                  }
+
+                  });
+
+                  $('#world-map-ip').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
+
+
+
 		  var mapVm = new jvm.WorldMap({
   // 		$('#world-map-vm').vectorMap({
 		  container: $('#world-map-vm'),
@@ -545,16 +606,24 @@
 			      cache: false,
 			      success: function(json){
 
+
+                              $( "#infographics" ).show();
+                              $( "#error" ).hide();
+
   // 			      var obj = $.parseJSON(json);
 
 				var nUsers = parseInt(json['tot']['total_nb_users']);
+                                if (nUsers == 0)
+                                  nUsers = 2026 
 				var nOrganizations = parseInt(json['tot']['total_nb_organizations']);
+                                if (nOrganizations == 0)
+                                  nOrganizations = 549
 				var nCores = parseInt(json['tot']['total_nb_cores']);
-				var nRam = parseInt(json['tot']['total_nb_ram']); 
-				var nHd = parseInt(json['tot']['total_nb_disk']);
+				var nRam = Math.round(parseInt(json['tot']['total_nb_ram'])/1024); 
+				var nHd = Math.round(parseInt(json['tot']['total_nb_disk'])/1024);
 				var nVm = parseInt(json['tot']['total_nb_vm']);
 				var nRegions = parseInt(json['tot']['total_regions_count']);
-
+                                var nIp = parseInt(json['tot']['total_ip']);
 				var selectedRegions = [];
 				var selectedMarkers = [];
 				var selectedRegionsCpu = [];
@@ -565,6 +634,8 @@
 				var selectedMarkersDisk = [];
 				var selectedRegionsVm = [];
 				var selectedMarkersVm = [];
+				var selectedRegionsIp = [];
+				var selectedMarkersIp = [];
 
 				$.each(json['regions'], function(key, val) {
   // 				nUsers += parseInt(this['nUser']);
@@ -576,10 +647,26 @@
 
   // 				selectedRegions = selectedRegions + '\'' + key  + '\'';
 				  selectedRegions.push(this['country']);
-				  selectedRegionsCpu[this['country']] = parseInt(this['nb_cores']);
-				  selectedRegionsRam[this['country']] = parseInt(this['nb_ram']);
-				  selectedRegionsDisk[this['country']] = parseInt(this['nb_disk']);
-				  selectedRegionsVm[this['country']] = parseInt(this['nb_vm']);
+                                  if (selectedRegionsCpu[this['country']] == null)
+				    selectedRegionsCpu[this['country']] = parseInt(this['nb_cores']);
+				  else 
+                                    selectedRegionsCpu[this['country']] += parseInt(this['nb_cores']);
+                                  if (selectedRegionsRam[this['country']] == null)
+                                    selectedRegionsRam[this['country']] = parseInt(this['nb_ram'])/1024;
+                                  else
+				    selectedRegionsRam[this['country']] += parseInt(this['nb_ram'])/1024;
+                                  if (selectedRegionsDisk[this['country']] == null)
+				    selectedRegionsDisk[this['country']] = parseInt(this['nb_disk'])/1024;
+				  else
+				    selectedRegionsDisk[this['country']] += parseInt(this['nb_disk'])/1024;
+				  if (selectedRegionsVm[this['country']] == null)
+				    selectedRegionsVm[this['country']] = parseInt(this['nb_vm']);
+				  else
+                                    selectedRegionsVm[this['country']] += parseInt(this['nb_vm']);
+				  if (selectedRegionsIp[this['country']] == null)
+                                    selectedRegionsIp[this['country']] = parseInt(this['ipTot']);
+                                  else 
+                                    selectedRegionsIp[this['country']] += parseInt(this['ipTot']);
 
 				  if(this['latitude'] != "" && this['longitude'] != "")
 				  {
@@ -590,22 +677,37 @@
 				      selectedMarkers.push(marker);
 				      
 				      var markerCpu = {};
+                                      freeCpu =  (parseInt(this['nb_cores'])*parseFloat(this['cpu_allocation_ratio'])-parseInt(this['nb_cores_used']));
+                                      if (freeCpu<0)
+                                         freeCpu = 0;
 				      markerCpu["latLng"] = [];
 				      markerCpu["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
-				      markerCpu["name"] = this['name'] + " (" + this['nb_cores'] + " core)";
+				      markerCpu["name"] = this['name'] + " (" + freeCpu + " available virtual cores / " + parseInt(this['nb_cores'])*parseFloat(this['cpu_allocation_ratio']) + " total virtual cores / "+parseInt(this['nb_cores']) + " total physical cores)";
 				      selectedMarkersCpu.push(markerCpu);
 
 				      var markerRam = {};
+                                      freeRam = ((1-parseFloat(this['percRAMUsed']))*(parseInt(this['nb_ram']*parseFloat(this['ram_allocation_ratio']))/1024)).toFixed(1);
+                                      if (freeRam<0)
+                                         freeRam = 0;
 				      markerRam["latLng"] = [];
 				      markerRam["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
-				      markerRam["name"] = this['name'] + " (" + this['nb_ram'] + " Mb)";
+				      markerRam["name"] = this['name'] + " (" + freeRam + " available GB virtual RAM  / " + (parseInt(this['nb_ram']*parseFloat(this['ram_allocation_ratio']))/1024).toFixed(1) +" total GB virtual RAM / " + (parseInt(this['nb_ram'])/1024).toFixed(1) + " total GB physical RAM)";
 				      selectedMarkersRam.push(markerRam);
 
 				      var markerDisk = {};
+                                      freeDisk = ((1-parseFloat(this['percDiskUsed']))*(parseInt(this['nb_disk'])/1024)).toFixed(1);
+                                      if (freeDisk<0)
+                                         freeDisk = 0;
 				      markerDisk["latLng"] = [];
 				      markerDisk["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
-				      markerDisk["name"] = this['name'] + " (" + this['nb_disk'] + " Gb)";
+				      markerDisk["name"] = this['name'] + " (Available " + freeDisk + " / " + (parseInt(this['nb_disk'])/1024).toFixed(1) +"  TB)";
 				      selectedMarkersDisk.push(markerDisk);
+
+                                      var markerIp = {};
+                                      markerIp["latLng"] = [];
+                                      markerIp["latLng"] = [parseFloat(this['latitude']),parseFloat(this['longitude'])];
+                                      markerIp["name"] = this['name'] + " (" + (parseInt(this['ipTot'])-parseInt(this['ipAllocated'])) + " available Public IPs / " + parseInt(this['ipTot']) + " total Public IPs)";
+                                      selectedMarkersIp.push(markerIp);
 
 				      var markerVm = {};
 				      markerVm["latLng"] = [];
@@ -625,6 +727,7 @@
 				$('#ramNum').html(nRam);
 				$('#hdNum').html(nHd);
 				$('#vmNum').html(nVm);
+                                $('#ipNum').html(nIp);
 
 				var maxMill = Math.floor(nOrganizations/1000);
 				var i = 0;
@@ -717,6 +820,11 @@
 				  array_values_disk.push(parseInt(selectedRegionsDisk[key]));
 				}
 
+                                var array_values_ip = new Array();
+                                for (var key in selectedRegionsIp) {
+                                  array_values_ip.push(parseInt(selectedRegionsIp[key]));
+                                }
+
 				var array_values_vm = new Array();
 				for (var key in selectedRegionsVm) {
 				  array_values_vm.push(parseInt(selectedRegionsVm[key]));
@@ -763,6 +871,15 @@
 				mapDisk.removeAllMarkers();
 				mapDisk.addMarkers(selectedMarkersDisk);
 
+                                mapIp.series.regions[0].clear();
+                                var max_of_ip = Math.max.apply(Math, array_values_ip);
+                                var min_of_ip = Math.min.apply(Math, array_values_ip);
+                                mapIp.series.regions[0].scale['minValue'] = min_of_ip;
+                                mapIp.series.regions[0].scale['maxValue'] = max_of_ip;
+                                mapIp.series.regions[0].setValues(selectedRegionsIp);
+                                mapIp.removeAllMarkers();
+                                mapIp.addMarkers(selectedMarkersIp);
+
 				mapVm.series.regions[0].clear();
 				var max_of_vm = Math.max.apply(Math, array_values_vm);
 				var min_of_vm = Math.min.apply(Math, array_values_vm);
@@ -781,14 +898,14 @@
 				  $('#biggerOrg').html("&nbsp;");
 				  $('#bigOrg').html("&nbsp;");
 				  $('#mediumOrg').html("&nbsp;");
-  // 				$('#smallMen').html("<%= FiLabInfographics.nodata %>");
-				  var errore = "<%= FiLabInfographics.nodata %>";
-				  if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
-					  errore = xhr.responseText;
-				  $('#smallMen').html(errore);
-				  $('#smallOrg').html(errore);
-  // 				alert('request failed->'+textStatus);
-  // 				console.log(xhr.status + ' çççç'+xhr.responseText+'òòòò' + textStatus + ' ' + errorThrown);
+
+                                  $( "#infographics" ).hide();
+                                  $( "#error" ).show();
+
+                                  var errore = "<%= FiLabInfographics.nodata %>";
+                                  if(xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null")
+                                          errore = xhr.responseText;
+                                  $('#errorMessage').html(errore);
 				  } 
 			  }
 		  );

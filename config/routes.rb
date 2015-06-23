@@ -6,6 +6,10 @@ FiLabInfographics::Application.routes.draw do
     get '/',  to: "welcome#status", as: 'status_root'
   end
 
+  constraints DomainConstraint.new('historical.lab') do
+    get '/',  to: "welcome#historical", as: 'historical_root'
+  end
+
   constraints DomainConstraint.new('infographic.lab') do
     get '/',  to: "welcome#info", as: 'info_root'
   end
@@ -31,6 +35,7 @@ FiLabInfographics::Application.routes.draw do
   
   get '/info', to: 'welcome#info'
   get '/status', to: 'welcome#status'
+  get '/historical', to: 'welcome#historical'
 #  get '/nam' => redirect('http://138.4.47.33:5000/')
   
   scope "/api/v1" do
@@ -40,6 +45,7 @@ FiLabInfographics::Application.routes.draw do
       get "/vm" => "region#renderVms"
       get "/services" => "region#renderServices" 
       get "/services/:nodeId" => "region#renderServicesForRegion"
+      get "/historical/:nodeId" => "region#renderHistoricalForRegion"
       get "/list" => "region#renderRegionIdListFromDb"
       get "/:nodeId"  => "region#renderRegionsDataForRegion"
 #      options "/list" => "region#getRegionIdList"

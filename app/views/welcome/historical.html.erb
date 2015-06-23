@@ -72,8 +72,8 @@ d3.select(self.frameElement).style("height", totalHeight + "px");
 function caption(d) {
     switch (historical_data[d]) {
         case 1:  return d + ": Sanity status OK";
-        case 0:  return d + ": Sanity status N/A";
-        default: return d + ": Sanity status NOK";
+        case 0:  return d + ": Sanity status partially OK";
+        default: return d + ": Sanity status not OK";
     }
 }
 
@@ -151,7 +151,7 @@ $(document).ready(function() {
                     switch (obj.FiHealthStatus.value) {
                         case 'green': rObj['Value'] = +1; rObj['Status'] = 'OK';  break;
                         case 'red':   rObj['Value'] = -1; rObj['Status'] = 'NOK'; break;
-                        default:      rObj['Value'] =  0; rObj['Status'] = 'N/A';
+                        default:      rObj['Value'] =  0; rObj['Status'] = 'POK';
                     }
                     return rObj;
                 });

@@ -9,8 +9,8 @@ class CustomException < Exception
 end
 
 class RegionController < ApplicationController
-  
-  @@token = nil  
+
+  @@token = nil
 
   def self.getToken
     if @@token.expired?
@@ -299,26 +299,26 @@ class RegionController < ApplicationController
     serviceKP = Hash.new
     serviceOverall = Hash.new
     
-    serviceNova["value"] = "gray";
+    serviceNova["value"] = STATUS_NA;
     serviceNova["description"] = "";
     
     
-    serviceNeutron["value"] = "gray";
+    serviceNeutron["value"] = STATUS_NA;
     serviceNeutron["description"] = "";
     
     
-    serviceCinder["value"] = "gray";
+    serviceCinder["value"] = STATUS_NA;
     serviceCinder["description"] = "";
     
     
-    serviceGlance["value"] = "gray";
+    serviceGlance["value"] = STATUS_NA;
     serviceGlance["description"] = "";
     
     
-    serviceKP["value"] = "gray";
+    serviceKP["value"] = STATUS_NA;
     serviceKP["description"] = "";
     
-    serviceOverall["value"] = "gray";
+    serviceOverall["value"] = STATUS_NA;
     serviceOverall["description"] = "No Messages";
     
     if servicesRegionData != nil &&  
@@ -440,7 +440,7 @@ class RegionController < ApplicationController
       timestamp = Date.ordinal(year, day).strftime('%Y-%m-%d 00.00')
       fihealth = sample['FiHealthStatus'].clone
       random = prng.rand(-10..100)
-      fihealth['value'] = random > 1 ? 'green' : random < 0 ? 'red' : 'gray'
+      fihealth['value'] = random > 1 ? STATUS_OK : random < 0 ? STATUS_NOK : STATUS_POK
       sample['timestamp'] = timestamp
       sample['FiHealthStatus'] = fihealth
       result['measures'].push(sample.clone)
@@ -496,32 +496,32 @@ class RegionController < ApplicationController
 #       attributesRegionsServices[regionData["id"]]["IDM"]["description"] = serviceRegionData["KPServiceStatus"]["description"];
       
 #       points = 0
-#       if serviceRegionData["novaServiceStatus"]["value"] == "green"
+#       if serviceRegionData["novaServiceStatus"]["value"] == STATUS_OK
 # 	points+=2;
 #       end
 # 	
-#       if serviceRegionData["neutronServiceStatus"]["value"] == "green"
+#       if serviceRegionData["neutronServiceStatus"]["value"] == STATUS_OK
 # 	points+=2;
 #       end
 # 	
-#       if serviceRegionData["cinderServiceStatus"]["value"] == "green"
+#       if serviceRegionData["cinderServiceStatus"]["value"] == STATUS_OK
 # 	points+=2;
 #       end
 # 	
-#       if serviceRegionData["glanceServiceStatus"]["value"] == "green" 
+#       if serviceRegionData["glanceServiceStatus"]["value"] == STATUS_OK
 # 	points+=2;
 #       end
 # 	
-#       if serviceRegionData["KPServiceStatus"]["value"] == "green" 
+#       if serviceRegionData["KPServiceStatus"]["value"] == STATUS_OK
 # 	points+=2;
 #       end
 # 	
 #       if points == 10 
-# 	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = "green";
+# 	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = STATUS_OK;
 #       elsif points <= 5 
-# 	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = "red";
+# 	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = STATUS_NOK;
 #       elsif 
-# 	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = "yellow";
+# 	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = STATUS_POK;
 #       end
 
     end

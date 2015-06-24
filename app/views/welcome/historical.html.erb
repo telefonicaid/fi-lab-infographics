@@ -12,6 +12,10 @@
 
 <script type="text/javascript">
 
+var STATUS_OK  = "<%= STATUS_OK %>",
+    STATUS_NOK = "<%= STATUS_NOK %>",
+    STATUS_POK = "<%= STATUS_POK %>";
+
 var historical_data;
 
 var nest_operator = d3.nest()
@@ -34,7 +38,7 @@ var color = d3.scale.quantize()
     .domain([-1, 1])
     .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
 
-var svg = d3.select($('#chart-calendar')[0]).selectAll("svg")
+var svg = d3.select($("#chart-calendar")[0]).selectAll("svg")
     .data(d3.range(year_ini, year_end + 1))
     .enter().append("svg")
     .attr("width", width)
@@ -69,11 +73,19 @@ svg.selectAll(".month")
 
 d3.select(self.frameElement).style("height", totalHeight + "px");
 
+function numvalue(status) {
+    switch (status) {
+        case STATUS_OK:  return +1;
+        case STATUS_NOK: return -1;
+        default:         return 0;
+    }
+}
+
 function caption(d) {
     switch (historical_data[d]) {
-        case 1:  return d + ": Sanity status OK";
-        case 0:  return d + ": Sanity status partially OK";
-        default: return d + ": Sanity status not OK";
+        case +1: return d + ": Sanity status OK";
+        case -1: return d + ": Sanity status not OK";
+        default: return d + ": Sanity status partially OK";
     }
 }
 
@@ -146,14 +158,7 @@ $(document).ready(function() {
             cache: false,
             success: function(json) {
                 var dataset = json['measures'].map(function(obj) {
-                    var rObj = {};
-                    rObj['Date'] = obj.timestamp.substr(0, 10);
-                    switch (obj.FiHealthStatus.value) {
-                        case 'green': rObj['Value'] = +1; rObj['Status'] = 'OK';  break;
-                        case 'red':   rObj['Value'] = -1; rObj['Status'] = 'NOK'; break;
-                        default:      rObj['Value'] =  0; rObj['Status'] = 'POK';
-                    }
-                    return rObj;
+                    return { 'Date': obj.timestamp.substr(0, 10), 'Value': numvalue(obj.FiHealthStatus.value) };
                 });
                 if (historical_data) {
                     rect.filter(function(d) { return d in historical_data; })

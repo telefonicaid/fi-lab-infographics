@@ -22,6 +22,16 @@
     },
     {
       "timestamp": "2000-01-03 00.00",
+      "novaServiceStatus": {"value":"yellow","description":"desc"},
+      "neutronServiceStatus": {"value":"yellow","description":"desc"},
+      "cinderServiceStatus": {"value":"yellow","description":"desc"},
+      "glanceServiceStatus": {"value":"yellow","description":"desc"},
+      "KPServiceStatus": {"value":"yellow","description":"desc"},
+      "OverallStatus": {"value":"yellow","description":"desc"},
+      "FiHealthStatus": {"value":"yellow","description":"desc"}
+    },
+    {
+      "timestamp": "2000-01-04 00.00",
       "novaServiceStatus": {"value":"red","description":"desc"},
       "neutronServiceStatus": {"value":"red","description":"desc"},
       "cinderServiceStatus": {"value":"red","description":"desc"},

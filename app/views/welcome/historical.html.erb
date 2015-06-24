@@ -1,12 +1,12 @@
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
 <div class="title">Historical</div>
-
 <div id="world-map-historical"></div>
-
 <div id="errorMessage"></div>
-
-<div id="chart-calendar"></div>
+<div id="historical">
+    <div id="chart-title" class="chartTitle">FiHealth sanity check status</div>
+    <div id="chart-calendar"></div>
+</div>
 
 <% content_for :jsfooter do %>
 
@@ -34,8 +34,8 @@ var color = d3.scale.quantize()
     .domain([-1, 1])
     .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
 
-var svg = d3.select($('#chart-calendar')[0]).append("svg")
-    .data(d3.range(year_ini - 1, year_end + 1))
+var svg = d3.select($('#chart-calendar')[0]).selectAll("svg")
+    .data(d3.range(year_ini, year_end + 1))
     .enter().append("svg")
     .attr("width", width)
     .attr("height", height)
@@ -72,8 +72,8 @@ d3.select(self.frameElement).style("height", totalHeight + "px");
 function caption(d) {
     switch (historical_data[d]) {
         case 1:  return d + ": Sanity status OK";
-        case 0:  return d + ": Sanity status N/A";
-        default: return d + ": Sanity status NOK";
+        case 0:  return d + ": Sanity status partially OK";
+        default: return d + ": Sanity status not OK";
     }
 }
 
@@ -151,7 +151,7 @@ $(document).ready(function() {
                     switch (obj.FiHealthStatus.value) {
                         case 'green': rObj['Value'] = +1; rObj['Status'] = 'OK';  break;
                         case 'red':   rObj['Value'] = -1; rObj['Status'] = 'NOK'; break;
-                        default:      rObj['Value'] =  0; rObj['Status'] = 'N/A';
+                        default:      rObj['Value'] =  0; rObj['Status'] = 'POK';
                     }
                     return rObj;
                 });
@@ -161,6 +161,7 @@ $(document).ready(function() {
                         .select("title")
                         .text(function(d) { return d; });
                 }
+                $('#chart-title').html('FiHealth sanity check status for ' + idNode);
                 historical_data = nest_operator.map(dataset);
                 rect.filter(function(d) { return d in historical_data; })
                     .attr("class", function(d) { return "day " + color(historical_data[d]); })
@@ -197,7 +198,7 @@ $(document).ready(function() {
 
                     $('#errorMessage').html("");
 
-                    var height = $('#world-map-historical').height()+$('#status').height()+80;
+                    var height = $('#world-map-historical').height()+$('#historical').height()+80;
                     $('.wrapper').css("cssText", "height: "+height+"px !important;");
                 });
 
@@ -220,4 +221,5 @@ $(document).ready(function() {
     setInterval(function(){ajaxFun()}, 60000);
 });
 </script>
+
 <% end %>

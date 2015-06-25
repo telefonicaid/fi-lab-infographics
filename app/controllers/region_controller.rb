@@ -9,8 +9,8 @@ class CustomException < Exception
 end
 
 class RegionController < ApplicationController
-  
-  @@token = nil  
+
+  @@token = nil
 
   def self.getToken
     if @@token.expired?
@@ -34,7 +34,7 @@ class RegionController < ApplicationController
 
       token = client.client_credentials.get_token
       logger.debug 'acquired token:' + token.token
- 
+
       RegionController.setToken(token)
     end
   end
@@ -55,7 +55,7 @@ class RegionController < ApplicationController
     
     
     oauthToken = Base64.strict_encode64( RegionController.getToken.token )
-#     //DECOMMENT IN ORDER TO USE OAUTH
+    #//UNCOMMENT IN ORDER TO USE OAUTH
     req.add_field("Authorization", "Bearer "+oauthToken)
     Rails.logger.debug(req.get_fields('Authorization'));
     Rails.logger.debug(req.get_fields('Accept'));
@@ -299,26 +299,26 @@ class RegionController < ApplicationController
     serviceKP = Hash.new
     serviceOverall = Hash.new
     
-    serviceNova["value"] = "gray";
+    serviceNova["value"] = STATUS_NA;
     serviceNova["description"] = "";
     
     
-    serviceNeutron["value"] = "gray";
+    serviceNeutron["value"] = STATUS_NA;
     serviceNeutron["description"] = "";
     
     
-    serviceCinder["value"] = "gray";
+    serviceCinder["value"] = STATUS_NA;
     serviceCinder["description"] = "";
     
     
-    serviceGlance["value"] = "gray";
+    serviceGlance["value"] = STATUS_NA;
     serviceGlance["description"] = "";
     
     
-    serviceKP["value"] = "gray";
+    serviceKP["value"] = STATUS_NA;
     serviceKP["description"] = "";
     
-    serviceOverall["value"] = "gray";
+    serviceOverall["value"] = STATUS_NA;
     serviceOverall["description"] = "No Messages";
     
     if servicesRegionData != nil &&  
@@ -403,7 +403,53 @@ class RegionController < ApplicationController
     return services
     
   end
-  
+
+  #render historical data about services of one region
+  def renderHistoricalForRegion
+    idNode = params[:nodeId]
+    begin
+      services = self.getHistoricalForNodeId(idNode)
+    rescue CustomException => e
+      render :json => "Problem in retrieving historical for region " + idNode + ": " + e.data, :status => :service_unavailable
+      return
+    end
+
+    render :json => services.to_json
+  end
+
+  #get historical data about services of one region
+  def getHistoricalForNodeId (idNode)
+
+    if ENV["RAILS_ENV"] != "test"
+      raise "TODO: available only for testing/demo purposes!"
+    end
+
+    require 'json'
+    require 'date'
+
+    result = Hash.new
+    result['measures'] = Array.new
+    sample = JSON.parse(File.read('test/assets/historical.json'))['measures'][0]
+
+    year = Date.today.year
+    yday = Date.today.yday
+    seed = idNode.sum(2048)
+    prng = Random.new(seed)
+
+    for day in 1..yday
+      timestamp = Date.ordinal(year, day).strftime('%Y-%m-%d 00.00')
+      fihealth = sample['FiHealthStatus'].clone
+      random = prng.rand(-10..100)
+      fihealth['value'] = random > 1 ? STATUS_OK : random < 0 ? STATUS_NOK : STATUS_POK
+      sample['timestamp'] = timestamp
+      sample['FiHealthStatus'] = fihealth
+      result['measures'].push(sample.clone)
+    end
+
+    return result
+
+  end
+
   #render data about services of all regions
   def renderServices
     
@@ -450,32 +496,32 @@ class RegionController < ApplicationController
 #       attributesRegionsServices[regionData["id"]]["IDM"]["description"] = serviceRegionData["KPServiceStatus"]["description"];
       
 #       points = 0
-#       if serviceRegionData["novaServiceStatus"]["value"] == "green"
+#       if serviceRegionData["novaServiceStatus"]["value"] == STATUS_OK
 # 	points+=2;
 #       end
 # 	
-#       if serviceRegionData["neutronServiceStatus"]["value"] == "green"
+#       if serviceRegionData["neutronServiceStatus"]["value"] == STATUS_OK
 # 	points+=2;
 #       end
 # 	
-#       if serviceRegionData["cinderServiceStatus"]["value"] == "green"
+#       if serviceRegionData["cinderServiceStatus"]["value"] == STATUS_OK
 # 	points+=2;
 #       end
 # 	
-#       if serviceRegionData["glanceServiceStatus"]["value"] == "green" 
+#       if serviceRegionData["glanceServiceStatus"]["value"] == STATUS_OK
 # 	points+=2;
 #       end
 # 	
-#       if serviceRegionData["KPServiceStatus"]["value"] == "green" 
+#       if serviceRegionData["KPServiceStatus"]["value"] == STATUS_OK
 # 	points+=2;
 #       end
 # 	
 #       if points == 10 
-# 	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = "green";
+# 	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = STATUS_OK;
 #       elsif points <= 5 
-# 	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = "red";
+# 	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = STATUS_NOK;
 #       elsif 
-# 	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = "yellow";
+# 	attributesRegionsServices[regionData["id"]]["services"]["overallStatus"] = STATUS_POK;
 #       end
 
     end

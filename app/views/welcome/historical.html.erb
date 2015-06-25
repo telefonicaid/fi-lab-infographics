@@ -1,0 +1,230 @@
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+<div class="title">Historical</div>
+<div id="world-map-historical"></div>
+<div id="errorMessage"></div>
+<div id="historical">
+    <div id="chart-title" class="chartTitle">FiHealth sanity check status</div>
+    <div id="chart-calendar"></div>
+</div>
+
+<% content_for :jsfooter do %>
+
+<script type="text/javascript">
+
+var STATUS_OK  = "<%= STATUS_OK %>",
+    STATUS_NOK = "<%= STATUS_NOK %>",
+    STATUS_POK = "<%= STATUS_POK %>";
+
+var historical_data;
+
+var nest_operator = d3.nest()
+    .key(function(d) { return d.Date; })
+    .rollup(function(d) { return d[0].Value; });
+
+var year_end = new Date().getFullYear(),
+    year_ini = year_end - 1,
+    cellSize = 17,
+    width = 960,
+    height = 136,
+    totalHeight = (year_end - year_ini + 1) * height;
+
+var day = d3.time.format("%w"),
+    week = d3.time.format("%U"),
+    percent = d3.format(".1%"),
+    format = d3.time.format("%Y-%m-%d");
+
+var color = d3.scale.quantize()
+    .domain([-1, 1])
+    .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
+
+var svg = d3.select($("#chart-calendar")[0]).selectAll("svg")
+    .data(d3.range(year_ini, year_end + 1))
+    .enter().append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("class", "RdYlGn")
+    .append("g")
+    .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
+
+svg.append("text")
+    .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
+    .style("text-anchor", "middle")
+    .text(function(d) { return d; });
+
+var rect = svg.selectAll(".day")
+    .data(function(d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+    .enter().append("rect")
+    .attr("class", "day")
+    .attr("width", cellSize)
+    .attr("height", cellSize)
+    .attr("x", function(d) { return week(d) * cellSize; })
+    .attr("y", function(d) { return day(d) * cellSize; })
+    .datum(format);
+
+rect.append("title")
+    .text(function(d) { return d; });
+
+svg.selectAll(".month")
+    .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+    .enter().append("path")
+    .attr("class", "month")
+    .attr("d", monthPath);
+
+d3.select(self.frameElement).style("height", totalHeight + "px");
+
+function numvalue(status) {
+    switch (status) {
+        case STATUS_OK:  return +1;
+        case STATUS_NOK: return -1;
+        default:         return 0;
+    }
+}
+
+function caption(d) {
+    switch (historical_data[d]) {
+        case +1: return d + ": Sanity status OK";
+        case -1: return d + ": Sanity status not OK";
+        default: return d + ": Sanity status partially OK";
+    }
+}
+
+function monthPath(t0) {
+    var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
+        d0 = +day(t0), w0 = +week(t0),
+        d1 = +day(t1), w1 = +week(t1);
+    return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
+        + "H" + w0 * cellSize + "V" + 7 * cellSize
+        + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
+        + "H" + (w1 + 1) * cellSize + "V" + 0
+        + "H" + (w0 + 1) * cellSize + "Z";
+}
+
+$(document).ready(function() {
+    $('.historical').addClass('active');
+    $('.infographic').removeClass('active');
+    $('.status').removeClass('active');
+
+    var selectedMarkers = [];
+    var mapNodes = new jvm.WorldMap({
+        container: $('#world-map-historical'),
+        map: 'world_mill_en',
+        regionStyle: {
+            initial: {
+                fill: '#ffffff',
+                "fill-opacity": 1,
+                stroke: 'none',
+                "stroke-width": 0,
+                "stroke-opacity": 1
+            },
+            hover: {
+                "fill-opacity": 0.8
+            },
+            selected: {
+                fill: 'orange'
+            },
+            selectedHover: {}
+        },
+        markersSelectableOne: true,
+        markerStyle: {
+            initial: {
+                fill: 'lightblue',
+                stroke: '#383f47'
+            },
+            selected: {
+            fill: 'red'
+            },
+            hover: {
+                fill: 'orange'
+            },
+            selectedHover: {
+            fill: 'red'
+            }
+        },
+        onMarkerClick: function(events, index) {
+            showHistorical(selectedMarkers[index].name);
+        }
+    });
+
+    $('#world-map-historical').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
+
+    function showHistorical(idNode) {
+        $.ajax ({
+            type: "GET",
+            url: "../api/v1/region/historical/" + idNode,
+            contentType: "application/json; charset=utf-8",
+            data: {},
+            dataType: "json",
+            cache: false,
+            success: function(json) {
+                var dataset = json['measures'].map(function(obj) {
+                    return { 'Date': obj.timestamp.substr(0, 10), 'Value': numvalue(obj.FiHealthStatus.value) };
+                });
+                if (historical_data) {
+                    rect.filter(function(d) { return d in historical_data; })
+                        .attr("class", function(d) { return "day"; })
+                        .select("title")
+                        .text(function(d) { return d; });
+                }
+                $('#chart-title').html('FiHealth sanity check status for ' + idNode);
+                historical_data = nest_operator.map(dataset);
+                rect.filter(function(d) { return d in historical_data; })
+                    .attr("class", function(d) { return "day " + color(historical_data[d]); })
+                       .select("title")
+                    .text(function(d) { return caption(d); });
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                var errors = "<%= FiLabInfographics.nodata %>";
+                if (xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null") {
+                    errors = xhr.responseText;
+                }
+                $('#errorMessage').html(errors);
+            }
+        }
+    )};
+
+    function ajaxFun() {
+        $.ajax ({
+            type: "GET",
+            url: "../api/v1/region",
+            contentType: "application/json; charset=utf-8",
+            data: {},
+            dataType: "json",
+            cache: false,
+            success: function(json) {
+                selectedMarkers = [];
+                $.each(json["regions"], function(idRegion, regionAttributes) {
+                    if (idRegion != null && regionAttributes != null) {
+                        var markers = {};
+                        markers["latLng"] =  [parseFloat(regionAttributes['latitude']),parseFloat(regionAttributes['longitude'])];
+                        markers["name"] = idRegion;
+                        selectedMarkers.push(markers);
+                    }
+
+                    $('#errorMessage').html("");
+
+                    var height = $('#world-map-historical').height()+$('#historical').height()+80;
+                    $('.wrapper').css("cssText", "height: "+height+"px !important;");
+                });
+
+                mapNodes.removeAllMarkers();
+                mapNodes.addMarkers(selectedMarkers);
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                var errors = "<%= FiLabInfographics.nodata %>";
+                if (xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null") {
+                    errors = xhr.responseText;
+                }
+                $('#errorMessage').html(errors);
+            }
+        }
+    )};
+
+    // Call our ajax the first time
+    ajaxFun();
+    // And then every 60 seconds
+    setInterval(function(){ajaxFun()}, 60000);
+});
+</script>
+
+<% end %>

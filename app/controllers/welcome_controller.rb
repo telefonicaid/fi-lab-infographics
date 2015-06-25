@@ -1,14 +1,17 @@
 class WelcomeController < FiLabApp::ApplicationController
  include FiLabApp::UserHelper
  #before_filter :authenticate_user!
-  
-  def info    
+
+  def info
   end
-  
-  def vm    
+
+  def vm
   end
-  
-  def status    
+
+  def status
   end
-  
+
+  def historical
+  end
+
 end

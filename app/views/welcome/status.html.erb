@@ -160,6 +160,11 @@
 <% content_for :jsfooter do %>
   <script type="text/javascript">
 
+	  var GREEN  = STATUS_OK  = '<%= STATUS_OK %>',
+	      RED    = STATUS_NOK = '<%= STATUS_NOK %>',
+	      YELLOW = STATUS_POK = '<%= STATUS_POK %>',
+	      GRAY   = STATUS_NA  = '<%= STATUS_NA %>';
+
 	  $(document).ready(function() 
 	  {
 		  var contextPath = "";
@@ -243,12 +248,15 @@
 							  var markers = {};
 							  markers["latLng"] =  [parseFloat(regionAttributes['latitude']),parseFloat(regionAttributes['longitude'])];
 							  markers["name"] = idRegion;
+
 							  var statusColor;
-							  if(regionAttributes["services"]['overallStatus']['value']=="red") statusColor = 'rgba(255,0,0,1.0)';
-							  else if(regionAttributes["services"]['overallStatus']['value']=="green") statusColor = 'rgba(0,255,0,1.0)';
-							  else if(regionAttributes["services"]['overallStatus']['value']=="yellow") statusColor = 'rgba(255,255,0,1.0)';
-							  else if(regionAttributes["services"]['overallStatus']['value']=="gray") statusColor = 'rgba(0,0,0,0.5)';
-							  
+							  switch (regionAttributes['services']['overallStatus']['value']) {
+								  case RED:    statusColor = 'rgba(255,0,0,1.0)';   break;
+								  case GREEN:  statusColor = 'rgba(0,255,0,1.0)';   break;
+								  case YELLOW: statusColor = 'rgba(255,255,0,1.0)'; break;
+								  default:     statusColor = 'rgba(0,0,0,0.5)';     /*gray*/
+							  }
+
 							  markers["style"] = {fill: statusColor, r:5};
 							  selectedMarkers.push(markers);
 							  

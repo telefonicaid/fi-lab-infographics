@@ -64,3 +64,7 @@ end
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+
+# D3
+gem 'underscore-rails', '~> 1.8.3'
+gem 'd3js-rails', '~> 3.1.6'

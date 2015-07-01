@@ -23,6 +23,7 @@ class RegionController < ApplicationController
           :site => FiLabApp.account_server, :authorize_url => FiLabApp.account_server + '/oauth2/authorize', :token_url => FiLabApp.account_server + '/oauth2/token')
 
         #token = client.client_credentials.get_token
+
         token = client.password.get_token('***REMOVED***', '***REMOVED***', :headers => {'Authorization' => basic_auth_header })
 
         RegionController.setToken(token)
@@ -238,7 +239,9 @@ class RegionController < ApplicationController
       
       if regionsData["_embedded"] != nil && regionsData["_embedded"]["regions"] != nil
 	regionsData["_embedded"]["regions"].each do |region|
-		  idRegions.push(region["id"])
+                  if (region["id"]!='Berlin' and region["id"]!='Karlskrona' and region["id"]!='Budapest' and region["id"]!='Lannion' and region["id"]!='Spain')
+		    idRegions.push(region["id"])
+                  end 
 	end
       else
 	raise CustomException.new("No data about regions")
@@ -290,10 +293,24 @@ class RegionController < ApplicationController
             
       attributesRegion = Hash.new
       attributesRegion["id"] = regionsData["id"]
-      attributesRegion["name"] = regionsData["name"]
+      if(regionsData["id"]=='Berlin2')
+         attributesRegion["name"] = 'Berlin'
+      elsif(regionsData["id"]=='Spain2')
+         attributesRegion["name"] = 'Spain'
+      elsif(regionsData["id"]=='Lannion2')
+         attributesRegion["name"] = 'Lannion'
+      elsif(regionsData["id"]=='Karlskrona2')
+         attributesRegion["name"] = 'Karlskrona'
+      elsif(regionsData["id"]=='Budapest2')
+         attributesRegion["name"] = 'Budapest'
+      else 
+        attributesRegion["name"] = regionsData["name"]
+      end
+
       attributesRegion["country"] = regionsData["country"]
       attributesRegion["latitude"] = regionsData["latitude"]
       attributesRegion["longitude"] = regionsData["longitude"]
+      attributesRegion["timestamp"] = regionsData["measures"][0]["timestamp"]
       attributesRegion["nb_users"] = regionsData["measures"][0]["nb_users"]
       attributesRegion["nb_cores"] = regionsData["measures"][0]["nb_cores"]
       attributesRegion["nb_cores_used"] = regionsData["measures"][0]["nb_cores_used"]
@@ -315,9 +332,9 @@ class RegionController < ApplicationController
       attributesRegion["ipAllocated"] = regionsData["measures"][0]["ipAllocated"]
       attributesRegion["ipAssigned"] = regionsData["measures"][0]["ipAssigned"]
       attributesRegion["nb_vm"] = regionsData["nb_vm"]
-
+      #if (regionsData["id"]=="Berlin2")
       return attributesRegion
-      
+      #end
     end 
     return nil
   end

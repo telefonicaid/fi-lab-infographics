@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140828211608) do
+ActiveRecord::Schema.define(version: 20150513132310) do
 
   create_table "fi_lab_app_organizations", force: true do |t|
     t.string   "name"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 20140828211608) do
     t.string   "name"
     t.string   "nickname"
     t.integer  "node_id"
+    t.string   "actorid"
   end
 
   create_table "fi_lab_infographics_institution_categories", force: true do |t|

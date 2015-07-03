@@ -5,11 +5,29 @@ body {
 	/*background-color: #FCFCFC;*/
 }
 
-/* INI D3 Calendar View */
+/* [INI] D3 Charts */
+
 svg {
   font-family: "Helvetica Neue", Helvetica;
 }
 
+.chartTitle {
+  font-weight: bold;
+}
+
+.chartOptions {
+  margin-top: 10px;
+}
+
+.chartVisible {
+  display: block;
+}
+
+.chartHidden {
+  display: none;
+}
+
+/* Calendar */
 .day {
   fill: #fff;
   stroke: #ccc;
@@ -19,10 +37,6 @@ svg {
   fill: none;
   stroke: #000;
   stroke-width: 2px;
-}
-
-.chartTitle {
-  font-weight: bold;
 }
 
 .RdYlGn .q0-11{fill:rgb(255,0,0)} /*rgb(165,0,38)*/
@@ -37,7 +51,7 @@ svg {
 .RdYlGn .q9-11{fill:rgb(26,152,80)}
 .RdYlGn .q10-11{fill:rgb(0,255,0)} /*rgb(0,104,55)*/
 
-/* END D3 Calendar View */
+/* [END] D3 Charts */
 
 .clear {
 	clear: both;
@@ -310,13 +324,7 @@ padding-bottom: 10px;
 
 #world-map-nodes {
 	padding: 17px 0px 0px 0px;
-	width:650px;
-	height:366px;
-}
-
-#world-map-historical {
-	padding: 17px 0px 0px 0px;
-	width:650px;
+	width:585px;
 	height:366px;
 }
 
@@ -329,7 +337,7 @@ padding-bottom: 10px;
 .status-row
 {
 /* 	width:800px; */
-	width:650px;
+	width:585px;
 	height:30px;
 	line-height:30px;
 }
@@ -444,7 +452,7 @@ border-bottom-left-radius: 6px;
 .row-current
 {
 /* 	width:800px; */
-	width:650px;
+	width:585px;
 	height:30px;
 	line-height:30px;
 }

@@ -1,11 +1,20 @@
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
 <div class="title">Historical</div>
-<div id="world-map-historical"></div>
+<div id="world-map-nodes"></div>
 <div id="errorMessage"></div>
 <div id="historical">
     <div id="chart-title" class="chartTitle">FiHealth sanity check status</div>
-    <div id="chart-calendar"></div>
+    <div id="chart-options" class="chartOptions">
+        Chart type <%= select_tag(:chart_id,
+                options_for_select([
+                    [ "Calendar",  "chart-calendar"  ]
+                ], "chart-calendar"),
+                :onchange => "onChartChange(this.value)") %>
+    </div>
+    <div id="chart-content">
+        <div id="chart-calendar" class="chartHidden"></div>
+    </div>
 </div>
 
 <% content_for :jsfooter do %>
@@ -16,89 +25,110 @@ var STATUS_OK  = "<%= STATUS_OK %>",
     STATUS_NOK = "<%= STATUS_NOK %>",
     STATUS_POK = "<%= STATUS_POK %>";
 
-var historical_data;
+var selected_chart_id  = "chart-calendar";
 
-var nest_operator = d3.nest()
-    .key(function(d) { return d.Date; })
-    .rollup(function(d) { return d[0].Value; });
-
-var year_end = new Date().getFullYear(),
-    year_ini = year_end - 1,
-    cellSize = 17,
-    width = 960,
-    height = 136,
-    totalHeight = (year_end - year_ini + 1) * height;
-
-var day = d3.time.format("%w"),
-    week = d3.time.format("%U"),
-    percent = d3.format(".1%"),
-    format = d3.time.format("%Y-%m-%d");
+var chart_content = d3.select($("#chart-content")[0]).selectAll("div"),
+    chart_content_height = null,
+    chart_content_maxwidth = 960,
+    map_nodes_width = 585;
 
 var color = d3.scale.quantize()
     .domain([-1, 1])
     .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
 
-var svg = d3.select($("#chart-calendar")[0]).selectAll("svg")
-    .data(d3.range(year_ini, year_end + 1))
-    .enter().append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .attr("class", "RdYlGn")
-    .append("g")
-    .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
+function onChartChange(id) {
+    selected_chart_id = id;
+}
 
-svg.append("text")
-    .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
-    .style("text-anchor", "middle")
-    .text(function(d) { return d; });
+function ChartCalendar() {
+    var year_ini = new Date().getFullYear() - 1,
+        year_end = year_ini + 1,
+        cellSize = 17,
+        height = 136,
+        width = chart_content_maxwidth;
 
-var rect = svg.selectAll(".day")
-    .data(function(d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
-    .enter().append("rect")
-    .attr("class", "day")
-    .attr("width", cellSize)
-    .attr("height", cellSize)
-    .attr("x", function(d) { return week(d) * cellSize; })
-    .attr("y", function(d) { return day(d) * cellSize; })
-    .datum(format);
+    var day = d3.time.format("%w"),
+        week = d3.time.format("%U"),
+        format = d3.time.format("%Y-%m-%d"),
+        monthPath = function(t0) {
+            var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
+                d0 = +day(t0), w0 = +week(t0),
+                d1 = +day(t1), w1 = +week(t1);
+            return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
+                + "H" + w0 * cellSize + "V" + 7 * cellSize
+                + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
+                + "H" + (w1 + 1) * cellSize + "V" + 0
+                + "H" + (w0 + 1) * cellSize + "Z";
+        };
 
-rect.append("title")
-    .text(function(d) { return d; });
+    var svg = d3.select($("#chart-calendar")[0]).selectAll("svg")
+        .data(d3.range(year_ini, year_end + 1))
+        .enter().append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("class", "RdYlGn")
+        .append("g")
+        .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
 
-svg.selectAll(".month")
-    .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
-    .enter().append("path")
-    .attr("class", "month")
-    .attr("d", monthPath);
+    svg.append("text")
+        .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
+        .style("text-anchor", "middle")
+        .text(function (d) { return d; });
 
-d3.select(self.frameElement).style("height", totalHeight + "px");
+    this.historical_data = null;
+    this.rect = svg.selectAll(".day")
+        .data(function (d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+        .enter().append("rect")
+        .attr("class", "day")
+        .attr("width", cellSize)
+        .attr("height", cellSize)
+        .attr("x", function (d) { return week(d) * cellSize; })
+        .attr("y", function (d) { return day(d) * cellSize; })
+        .datum(format);
 
-function numvalue(status) {
+    this.rect.append("title")
+        .text(function (d) { return d; });
+
+    svg.selectAll(".month")
+        .data(function (d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+        .enter().append("path")
+        .attr("class", "month")
+        .attr("d", monthPath);
+
+    chart_content_height = (year_end - year_ini + 1) * height;
+    d3.select(self.frameElement).style("height", chart_content_height + "px");
+}
+
+ChartCalendar.prototype.numvalue = function(status) {
     switch (status) {
         case STATUS_OK:  return +1;
         case STATUS_NOK: return -1;
         default:         return 0;
     }
-}
+};
 
-function caption(d) {
-    switch (historical_data[d]) {
+ChartCalendar.prototype.caption = function(d) {
+    switch (this.historical_data[d]) {
         case +1: return d + ": Sanity status OK";
         case -1: return d + ": Sanity status not OK";
         default: return d + ": Sanity status partially OK";
     }
-}
+};
 
-function monthPath(t0) {
-    var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
-        d0 = +day(t0), w0 = +week(t0),
-        d1 = +day(t1), w1 = +week(t1);
-    return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
-        + "H" + w0 * cellSize + "V" + 7 * cellSize
-        + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
-        + "H" + (w1 + 1) * cellSize + "V" + 0
-        + "H" + (w0 + 1) * cellSize + "Z";
-}
+ChartCalendar.prototype.update = function(data) {
+    var self = this;
+    var dataset = data.map(function (obj) {
+        return { 'Date': obj.timestamp.substr(0, 10), 'Value': self.numvalue(obj.FiHealthStatus.value) };
+    });
+    self.historical_data = d3.nest()
+        .key(function (d) { return d.Date; })
+        .rollup(function (d) { return d[0].Value; })
+        .map(dataset);
+    this.rect.filter(function (d) { return d in self.historical_data; })
+        .attr("class", function (d) { return "day " + color(self.historical_data[d]); })
+        .select("title")
+        .text(function (d) { return self.caption(d); });
+};
 
 $(document).ready(function() {
     $('.historical').addClass('active');
@@ -107,7 +137,7 @@ $(document).ready(function() {
 
     var selectedMarkers = [];
     var mapNodes = new jvm.WorldMap({
-        container: $('#world-map-historical'),
+        container: $('#world-map-nodes'),
         map: 'world_mill_en',
         regionStyle: {
             initial: {
@@ -146,7 +176,9 @@ $(document).ready(function() {
         }
     });
 
-    $('#world-map-historical').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
+    $('#world-map-nodes').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
+
+    var calendar = new ChartCalendar();
 
     function showHistorical(idNode) {
         $.ajax ({
@@ -157,21 +189,9 @@ $(document).ready(function() {
             dataType: "json",
             cache: false,
             success: function(json) {
-                var dataset = json['measures'].map(function(obj) {
-                    return { 'Date': obj.timestamp.substr(0, 10), 'Value': numvalue(obj.FiHealthStatus.value) };
-                });
-                if (historical_data) {
-                    rect.filter(function(d) { return d in historical_data; })
-                        .attr("class", function(d) { return "day"; })
-                        .select("title")
-                        .text(function(d) { return d; });
-                }
+                calendar.update(json['measures']);
+                chart_content.filter('#' + selected_chart_id).attr("class", "chartVisible");
                 $('#chart-title').html('FiHealth sanity check status for ' + idNode);
-                historical_data = nest_operator.map(dataset);
-                rect.filter(function(d) { return d in historical_data; })
-                    .attr("class", function(d) { return "day " + color(historical_data[d]); })
-                       .select("title")
-                    .text(function(d) { return caption(d); });
             },
             error: function(xhr, textStatus, errorThrown) {
                 var errors = "<%= FiLabInfographics.nodata %>";
@@ -180,8 +200,8 @@ $(document).ready(function() {
                 }
                 $('#errorMessage').html(errors);
             }
-        }
-    )};
+        });
+    }
 
     function ajaxFun() {
         $.ajax ({
@@ -203,7 +223,7 @@ $(document).ready(function() {
 
                     $('#errorMessage').html("");
 
-                    var height = $('#world-map-historical').height()+$('#historical').height()+80;
+                    var height = $('#world-map-nodes').height()+$('#historical').height()+80;
                     $('.wrapper').css("cssText", "height: "+height+"px !important;");
                 });
 
@@ -217,8 +237,8 @@ $(document).ready(function() {
                 }
                 $('#errorMessage').html(errors);
             }
-        }
-    )};
+        });
+    }
 
     // Call our ajax the first time
     ajaxFun();

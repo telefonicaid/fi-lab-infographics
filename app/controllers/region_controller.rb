@@ -14,14 +14,29 @@ class RegionController < ApplicationController
 
   def self.getToken
     if @@token.expired?
-      @@token = @@token.refresh!
-      logger.info "new token: " + @@token.token
+      begin
+
+        basic_auth_header="Basic " + Base64.strict_encode64(FiLabApp.client_id+":"+FiLabApp.client_secret)
+
+
+        client = OAuth2::Client.new(FiLabApp.client_id, FiLabApp.client_secret,
+          :site => FiLabApp.account_server, :authorize_url => FiLabApp.account_server + '/oauth2/authorize', :token_url => FiLabApp.account_server + '/oauth2/token')
+
+        #token = client.client_credentials.get_token
+
+        token = client.password.get_token('***REMOVED***', '***REMOVED***', :headers => {'Authorization' => basic_auth_header })
+
+        RegionController.setToken(token)
+      rescue Exception => e
+        logger.error e
+      end
+      logger.debug "new token: " + @@token.token
     end
     return @@token
   end
   
   def self.setToken(token)
-    logger.info "setting token: " + token.token
+    logger.debug "setting token: " + token.token
     @@token=token
   end
 
@@ -29,13 +44,21 @@ class RegionController < ApplicationController
     super # this calls ActionController::Base initialize
     
     if @@token==nil
-      client = OAuth2::Client.new(FiLabApp.client_id, FiLabApp.client_secret,
-        :site => FiLabApp.account_server, :authorize_url => FiLabApp.account_server + '/authorize', :token_url => FiLabApp.account_server + '/token')
+      begin
+  
+        basic_auth_header="Basic " + Base64.strict_encode64(FiLabApp.client_id+":"+FiLabApp.client_secret)
+        
 
-      token = client.client_credentials.get_token
-      logger.debug 'acquired token:' + token.token
+        client = OAuth2::Client.new(FiLabApp.client_id, FiLabApp.client_secret,
+          :site => FiLabApp.account_server, :authorize_url => FiLabApp.account_server + '/oauth2/authorize', :token_url => FiLabApp.account_server + '/oauth2/token')
 
-      RegionController.setToken(token)
+        #token = client.client_credentials.get_token
+        token = client.password.get_token('***REMOVED***', '***REMOVED***', :headers => {'Authorization' => basic_auth_header })
+
+        RegionController.setToken(token)
+      rescue Exception => e
+        logger.debug e
+      end
     end
   end
 
@@ -44,6 +67,11 @@ class RegionController < ApplicationController
     require 'net/http'
     require 'timeout'
     require 'logger'
+        
+    if RegionController.getToken==nil
+       raise CustomException.new("IDM service unavailable")
+       return
+    end
     
     url = URI.parse(FiLabInfographics.nodejs + "/monitoring/" + uri)
     http = Net::HTTP.new(url.host, url.port)
@@ -55,13 +83,13 @@ class RegionController < ApplicationController
     
     
     oauthToken = Base64.strict_encode64( RegionController.getToken.token )
-    #//UNCOMMENT IN ORDER TO USE OAUTH
-    req.add_field("Authorization", "Bearer "+oauthToken)
-    Rails.logger.debug(req.get_fields('Authorization'));
-    Rails.logger.debug(req.get_fields('Accept'));
-    Rails.logger.debug(url.request_uri);
+#    //UNCOMMENT IN ORDER TO USE OAUTH
+#    req.add_field("Authorization", "Bearer "+oauthToken)
+#    Rails.logger.debug(req.get_fields('Authorization'));
+#    Rails.logger.debug(req.get_fields('Accept'));
+#    Rails.logger.debug(url.request_uri);
     
-    startTime=Time.now.to_i
+#    startTime=Time.now.to_i
 
     begin
       res = http.request(req)
@@ -94,15 +122,15 @@ class RegionController < ApplicationController
     begin
       result = JSON.parse(data)
     rescue Exception => e
-      Rails.logger.info("\nTHE HTTP STATUS: "+res.code+"\nTHE DATA RESPONSE: "+data+"\n--------------\n")
+#      Rails.logger.info("\nTHE HTTP STATUS: "+res.code+"\nTHE DATA RESPONSE: "+data+"\n--------------\n")
 #       raise CustomException.new("Error parsing Data")
       raise CustomException.new(data)
     end
-    endTime=Time.now.to_i
+#    endTime=Time.now.to_i
 
-    delta=endTime-startTime
-    Rails.logger.info("duration: ");
-    Rails.logger.info(delta)
+#    delta=endTime-startTime
+#    Rails.logger.info("duration: ");
+#    Rails.logger.info(delta)
       
     return result
 
@@ -209,8 +237,15 @@ class RegionController < ApplicationController
     if regionsData != nil
       idRegions = [] 
       
-      regionsData["_embedded"]["regions"].each do |region|
-		idRegions.push(region["id"])
+      if regionsData["_embedded"] != nil && regionsData["_embedded"]["regions"] != nil
+	regionsData["_embedded"]["regions"].each do |region|
+                  if (region["id"]!='Berlin' and region["id"]!='Karlskrona' and region["id"]!='Budapest' and region["id"]!='Lannion' and region["id"]!='Spain')
+		    idRegions.push(region["id"])
+                  end 
+	end
+      else
+	raise CustomException.new("No data about regions")
+	return
       end
       
       totValues = Hash.new
@@ -221,6 +256,9 @@ class RegionController < ApplicationController
       totValues["total_nb_ram"] = regionsData["total_nb_ram"];
       totValues["total_nb_disk"] = regionsData["total_nb_disk"];
       totValues["total_nb_vm"] = regionsData["total_nb_vm"];
+      totValues["total_ip_allocated"] = regionsData["total_ip_allocated"];
+      totValues["total_ip_assigned"] = regionsData["total_ip_assigned"];
+      totValues["total_ip"] = regionsData["total_ip"];
       totValues["total_regions_ids"] = idRegions;
       totValues["total_regions_count"] = idRegions.count;
       
@@ -255,17 +293,48 @@ class RegionController < ApplicationController
             
       attributesRegion = Hash.new
       attributesRegion["id"] = regionsData["id"]
-      attributesRegion["name"] = regionsData["name"]
+      if(regionsData["id"]=='Berlin2')
+         attributesRegion["name"] = 'Berlin'
+      elsif(regionsData["id"]=='Spain2')
+         attributesRegion["name"] = 'Spain'
+      elsif(regionsData["id"]=='Lannion2')
+         attributesRegion["name"] = 'Lannion'
+      elsif(regionsData["id"]=='Karlskrona2')
+         attributesRegion["name"] = 'Karlskrona'
+      elsif(regionsData["id"]=='Budapest2')
+         attributesRegion["name"] = 'Budapest'
+      else 
+        attributesRegion["name"] = regionsData["name"]
+      end
+
       attributesRegion["country"] = regionsData["country"]
       attributesRegion["latitude"] = regionsData["latitude"]
       attributesRegion["longitude"] = regionsData["longitude"]
+      attributesRegion["timestamp"] = regionsData["measures"][0]["timestamp"]
       attributesRegion["nb_users"] = regionsData["measures"][0]["nb_users"]
       attributesRegion["nb_cores"] = regionsData["measures"][0]["nb_cores"]
+      attributesRegion["nb_cores_used"] = regionsData["measures"][0]["nb_cores_used"]
       attributesRegion["nb_ram"] = regionsData["measures"][0]["nb_ram"]
+      attributesRegion["percRAMUsed"] = regionsData["measures"][0]["percRAMUsed"]
+      if(regionsData["measures"][0]["cpu_allocation_ratio"])
+         attributesRegion["cpu_allocation_ratio"] = regionsData["measures"][0]["cpu_allocation_ratio"]
+      else
+         attributesRegion["cpu_allocation_ratio"] = 16.0
+      end
+      if(regionsData["measures"][0]["ram_allocation_ratio"])
+         attributesRegion["ram_allocation_ratio"] = regionsData["measures"][0]["ram_allocation_ratio"]
+      else
+         attributesRegion["ram_allocation_ratio"] = 1.5
+      end
       attributesRegion["nb_disk"] = regionsData["measures"][0]["nb_disk"]
+      attributesRegion["percDiskUsed"] = regionsData["measures"][0]["percDiskUsed"]
+      attributesRegion["ipTot"] = regionsData["measures"][0]["ipTot"]
+      attributesRegion["ipAllocated"] = regionsData["measures"][0]["ipAllocated"]
+      attributesRegion["ipAssigned"] = regionsData["measures"][0]["ipAssigned"]
       attributesRegion["nb_vm"] = regionsData["nb_vm"]
+      #if (regionsData["id"]=="Berlin2")
       return attributesRegion
-      
+      #end
     end 
     return nil
   end

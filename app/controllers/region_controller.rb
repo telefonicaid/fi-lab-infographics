@@ -333,6 +333,14 @@ class RegionController < ApplicationController
       attributesRegion["ipAssigned"] = regionsData["measures"][0]["ipAssigned"]
       attributesRegion["nb_vm"] = regionsData["nb_vm"]
       #if (regionsData["id"]=="Berlin2")
+
+      # For testing/demo purposes: data for histogram about historical sanity checks success
+      if ENV["RAILS_ENV"] == "test"
+        require 'json'
+        success = JSON.parse(File.read('test/assets/histogram.json'))[idNode]
+        attributesRegion["percSanitySuccess"] = success
+      end
+
       return attributesRegion
       #end
     end 

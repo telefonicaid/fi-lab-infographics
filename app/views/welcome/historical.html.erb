@@ -8,12 +8,14 @@
     <div id="chart-options" class="chartOptions">
         Chart type <%= select_tag(:chart_id,
                 options_for_select([
-                    [ "Calendar",  "chart-calendar"  ]
-                ], "chart-calendar"),
+                    [ "Histogram",          "chart-histogram" ],
+                    [ "Calendar per node",  "chart-calendar"  ]
+                ], "chart-histogram"),
                 :onchange => "onChartChange(this.value)") %>
     </div>
     <div id="chart-content">
         <div id="chart-calendar" class="chartHidden"></div>
+        <div id="chart-histogram" class="chartVisible"></div>
     </div>
 </div>
 
@@ -25,7 +27,7 @@ var STATUS_OK  = "<%= STATUS_OK %>",
     STATUS_NOK = "<%= STATUS_NOK %>",
     STATUS_POK = "<%= STATUS_POK %>";
 
-var selected_chart_id  = "chart-calendar";
+var selected_chart_id = "chart-histogram";
 
 var chart_content = d3.select($("#chart-content")[0]).selectAll("div"),
     chart_content_height = null,
@@ -35,10 +37,6 @@ var chart_content = d3.select($("#chart-content")[0]).selectAll("div"),
 var color = d3.scale.quantize()
     .domain([-1, 1])
     .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
-
-function onChartChange(id) {
-    selected_chart_id = id;
-}
 
 function ChartCalendar() {
     var year_ini = new Date().getFullYear() - 1,
@@ -73,30 +71,29 @@ function ChartCalendar() {
     svg.append("text")
         .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
         .style("text-anchor", "middle")
-        .text(function (d) { return d; });
+        .text(function(d) { return d; });
 
-    this.historical_data = null;
     this.rect = svg.selectAll(".day")
         .data(function (d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
         .enter().append("rect")
         .attr("class", "day")
         .attr("width", cellSize)
         .attr("height", cellSize)
-        .attr("x", function (d) { return week(d) * cellSize; })
-        .attr("y", function (d) { return day(d) * cellSize; })
+        .attr("x", function(d) { return week(d) * cellSize; })
+        .attr("y", function(d) { return day(d) * cellSize; })
         .datum(format);
 
     this.rect.append("title")
-        .text(function (d) { return d; });
+        .text(function(d) { return d; });
 
     svg.selectAll(".month")
-        .data(function (d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+        .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
         .enter().append("path")
         .attr("class", "month")
         .attr("d", monthPath);
 
     chart_content_height = (year_end - year_ini + 1) * height;
-    d3.select(self.frameElement).style("height", chart_content_height + "px");
+    d3.select($("#chart-content")[0]).style("height", chart_content_height + "px");
 }
 
 ChartCalendar.prototype.numvalue = function(status) {
@@ -115,20 +112,133 @@ ChartCalendar.prototype.caption = function(d) {
     }
 };
 
-ChartCalendar.prototype.update = function(data) {
+ChartCalendar.prototype.update = function(idNode, data) {
     var self = this;
-    var dataset = data.map(function (obj) {
+    var dataset = data.map(function(obj) {
         return { 'Date': obj.timestamp.substr(0, 10), 'Value': self.numvalue(obj.FiHealthStatus.value) };
     });
+    self.idNode = idNode;
     self.historical_data = d3.nest()
-        .key(function (d) { return d.Date; })
-        .rollup(function (d) { return d[0].Value; })
+        .key(function(d) { return d.Date; })
+        .rollup(function(d) { return d[0].Value; })
         .map(dataset);
-    this.rect.filter(function (d) { return d in self.historical_data; })
-        .attr("class", function (d) { return "day " + color(self.historical_data[d]); })
+    self.rect.filter(function(d) { return d in self.historical_data; })
+        .attr("class", function(d) { return "day " + color(self.historical_data[d]); })
         .select("title")
-        .text(function (d) { return self.caption(d); });
+        .text(function(d) { return self.caption(d); });
 };
+
+function ChartHistogram() {
+    var margin = { top: 30, right: 20, bottom: 80, left: 40 };
+
+    this.width = map_nodes_width - margin.left - margin.right;
+    this.height = chart_content_height - margin.top - margin.bottom;
+
+    this.x = d3.scale.ordinal()
+        .rangeRoundBands([0, this.width], .1);
+
+    this.y = d3.scale.linear()
+        .range([this.height, 0]);
+
+    this.xAxis = d3.svg.axis()
+        .scale(this.x)
+        .orient("bottom");
+
+    this.yAxis = d3.svg.axis()
+        .scale(this.y)
+        .orient("left")
+        .ticks(10, "%");
+
+    d3.select($("#chart-histogram")[0]).append("svg")
+        .attr("width", this.width + margin.left + margin.right)
+        .attr("height", this.height + margin.top + margin.bottom)
+        .attr("class", "RdYlGn")
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .append("text")
+        .attr("y", -10)
+        .attr("dy", ".30em")
+        .style("text-anchor", "end")
+        .style("font-size", "x-small")
+        .text("Success");
+}
+
+ChartHistogram.prototype.update = function(data) {
+    var self = this;
+
+    self.x.domain(data.map(function(d) { return d.idNode; }));
+    self.y.domain([0, d3.max(data, function(d) { return d.success; })]);
+
+    var svg = d3.select($("#chart-histogram")[0]).select("svg").select("g");
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + self.height + ")")
+        .call(self.xAxis)
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-60)");
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(self.yAxis);
+
+    svg.selectAll(".bar")
+        .data(data)
+        .enter().append("rect")
+        .attr("class", function(d) { return "bar " + color(-1 + d.success * 2.0); })
+        .attr("x", function(d) { return self.x(d.idNode); })
+        .attr("width", self.x.rangeBand())
+        .attr("y", function(d) { return self.y(d.success); })
+        .attr("height", function(d) { return self.height - self.y(d.success); });
+};
+
+var calendar  = new ChartCalendar(),
+    histogram = new ChartHistogram();
+
+function onChartChange(id) {
+    var titleSuffix = '',
+        makeVisible = false;
+
+    chart_content.filter('#' + selected_chart_id).attr("class", "chartHidden");
+    switch (selected_chart_id = id) {
+        case 'chart-calendar':
+            if (calendar.idNode) {
+                titleSuffix = ' for ' + calendar.idNode;
+                makeVisible = true;
+            }
+            break;
+        case 'chart-histogram':
+            makeVisible = true;
+            break;
+    }
+    if (makeVisible) chart_content.filter('#' + selected_chart_id).attr("class", "chartVisible");
+    $('#chart-title').html('FiHealth sanity check status' + titleSuffix);
+}
+
+function updateCalendar(idNode) {
+    $.ajax ({
+        type: "GET",
+        url: "../api/v1/region/historical/" + idNode,
+        contentType: "application/json; charset=utf-8",
+        data: {},
+        dataType: "json",
+        cache: false,
+        success: function(json) {
+            calendar.update(idNode, json['measures']);
+            onChartChange('chart-calendar');
+        },
+        error: function(xhr, textStatus, errorThrown) {
+            var errors = "<%= FiLabInfographics.nodata %>";
+            if (xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null") {
+                errors = xhr.responseText;
+            }
+            $('#errorMessage').html(errors);
+        }
+    });
+}
 
 $(document).ready(function() {
     $('.historical').addClass('active');
@@ -172,36 +282,20 @@ $(document).ready(function() {
             }
         },
         onMarkerClick: function(events, index) {
-            showHistorical(selectedMarkers[index].name);
+            switch (selected_chart_id) {
+                case 'chart-calendar':
+                    updateCalendar(selectedMarkers[index].name);
+                    break;
+                case 'chart-histogram':
+                    updateCalendar(selectedMarkers[index].name);
+                    d3.select('#chart_id')[0][0].value = 'chart-calendar';
+                    onChartChange('chart-calendar');
+                    break;
+            }
         }
     });
 
     $('#world-map-nodes').vectorMap('set', 'focus', 4.3, 0.5, 0.3);
-
-    var calendar = new ChartCalendar();
-
-    function showHistorical(idNode) {
-        $.ajax ({
-            type: "GET",
-            url: "../api/v1/region/historical/" + idNode,
-            contentType: "application/json; charset=utf-8",
-            data: {},
-            dataType: "json",
-            cache: false,
-            success: function(json) {
-                calendar.update(json['measures']);
-                chart_content.filter('#' + selected_chart_id).attr("class", "chartVisible");
-                $('#chart-title').html('FiHealth sanity check status for ' + idNode);
-            },
-            error: function(xhr, textStatus, errorThrown) {
-                var errors = "<%= FiLabInfographics.nodata %>";
-                if (xhr.responseText != null && xhr.responseText != "" && xhr.responseText != "null") {
-                    errors = xhr.responseText;
-                }
-                $('#errorMessage').html(errors);
-            }
-        });
-    }
 
     function ajaxFun() {
         $.ajax ({
@@ -213,12 +307,14 @@ $(document).ready(function() {
             cache: false,
             success: function(json) {
                 selectedMarkers = [];
+                sanitySuccess = [];
                 $.each(json["regions"], function(idRegion, regionAttributes) {
                     if (idRegion != null && regionAttributes != null) {
                         var markers = {};
-                        markers["latLng"] =  [parseFloat(regionAttributes['latitude']),parseFloat(regionAttributes['longitude'])];
+                        markers["latLng"] = [parseFloat(regionAttributes['latitude']),parseFloat(regionAttributes['longitude'])];
                         markers["name"] = idRegion;
                         selectedMarkers.push(markers);
+                        sanitySuccess.push({idNode: idRegion, success: regionAttributes['percSanitySuccess']});
                     }
 
                     $('#errorMessage').html("");
@@ -229,6 +325,8 @@ $(document).ready(function() {
 
                 mapNodes.removeAllMarkers();
                 mapNodes.addMarkers(selectedMarkers);
+
+                histogram.update(sanitySuccess);
             },
             error: function(xhr, textStatus, errorThrown) {
                 var errors = "<%= FiLabInfographics.nodata %>";
